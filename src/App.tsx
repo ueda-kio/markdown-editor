@@ -1,11 +1,13 @@
 import { ChakraProvider } from '@chakra-ui/react';
+import GlobalStyle from './style/GlobalStyle';
 
 const App = () => {
 	return (
-		<ChakraProvider resetCSS>
-			<div>test</div>
-		</ChakraProvider>
-	)
-}
+		<>
+			<GlobalStyle />
+			<ChakraProvider resetCSS></ChakraProvider>
+		</>
+	);
+};
 
 export default App;
