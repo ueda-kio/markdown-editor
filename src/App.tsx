@@ -1,11 +1,12 @@
 import { ChakraProvider } from '@chakra-ui/react';
+// import Container from './Container';
 import GlobalStyle from './style/GlobalStyle';
 
 const App = () => {
 	return (
 		<>
 			<GlobalStyle />
-			<ChakraProvider resetCSS></ChakraProvider>
+			<ChakraProvider resetCSS>{/* <Container /> */}</ChakraProvider>
 		</>
 	);
 };
