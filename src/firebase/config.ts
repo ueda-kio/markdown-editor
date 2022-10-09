@@ -1,6 +1,6 @@
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 export const firebaseConfig = {
-	apiKey: 'AIzaSyBVxp2RYE1YJsa741vQbycrIf-5dITcn1c',
+	apiKey: process.env.REACT_APP_API_KEY,
 	authDomain: 'markdown-editor-57417.firebaseapp.com',
 	databaseURL: 'https://markdown-editor-57417-default-rtdb.asia-southeast1.firebasedatabase.app',
 	projectId: 'markdown-editor-57417',
