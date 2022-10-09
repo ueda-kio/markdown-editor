@@ -19,6 +19,7 @@ const isFileType = (data: firebase.firestore.DocumentData): data is FileType => 
 	return false;
 };
 
+/** firestoreから保存されているファイル一覧を取得する */
 export const fetchFileList = async () => {
 	const data = await fileRef
 		.orderBy('updated_at', 'desc')
@@ -38,6 +39,7 @@ export const fetchFileList = async () => {
 	return data;
 };
 
+/** 指定されたファイルをtrashesへ移動する */
 export const trashFile = (id: string) => {
 	fileRef
 		.doc(id)
@@ -50,6 +52,7 @@ export const trashFile = (id: string) => {
 		});
 };
 
+/** 指定されたファイルをtrashesから完全に削除する */
 export const deleteFile = (id: string) => {
 	trashRef.doc(id).delete();
 };
