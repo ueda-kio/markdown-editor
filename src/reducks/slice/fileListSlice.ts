@@ -1,19 +1,35 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
+export type FileType = {
+	id: string;
+	value: string;
+	created_at: string;
+	updated_at: string;
+};
+
 export const fileListSlice = createSlice({
 	name: 'fileList',
 	initialState: {
-		files: [] as { id: string; value: string }[],
-		trashes: [] as { id: string; value: string }[],
+		files: [] as FileType[],
+		trashes: [] as FileType[],
 	},
 	reducers: {
+		setState: (state, action: PayloadAction<FileType[]>) => {
+			return {
+				files: action.payload,
+				trashes: state.trashes,
+			};
+		},
 		/**
 		 * ファイルを新規作成する。
 		 * @param {string} id 自動採番されたid
+		 * @param {string} created_at 作成時のタイムスタンプ
+		 * @param {string} updated_at 作成時のタイムスタンプ
 		 */
-		addFile: (state, action: PayloadAction<string>) => {
-			state.files.push({ id: action.payload, value: '' });
+		addFile: (state, action: PayloadAction<{ id: string; created_at: string; updated_at: string }>) => {
+			const { id, created_at, updated_at } = action.payload;
+			state.files.push({ id, value: '', created_at, updated_at });
 			return {
 				files: state.files,
 				trashes: state.trashes,
@@ -46,5 +62,5 @@ export const fileListSlice = createSlice({
 	},
 });
 
-export const { addFile, trashFile, deleteFile } = fileListSlice.actions;
+export const { setState, addFile, trashFile, deleteFile } = fileListSlice.actions;
 export default fileListSlice.reducer;

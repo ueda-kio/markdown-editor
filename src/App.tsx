@@ -12,7 +12,7 @@ import { fetchFileList, trashFile } from './libs/firebase.operation';
 
 const App = () => {
 	const handleClick: React.MouseEventHandler = () => {
-		const timestamp = FirebaseTimestamp.now();
+		const timestamp = new Date().toISOString();
 		const ref = db.collection('files');
 		const doc = ref.doc();
 		const id = doc.id;

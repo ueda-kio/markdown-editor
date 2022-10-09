@@ -1,21 +1,41 @@
 import { Dispatch } from '@reduxjs/toolkit';
+import firebase from 'firebase';
 import { db } from '../firebase';
+import { FileType } from '../reducks/slice/fileListSlice';
 
 const fileRef = db.collection('files');
 const trashRef = db.collection('trashes');
 
-export const fetchFileList = () => {
-	fileRef
+const isFileType = (data: firebase.firestore.DocumentData): data is FileType => {
+	const { id, created_at, updated_at, value } = data;
+	if (
+		typeof id !== 'undefined' &&
+		typeof value !== 'undefined' &&
+		typeof created_at !== 'undefined' &&
+		typeof updated_at !== 'undefined'
+	) {
+		return true;
+	}
+	return false;
+};
+
+export const fetchFileList = async () => {
+	const data = await fileRef
 		.orderBy('updated_at', 'desc')
 		.get()
 		.then((snapshots) => {
-			console.log('snapshots', snapshots);
+			const dataArray: FileType[] = [];
 			snapshots.forEach((snapshot) => {
 				const data = snapshot.data();
-				console.log('data', data);
+				if (!isFileType(data)) return;
+				dataArray.push(data);
 			});
+			return dataArray;
 		})
-		.catch((e) => console.error(e));
+		.catch((e) => {
+			throw Error(e);
+		});
+	return data;
 };
 
 export const trashFile = (id: string) => {
