@@ -5,7 +5,7 @@ import Cassette from './components/Cassette/Cassette';
 const Container = () => {
 	return (
 		<>
-			<Stack>
+			<Stack spacing={4}>
 				{[0, 0, 0, 0].map((item) => (
 					<Cassette />
 				))}
