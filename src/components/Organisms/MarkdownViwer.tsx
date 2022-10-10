@@ -78,6 +78,9 @@ const style = css`
 		color: #333;
 		padding: 0.1em 0.4em;
 	}
+	code {
+		font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+	}
 	a {
 		color: #3683bf;
 		&:hover {

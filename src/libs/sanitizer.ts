@@ -21,6 +21,5 @@ export const convertMarkdownToHTML = (markdownText: string): InnerHTML => {
 	});
 
 	const htmlText = DOMPurify.sanitize(markedText, { USE_PROFILES: { html: true } });
-	console.log('htmlText', htmlText);
 	return { __html: htmlText };
 };
