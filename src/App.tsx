@@ -11,35 +11,15 @@ import { db, FirebaseTimestamp } from './firebase';
 import { fetchFileList, trashFile } from './libs/firebase.operation';
 
 const App = () => {
-	const handleClick: React.MouseEventHandler = () => {
-		const timestamp = new Date().toISOString();
-		const ref = db.collection('files');
-		const doc = ref.doc();
-		const id = doc.id;
-		const data = {
-			id,
-			value: '',
-			created_at: timestamp,
-			updated_at: timestamp,
-		};
-		ref.doc(id)
-			.set(data)
-			.then(() => console.log('set done!'))
-			.catch((e) => console.error(e));
-	};
-
 	return (
 		<>
 			<GlobalStyle />
 			<ChakraProvider resetCSS>
 				<Header />
-				<Box as="main" px="10" py="5">
+				<Box as="main" pt="20" pb="10" px="5" height="100vh">
 					{/* <Editor /> */}
 					{/* <Container /> */}
 					<RouterConfig />
-					<Button onClick={handleClick}>Button</Button>
-					<Button onClick={fetchFileList}>Fetch</Button>
-					<Button onClick={() => trashFile('id')}>Trash</Button>
 				</Box>
 			</ChakraProvider>
 		</>

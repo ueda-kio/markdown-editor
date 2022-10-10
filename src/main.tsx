@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 		<ChakraProvider resetCSS>
 			<GlobalStyle />
 			<RouterProvider router={router} />
+			{/* <App /> */}
 		</ChakraProvider>
-		{/* <App /> */}
 	</Provider>
 );
