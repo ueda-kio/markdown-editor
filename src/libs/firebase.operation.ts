@@ -6,7 +6,7 @@ const fileRef = db.collection('files');
 const trashRef = db.collection('trashes');
 
 /** FileTypeへ絞り込みを行うユーザー定義型ガード */
-const isFileType = (data: firebase.firestore.DocumentData): data is FileType => {
+export const isFileType = (data: firebase.firestore.DocumentData): data is FileType => {
 	const { id, created_at, updated_at, value } = data;
 	if (
 		typeof id !== 'undefined' &&

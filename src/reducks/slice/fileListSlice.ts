@@ -1,5 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { db } from '../../firebase';
+import { isFileType } from '../../libs/firebase.operation';
 
 export type FileType = {
 	id: string;
@@ -7,6 +9,28 @@ export type FileType = {
 	created_at: string;
 	updated_at: string;
 };
+
+const fileRef = db.collection('files');
+const trashRef = db.collection('trashes');
+
+export const fetchFileList = createAsyncThunk('fileList/fetchFileList', async () => {
+	const data = await fileRef
+		.orderBy('updated_at', 'desc')
+		.get()
+		.then((snapshots) => {
+			const dataArray: FileType[] = [];
+			snapshots.forEach((snapshot) => {
+				const data = snapshot.data();
+				if (!isFileType(data)) return;
+				dataArray.push(data);
+			});
+			return dataArray;
+		})
+		.catch((e) => {
+			throw Error(e);
+		});
+	return data;
+});
 
 export const fileListSlice = createSlice({
 	name: 'fileList',
@@ -60,6 +84,15 @@ export const fileListSlice = createSlice({
 			};
 		},
 	},
+	extraReducers: (builder) => {
+		builder.addCase(fetchFileList.fulfilled, (state, action) => {
+			state.files = action.payload;
+		});
+	},
+	// [fetchFileList.fulfilled]: (state, action: PayloadAction<FileType[]>) => {
+	// 	state.fileList =
+	// }
+	// }
 });
 
 export const { setState, addFile, trashFile, deleteFile } = fileListSlice.actions;

@@ -3,9 +3,9 @@ import { Box, Button, IconButton, Stack } from '@chakra-ui/react';
 import { EditIcon } from '@chakra-ui/icons';
 import Cassette from './components/Cassette/Cassette';
 import { useAppDispatch, useFileListSelector } from './reducks/hooks';
-import { setState } from './reducks/slice/fileListSlice';
+import { fetchFileList } from './reducks/slice/fileListSlice';
 import { db } from './firebase';
-import { fetchFileList, trashFile } from './libs/firebase.operation';
+import { trashFile } from './libs/firebase.operation';
 import { useNavigate } from 'react-router-dom';
 
 const Container = () => {
@@ -14,11 +14,7 @@ const Container = () => {
 	const { fileList } = useFileListSelector();
 
 	useEffect(() => {
-		(async () => {
-			const data = await fetchFileList();
-			console.log(data);
-			dispatch(setState(data));
-		})();
+		dispatch(fetchFileList());
 	}, []);
 
 	const handleClick: React.MouseEventHandler = () => {
