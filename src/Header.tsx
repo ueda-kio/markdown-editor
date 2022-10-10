@@ -16,7 +16,7 @@ const style = {
 
 const Header = () => {
 	return (
-		<Box width="100%" position="sticky" top="0" as="header" boxShadow="base" padding="2">
+		<Box width="100%" position="fixed" top="0" as="header" boxShadow="base" padding="2">
 			<h1 css={style.title}>Markdown Editor App</h1>
 		</Box>
 	);

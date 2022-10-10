@@ -9,7 +9,7 @@ const style = css`
 	h4,
 	h5 {
 		margin-bottom: 2.4rem;
-		&:not(:first-child) {
+		&:not(:first-of-type) {
 			margin-top: 4rem;
 		}
 	}
