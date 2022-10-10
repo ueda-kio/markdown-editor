@@ -26,7 +26,7 @@ const RouterConfig = () => {
 		<BrowserRouter>
 			<Routes>
 				<Route path={`/`} element={<Container />} />
-				<Route path={`/editor/`} element={<Editor />} />
+				<Route path={`/editor/:fileId`} element={<Editor />} />
 			</Routes>
 		</BrowserRouter>
 	);
