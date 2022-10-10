@@ -1,7 +1,25 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { createBrowserRouter, BrowserRouter, Routes, Route } from 'react-router-dom';
 import Editor from './Editor';
 import Container from './Container';
+import Root from './routes/root';
+
+export const router = createBrowserRouter([
+	{
+		path: '/',
+		element: <Root />,
+		children: [
+			{
+				path: '/',
+				element: <Container />,
+			},
+			{
+				path: '/editor/:fileId',
+				element: <Editor />,
+			},
+		],
+	},
+]);
 
 const RouterConfig = () => {
 	return (
