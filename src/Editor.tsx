@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useBeforeunload } from 'react-beforeunload';
 import { Button, Grid } from '@chakra-ui/react';
 import { Textarea } from '@chakra-ui/react';
 import MarkdownViewer from './components/Organisms/MarkdownViwer';
@@ -8,6 +9,11 @@ import { fetchFileById, updateFile } from './libs/firebase.operation';
 const Editor = () => {
 	const { fileList } = useFileListSelector();
 	const [value, setValue] = useState('');
+	useBeforeunload((event) => {
+		// if (value !== '') {
+		event.preventDefault();
+		// }
+	});
 
 	/** urlの末尾から取得したファイルid */
 	const id = (() => {
@@ -26,8 +32,13 @@ const Editor = () => {
 	useEffect(() => {
 		if (id === '') return;
 		(async () => {
+			const data = (async () => {
+				const _data = getFileById();
+				if (_data) return _data;
+				return await fetchFileById(id);
+			})();
 			// const target = getFileById();
-			const target = await fetchFileById(id);
+			const target = await data;
 			if (!target) return;
 			setValue(target.value);
 		})();

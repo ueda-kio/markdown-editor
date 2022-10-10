@@ -16,6 +16,7 @@
 		"firebase": "8.10.0",
 		"framer-motion": "^7.5.1",
 		"react": "^18.2.0",
+		"react-beforeunload": "^2.5.3",
 		"react-dom": "^18.2.0",
 		"react-redux": "^8.0.4",
 		"react-router-dom": "^6.4.2"
@@ -30,6 +31,7 @@
 		"@types/marked": "^4.0.7",
 		"@types/node": "^18.8.3",
 		"@types/react": "^18.0.17",
+		"@types/react-beforeunload": "^2.1.1",
 		"@types/react-dom": "^18.0.6",
 		"@vitejs/plugin-react": "^2.1.0",
 		"dompurify": "^2.4.0",
