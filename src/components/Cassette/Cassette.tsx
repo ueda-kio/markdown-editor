@@ -21,7 +21,7 @@ const Cassette: React.FC<Props> = ({ file }) => {
 	return (
 		<Box rounded="md" boxShadow="base" cursor="pointer" transition="box-shadow 0.3s" _hover={{ boxShadow: 'md' }}>
 			<Link to={`/editor/${id}`} css={style.link}>
-				<Text fontSize="lg">test</Text>
+				<Text fontSize="lg">{id}</Text>
 			</Link>
 		</Box>
 	);
