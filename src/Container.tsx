@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Box, Button, IconButton, Stack } from '@chakra-ui/react';
 import { EditIcon } from '@chakra-ui/icons';
 import Cassette from './components/Cassette/Cassette';
-import { useAppDispatch, useFileListSelector } from './reducks/hooks';
+import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from './reducks/hooks';
 import { fetchFileList } from './reducks/slice/fileListSlice';
 import { db } from './firebase';
 import { trashFile } from './libs/firebase.operation';
@@ -12,6 +12,7 @@ const Container = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const { fileList } = useFileListSelector();
+	const { isLoading } = useIsLoadingSelector();
 
 	useEffect(() => {
 		dispatch(fetchFileList());
@@ -38,13 +39,17 @@ const Container = () => {
 
 	return (
 		<Box height="100%" position="relative">
-			<Stack spacing={4} as="ol">
-				{fileList.files.map((file) => (
-					<li key={file.id}>
-						<Cassette file={file} />
-					</li>
-				))}
-			</Stack>
+			{isLoading ? (
+				<>pending</>
+			) : (
+				<Stack spacing={4} as="ol">
+					{fileList.files.map((file) => (
+						<li key={file.id}>
+							<Cassette file={file} />
+						</li>
+					))}
+				</Stack>
+			)}
 			{/* <Button onClick={handleClick}>Button</Button>
 			<Button onClick={() => navigate(`/editor/`)}>Fetch</Button>
 			<Button onClick={() => trashFile('id')}>Trash</Button> */}

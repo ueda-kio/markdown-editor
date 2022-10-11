@@ -9,3 +9,8 @@ export const useFileListSelector = () => {
 	const fileList = useAppSelector((state: RootState) => state.fileList);
 	return { fileList };
 };
+
+export const useIsLoadingSelector = () => {
+	const isLoading = useAppSelector((state: RootState) => state.fileList.isLoading);
+	return { isLoading };
+};

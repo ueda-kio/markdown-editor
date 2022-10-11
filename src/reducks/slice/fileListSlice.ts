@@ -13,6 +13,7 @@ export type FileType = {
 const fileRef = db.collection('files');
 const trashRef = db.collection('trashes');
 
+/** firestoreから保存されているファイル一覧を取得する */
 export const fetchFileList = createAsyncThunk('fileList/fetchFileList', async () => {
 	const data = await fileRef
 		.orderBy('updated_at', 'desc')
@@ -32,17 +33,38 @@ export const fetchFileList = createAsyncThunk('fileList/fetchFileList', async ()
 	return data;
 });
 
+/**
+ * ファイルを更新する
+ * @param {string} id ファイルid
+ * @param {string} value 入力値
+ * @param {string} updated_at 更新時のタイムスタンプ
+ */
+export const updateFile = createAsyncThunk<string, { id: string; value: string; updated_at: string }>(
+	'fileList/updateFIle',
+	async ({ id, value, updated_at }) => {
+		await fileRef.doc(id).set(
+			{
+				value,
+				updated_at,
+			},
+			{ merge: true }
+		);
+		return 'resolve';
+	}
+);
+
 export const fileListSlice = createSlice({
 	name: 'fileList',
 	initialState: {
 		files: [] as FileType[],
 		trashes: [] as FileType[],
+		isLoading: false,
 	},
 	reducers: {
 		setState: (state, action: PayloadAction<FileType[]>) => {
 			return {
+				...state,
 				files: action.payload,
-				trashes: state.trashes,
 			};
 		},
 		/**
@@ -55,8 +77,8 @@ export const fileListSlice = createSlice({
 			const { id, created_at, updated_at } = action.payload;
 			state.files.push({ id, value: '', created_at, updated_at });
 			return {
+				...state,
 				files: state.files,
-				trashes: state.trashes,
 			};
 		},
 		/**
@@ -68,8 +90,8 @@ export const fileListSlice = createSlice({
 			const _files = state.files.filter((files) => files.id !== action.payload);
 			target && state.trashes.push(target);
 			return {
+				...state,
 				files: _files,
-				trashes: state.trashes,
 			};
 		},
 		/**
@@ -79,14 +101,24 @@ export const fileListSlice = createSlice({
 		deleteFile: (state, action: PayloadAction<string>) => {
 			const _trash = state.trashes.filter((trashes) => trashes.id !== action.payload);
 			return {
-				files: state.files,
+				...state,
 				trashes: _trash,
 			};
 		},
 	},
 	extraReducers: (builder) => {
+		builder.addCase(fetchFileList.pending, (state) => {
+			state.isLoading = true;
+		});
 		builder.addCase(fetchFileList.fulfilled, (state, action) => {
 			state.files = action.payload;
+			state.isLoading = false;
+		});
+		builder.addCase(updateFile.pending, (state, action) => {
+			state.isLoading = true;
+		});
+		builder.addCase(updateFile.fulfilled, (state, action) => {
+			state.isLoading = false;
 		});
 	},
 	// [fetchFileList.fulfilled]: (state, action: PayloadAction<FileType[]>) => {
