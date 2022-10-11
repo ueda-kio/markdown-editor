@@ -28,6 +28,8 @@ const Container = () => {
 			value: '',
 			created_at: timestamp,
 			updated_at: timestamp,
+			title: '',
+			lead: '',
 		};
 		ref.doc(id)
 			.set(data)

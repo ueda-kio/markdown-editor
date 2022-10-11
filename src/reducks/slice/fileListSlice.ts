@@ -8,6 +8,8 @@ export type FileType = {
 	value: string;
 	created_at: string;
 	updated_at: string;
+	title: string;
+	lead: string;
 };
 
 const fileRef = db.collection('files');
@@ -39,13 +41,15 @@ export const fetchFileList = createAsyncThunk('fileList/fetchFileList', async ()
  * @param {string} value 入力値
  * @param {string} updated_at 更新時のタイムスタンプ
  */
-export const updateFile = createAsyncThunk<string, { id: string; value: string; updated_at: string }>(
+export const updateFile = createAsyncThunk<string, { id: string; value: string; updated_at: string; title: string; lead: string }>(
 	'fileList/updateFIle',
-	async ({ id, value, updated_at }) => {
+	async ({ id, value, updated_at, title, lead }) => {
 		await fileRef.doc(id).set(
 			{
 				value,
 				updated_at,
+				title,
+				lead,
 			},
 			{ merge: true }
 		);
@@ -73,14 +77,14 @@ export const fileListSlice = createSlice({
 		 * @param {string} created_at 作成時のタイムスタンプ
 		 * @param {string} updated_at 作成時のタイムスタンプ
 		 */
-		addFile: (state, action: PayloadAction<{ id: string; created_at: string; updated_at: string }>) => {
-			const { id, created_at, updated_at } = action.payload;
-			state.files.push({ id, value: '', created_at, updated_at });
-			return {
-				...state,
-				files: state.files,
-			};
-		},
+		// addFile: (state, action: PayloadAction<{ id: string; created_at: string; updated_at: string }>) => {
+		// 	const { id, created_at, updated_at } = action.payload;
+		// 	state.files.push({ id, value: '', created_at, updated_at });
+		// 	return {
+		// 		...state,
+		// 		files: state.files,
+		// 	};
+		// },
 		/**
 		 * ファイルをゴミ箱へ移動する。
 		 * @param {string} id 削除対象のファイルid
@@ -127,5 +131,5 @@ export const fileListSlice = createSlice({
 	// }
 });
 
-export const { setState, addFile, trashFile, deleteFile } = fileListSlice.actions;
+export const { setState, trashFile, deleteFile } = fileListSlice.actions;
 export default fileListSlice.reducer;

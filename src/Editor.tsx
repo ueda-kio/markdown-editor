@@ -6,6 +6,39 @@ import MarkdownViewer from './components/Organisms/MarkdownViwer';
 import { useAppDispatch, useFileListSelector } from './reducks/hooks';
 import { fetchFileById } from './libs/firebase.operation';
 import { updateFile } from './reducks/slice/fileListSlice';
+import { convertMarkdownToHTML } from './libs/sanitizer';
+
+const getTitleAndLead = (value: string) => {
+	const getTag = (txt: string) => {
+		const tag = txt.split(/\>|\s/)[0].substring(1);
+		return tag;
+	};
+
+	const removeTag = (txt: string) => {
+		return txt.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '');
+	};
+
+	const isHeading = (text: string) => {
+		const tag = getTag(text);
+		return /^h[0-9]+$/.test(tag);
+	};
+
+	const split = (text: string) => {
+		const split = text.split(/\n/);
+		const first = split.shift() ?? '';
+		const second = split.join('\n') ?? '';
+		return { first, second };
+	};
+
+	const marked = convertMarkdownToHTML(value.trim()).__html;
+	const { first, second } = split(marked);
+	const title = (() => {
+		if (isHeading(first)) return removeTag(first);
+		return '';
+	})();
+	const lead = removeTag(second);
+	return { title, lead };
+};
 
 const Editor = () => {
 	const dispatch = useAppDispatch();
@@ -13,7 +46,7 @@ const Editor = () => {
 	const [value, setValue] = useState('');
 	useBeforeunload((event) => {
 		// if (value !== '') {
-		console.log('unload');
+		// console.log('unload');
 		// event.preventDefault();
 		// }
 	});
@@ -48,20 +81,23 @@ const Editor = () => {
 	}, [id]);
 
 	// unload時に自動保存
-	useEffect(() => {
-		return () => {
-			console.log('unload');
-			const updated_at = new Date().toISOString();
-			// updateFile(id, value, updated_at);
-			dispatch(updateFile({ id, value, updated_at }));
-		};
-	}, [value]);
+	// useEffect(() => {
+	// 	return () => {
+	// 		console.log('unload');
+	// 		const updated_at = new Date().toISOString();
+	// 		// updateFile(id, value, updated_at);
+	// 		dispatch(updateFile({ id, value, updated_at }));
+	// 	};
+	// }, [value]);
 
 	/** 保存ボタン押下時の挙動 */
 	const handleSave = () => {
+		const { title, lead } = getTitleAndLead(value);
+		console.log(title);
+		console.log(lead);
 		const updated_at = new Date().toISOString();
 		// updateFile(id, value, updated_at);
-		dispatch(updateFile({ id, value, updated_at }));
+		dispatch(updateFile({ id, value, updated_at, title, lead }));
 	};
 
 	return (
