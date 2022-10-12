@@ -1,6 +1,7 @@
 import React, { lazy } from 'react';
 import { createBrowserRouter, BrowserRouter, Routes, Route } from 'react-router-dom';
 import Root from './routes/root';
+import Viwer from './VIwer';
 
 const Editor = lazy(() => import('./Editor'));
 const Container = lazy(() => import('./Container'));
@@ -13,6 +14,10 @@ export const router = createBrowserRouter([
 			{
 				index: true,
 				element: <Container />,
+			},
+			{
+				path: '/file/:fileId',
+				element: <Viwer />,
 			},
 			{
 				path: '/editor/:fileId',
