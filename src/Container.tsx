@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Box, Button, IconButton, Stack } from '@chakra-ui/react';
-import { EditIcon } from '@chakra-ui/icons';
+import { PlusSquareIcon } from '@chakra-ui/icons';
 import Cassette from './components/Cassette/Cassette';
 import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from './reducks/hooks';
 import { fetchFileList } from './reducks/slice/fileListSlice';
@@ -40,33 +40,32 @@ const Container = () => {
 	};
 
 	return (
-		<Box height="100%" position="relative">
-			{isLoading ? (
-				<>pending</>
-			) : (
-				<Stack spacing={4} as="ol">
-					{fileList.files.map((file) => (
-						<li key={file.id}>
-							<Cassette file={file} />
-						</li>
-					))}
-				</Stack>
-			)}
-			{/* <Button onClick={handleClick}>Button</Button>
-			<Button onClick={() => navigate(`/editor/`)}>Fetch</Button>
-			<Button onClick={() => trashFile('id')}>Trash</Button> */}
-			<IconButton
-				aria-label="open new editor"
-				icon={<EditIcon w={6} h={6} />}
-				colorScheme="teal"
-				rounded="full"
-				position="fixed"
-				bottom="4"
-				right="4"
-				width="20"
-				height="20"
-				onClick={handleClick}
-			></IconButton>
+		<Box height="100%" maxWidth="1000px" mx="auto">
+			<Box position="relative" height="100%" pb="32">
+				{isLoading ? (
+					<>pending</>
+				) : (
+					<Stack spacing="2" as="ol" height="100%" overflowY="auto" px="3">
+						{fileList.files.map((file) => (
+							<li key={file.id}>
+								<Cassette file={file} />
+							</li>
+						))}
+					</Stack>
+				)}
+				<IconButton
+					aria-label="open new editor"
+					icon={<PlusSquareIcon w={6} h={6} />}
+					colorScheme="teal"
+					rounded="full"
+					position="fixed"
+					bottom="4"
+					right="4"
+					width="20"
+					height="20"
+					onClick={handleClick}
+				></IconButton>
+			</Box>
 		</Box>
 	);
 };

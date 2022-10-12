@@ -7,7 +7,7 @@ const Root = () => {
 	return (
 		<>
 			<Header />
-			<Box as="main" pt="20" pb="10" px="5" height="100vh">
+			<Box as="main" pt="20" pb="10" px={{ base: 4, md: 5 }} height="100vh">
 				<Suspense fallback={<div>Loading...</div>}>
 					<Outlet />
 				</Suspense>
