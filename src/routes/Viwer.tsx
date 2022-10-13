@@ -1,8 +1,8 @@
 import { Spinner } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import MarkdownViewer from './components/Organisms/MarkdownViwer';
-import { fetchFileById } from './reducks/slice/fileListSlice';
-import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from './reducks/hooks';
+import MarkdownViewer from '../components/Organisms/MarkdownViwer';
+import { fetchFileById } from '../reducks/slice/fileListSlice';
+import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from '../reducks/hooks';
 
 const Viwer = () => {
 	const dispatch = useAppDispatch();

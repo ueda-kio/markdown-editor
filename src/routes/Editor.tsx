@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useBeforeunload } from 'react-beforeunload';
 import { Button, Grid, Textarea } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
-import MarkdownViewer from './components/Organisms/MarkdownViwer';
-import { useAppDispatch, useFileListSelector } from './reducks/hooks';
-import { fetchFileById } from './libs/firebase.operation';
-import { updateFile } from './reducks/slice/fileListSlice';
-import { convertMarkdownToHTML } from './libs/sanitizer';
+import MarkdownViewer from '../components/Organisms/MarkdownViwer';
+import { useAppDispatch, useFileListSelector } from '../reducks/hooks';
+import { fetchFileById } from '../libs/firebase.operation';
+import { updateFile } from '../reducks/slice/fileListSlice';
+import { convertMarkdownToHTML } from '../libs/sanitizer';
 
 const getTitleAndLead = (value: string) => {
 	const getTag = (txt: string) => {

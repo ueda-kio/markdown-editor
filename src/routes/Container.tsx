@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { Box, Button, IconButton, Spinner, Stack } from '@chakra-ui/react';
 import { PlusSquareIcon } from '@chakra-ui/icons';
-import Cassette from './components/Cassette/Cassette';
-import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from './reducks/hooks';
-import { fetchFileList } from './reducks/slice/fileListSlice';
-import { db } from './firebase';
-import { trashFile } from './libs/firebase.operation';
+import Cassette from '../components/Cassette/Cassette';
+import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from '../reducks/hooks';
+import { fetchFileList } from '../reducks/slice/fileListSlice';
+import { db } from '../firebase';
+import { trashFile } from '../libs/firebase.operation';
 import { useNavigate } from 'react-router-dom';
 
 const Container = () => {
