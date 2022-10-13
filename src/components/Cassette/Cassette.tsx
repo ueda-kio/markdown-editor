@@ -21,12 +21,12 @@ const Cassette: React.FC<Props> = ({ file }) => {
 	const { id, title, lead } = file;
 	const navigate = useNavigate();
 	const handleEditClick = () => {
-		navigate(`/editor/`);
+		navigate(`/file/${id}/editor/`);
 	};
 
 	return (
 		<Box position="relative" rounded="md" boxShadow="base" cursor="pointer" transition="box-shadow 0.3s" _hover={{ boxShadow: 'md' }}>
-			<Link to={`/editor/${id}`} css={style.link}>
+			<Link to={`/file/${id}`} css={style.link}>
 				<Grid templateColumns={{ base: '1fr 176px', md: '1fr 200px' }} gap={{ base: 3, md: '5' }} alignItems="center">
 					<Box>
 						<Text fontSize="lg" fontWeight="bold" noOfLines={1}>

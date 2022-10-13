@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Box, Button, IconButton, Stack } from '@chakra-ui/react';
+import { Box, Button, IconButton, Spinner, Stack } from '@chakra-ui/react';
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import Cassette from './components/Cassette/Cassette';
 import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from './reducks/hooks';
@@ -34,7 +34,7 @@ const Container = () => {
 		ref.doc(id)
 			.set(data)
 			.then(() => {
-				navigate(`/editor/${id}`);
+				navigate(`/file/${id}/editor`);
 			})
 			.catch((e) => console.error(e));
 	};
@@ -43,7 +43,7 @@ const Container = () => {
 		<Box height="100%" maxWidth="1000px" mx="auto">
 			<Box position="relative" height="100%" pb="32">
 				{isLoading ? (
-					<>pending</>
+					<Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
 				) : (
 					<Stack spacing="2" as="ol" height="100%" overflowY="auto" px="3">
 						{fileList.files.map((file) => (

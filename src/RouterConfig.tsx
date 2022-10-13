@@ -20,7 +20,7 @@ export const router = createBrowserRouter([
 				element: <Viwer />,
 			},
 			{
-				path: '/editor/:fileId',
+				path: '/file/:fileId/editor',
 				element: <Editor />,
 			},
 		],

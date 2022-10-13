@@ -51,11 +51,11 @@ const Editor = () => {
 		// }
 	});
 
-	/** urlの末尾から取得したファイルid */
+	/** urlから取得したファイルid */
 	const id = (() => {
-		const endOfPath = location.pathname.split(/(.*)\//).filter((t) => t !== '')[1];
-		if (endOfPath === '') return '';
-		return endOfPath;
+		const idByUrl = location.pathname.match(/(?<=file\/).+(?=\/editor)/)?.[0] ?? '';
+		if (idByUrl === '') return '';
+		return idByUrl;
 	})();
 
 	/** urlのidと同じファイルをstateから取得する */
@@ -67,6 +67,7 @@ const Editor = () => {
 
 	// ファイルのvalueをテキストエリアに反映
 	useEffect(() => {
+		console.log(id);
 		if (id === '') return;
 		(async () => {
 			const data = (async () => {
