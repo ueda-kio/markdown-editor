@@ -1,7 +1,7 @@
 import React, { lazy } from 'react';
 import { createBrowserRouter, BrowserRouter, Routes, Route } from 'react-router-dom';
 import Root from './routes/root';
-import Viwer from './VIwer';
+import Viwer from './Viwer';
 
 const Editor = lazy(() => import('./Editor'));
 const Container = lazy(() => import('./Container'));

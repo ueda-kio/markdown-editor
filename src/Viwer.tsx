@@ -1,11 +1,13 @@
+import { Spinner } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import MarkdownViewer from './components/Organisms/MarkdownViwer';
-import { fetchFileById } from './libs/firebase.operation';
-import { useAppDispatch, useFileListSelector } from './reducks/hooks';
+import { fetchFileById } from './reducks/slice/fileListSlice';
+import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from './reducks/hooks';
 
 const Viwer = () => {
 	const dispatch = useAppDispatch();
 	const { fileList } = useFileListSelector();
+	const { isLoading } = useIsLoadingSelector();
 	const [value, setValue] = useState('');
 
 	/** urlの末尾から取得したファイルid */
@@ -16,29 +18,36 @@ const Viwer = () => {
 	})();
 
 	/** urlのidと同じファイルをstateから取得する */
-	const getFileById = useCallback(() => {
-		const files = fileList.files;
-		const target = files.find((file) => file.id === id);
-		return target;
-	}, [id]);
+	const getFileById = useCallback(
+		(id: string) => {
+			const files = fileList.files;
+			const target = files.find((file) => file.id === id);
+			return target;
+		},
+		[id, fileList]
+	);
 
 	// ファイルのvalueをテキストエリアに反映
 	useEffect(() => {
-		if (id === '') return;
 		(async () => {
-			const data = (async () => {
-				const _data = getFileById(); // stateから取得
-				if (_data) return _data;
-				return await fetchFileById(id); // stateにない場合firestoreから取得
-			})();
-			const target = await data;
-			if (!target) return;
-			setValue(target.value);
+			if (id === '') return;
+			await dispatch(fetchFileById({ id }));
 		})();
 	}, [id]);
+
+	useEffect(() => {
+		const file = getFileById(id);
+		if (!file) return;
+		setValue(file.value);
+	}, [fileList]);
+
 	return (
 		<>
-			<MarkdownViewer markdownText={value} />
+			{isLoading ? (
+				<Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
+			) : (
+				<MarkdownViewer markdownText={value} />
+			)}
 		</>
 	);
 };

@@ -35,6 +35,16 @@ export const fetchFileList = createAsyncThunk('fileList/fetchFileList', async ()
 	return data;
 });
 
+export const fetchFileById = createAsyncThunk<FileType | undefined, { id: string }>('fileList/fetchFileById', async ({ id }) => {
+	try {
+		const data = await (await fileRef.doc(id).get()).data();
+		if (!data || !isFileType(data)) return;
+		return data;
+	} catch {
+		return;
+	}
+});
+
 /**
  * ファイルを更新する
  * @param {string} id ファイルid
@@ -118,10 +128,19 @@ export const fileListSlice = createSlice({
 			state.files = action.payload;
 			state.isLoading = false;
 		});
-		builder.addCase(updateFile.pending, (state, action) => {
+		builder.addCase(fetchFileById.pending, (state) => {
 			state.isLoading = true;
 		});
-		builder.addCase(updateFile.fulfilled, (state, action) => {
+		builder.addCase(fetchFileById.fulfilled, (state, action) => {
+			state.isLoading = false;
+			if (!action.payload) return { ...state };
+			const _file = [...state.files, action.payload];
+			state.files = _file;
+		});
+		builder.addCase(updateFile.pending, (state) => {
+			state.isLoading = true;
+		});
+		builder.addCase(updateFile.fulfilled, (state) => {
 			state.isLoading = false;
 		});
 	},
