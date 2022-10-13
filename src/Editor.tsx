@@ -67,7 +67,6 @@ const Editor = () => {
 
 	// ファイルのvalueをテキストエリアに反映
 	useEffect(() => {
-		console.log(id);
 		if (id === '') return;
 		(async () => {
 			const data = (async () => {
@@ -94,8 +93,6 @@ const Editor = () => {
 	/** 保存ボタン押下時の挙動 */
 	const handleSave = () => {
 		const { title, lead } = getTitleAndLead(value);
-		console.log(title);
-		console.log(lead);
 		const updated_at = new Date().toISOString();
 		// updateFile(id, value, updated_at);
 		dispatch(updateFile({ id, value, updated_at, title, lead }));
