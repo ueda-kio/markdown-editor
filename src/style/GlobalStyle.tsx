@@ -58,7 +58,7 @@ const baseStyle = css`
 	body {
 		font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Arial, sans-serif;
 		/* font-size: 1.4rem; */
-		background-color: #f6f6f6;
+		/* background-color: #f6f6f6; */
 	}
 `;
 
