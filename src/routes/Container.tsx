@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { Box, Button, IconButton, Spinner, Stack } from '@chakra-ui/react';
-import { PlusSquareIcon } from '@chakra-ui/icons';
+import { Box, Button, IconButton, Spinner, Stack, Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
+import { PlusSquareIcon, SearchIcon } from '@chakra-ui/icons';
 import Cassette from '../components/Cassette/Cassette';
 import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from '../reducks/hooks';
 import { fetchFileList } from '../reducks/slice/fileListSlice';
@@ -41,7 +41,18 @@ const Container = () => {
 
 	return (
 		<Box height="100%" maxWidth="1000px" mx="auto">
-			<Box position="relative" height="100%" pb="32">
+			<Box px="3">
+				<InputGroup>
+					<InputLeftElement
+						top="50%"
+						transform="translateY(-50%)"
+						pointerEvents="none"
+						children={<SearchIcon w={5} h={5} color="gray.400" />}
+					/>
+					<Input placeholder="search" size="lg" rounded="3xl" variant="filled" />
+				</InputGroup>
+			</Box>
+			<Box position="relative" height="100%" pb="32" mt="5">
 				{isLoading ? (
 					<Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
 				) : (

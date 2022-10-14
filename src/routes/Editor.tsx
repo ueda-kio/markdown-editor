@@ -111,6 +111,7 @@ const Editor = () => {
 					size="lg"
 					rounded="md"
 					height="96"
+					variant="filled"
 				/>
 				<MarkdownViewer markdownText={value} />
 			</Grid>
