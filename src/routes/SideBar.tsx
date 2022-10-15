@@ -54,7 +54,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 		>
 			<Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
 				<Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-					Logo
+					Memo App.
 				</Text>
 				<CloseButton display={{ base: 'flex', xl: 'none' }} onClick={onClose} />
 			</Flex>
@@ -108,9 +108,9 @@ interface MobileProps extends FlexProps {
 }
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 	return (
-		<Flex alignItems="center" justifyContent="flex-start" {...rest}>
-			<IconButton variant="outline" onClick={onOpen} aria-label="open menu" icon={<HamburgerIcon />} />
-			<Box px="3">
+		<Flex w="full" alignItems="center" justifyContent="flex-start" {...rest}>
+			<IconButton variant="outline" rounded="full" onClick={onOpen} aria-label="open menu" icon={<HamburgerIcon />} />
+			<Box px="3" w="full">
 				<InputGroup>
 					<InputLeftElement
 						top="50%"
@@ -145,8 +145,8 @@ const SimpleSidebar = () => {
 				</DrawerContent>
 			</Drawer>
 			<Box height="100%" maxWidth="800px" mx="auto" id="ContainerWrapper">
-				<Box px="3">
-					<MobileNav display="flex" onOpen={onOpen} />
+				<Box px="3" height="100vh">
+					<MobileNav onOpen={onOpen} />
 					<Outlet />
 				</Box>
 			</Box>

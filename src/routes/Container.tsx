@@ -40,7 +40,7 @@ const Container = () => {
 	};
 
 	return (
-		<Box position="relative" height="100%" pb="32" mt="5">
+		<Box position="relative" height="calc(100% - 68px)" pb="24" mt="5" _before={{ content: '""', display: 'block' }}>
 			{isLoading ? (
 				<Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
 			) : (
@@ -60,8 +60,8 @@ const Container = () => {
 				position="fixed"
 				bottom="4"
 				right="4"
-				width="20"
-				height="20"
+				w="16"
+				h="16"
 				onClick={handleClick}
 			></IconButton>
 		</Box>
