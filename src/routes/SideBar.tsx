@@ -6,7 +6,6 @@ import {
 	Flex,
 	Icon,
 	useColorModeValue,
-	Link,
 	Drawer,
 	DrawerContent,
 	Text,
@@ -18,23 +17,26 @@ import {
 	Input,
 	DrawerOverlay,
 } from '@chakra-ui/react';
-import { CopyIcon, HamburgerIcon, EditIcon, SearchIcon } from '@chakra-ui/icons';
+import { ExternalLinkIcon, HamburgerIcon, SearchIcon } from '@chakra-ui/icons';
 import { AiOutlineHome, AiOutlineGithub, AiOutlineSetting } from 'react-icons/ai';
 import { BiArchiveIn } from 'react-icons/bi';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import { ReactText } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
+import { IconType } from 'react-icons';
+import { transform } from 'framer-motion';
+import { css } from '@emotion/react';
 
 interface LinkItemProps {
 	name: string;
-	icon: any;
+	path: string;
+	icon: IconType;
 }
 const LinkItems: Array<LinkItemProps> = [
-	{ name: 'Home', icon: AiOutlineHome },
-	{ name: 'Trash', icon: RiDeleteBin6Line },
-	{ name: 'Archive', icon: BiArchiveIn },
-	{ name: 'Github', icon: AiOutlineGithub },
-	{ name: 'Settings', icon: AiOutlineSetting },
+	{ name: 'Home', path: '/', icon: AiOutlineHome },
+	{ name: 'Trash', path: '/trash/', icon: RiDeleteBin6Line },
+	{ name: 'Archive', path: '/archive', icon: BiArchiveIn },
+	{ name: 'Settings', path: '/setting', icon: AiOutlineSetting },
+	{ name: 'Github', path: 'https://github.com/ueda-kio/markdown-editor', icon: AiOutlineGithub },
 ];
 
 interface SidebarProps extends BoxProps {
@@ -59,7 +61,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 				<CloseButton display={{ base: 'flex', xl: 'none' }} onClick={onClose} />
 			</Flex>
 			{LinkItems.map((link) => (
-				<NavItem key={link.name} icon={link.icon}>
+				<NavItem key={link.name} icon={link.icon} path={link.path}>
 					{link.name}
 				</NavItem>
 			))}
@@ -67,27 +69,30 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 	);
 };
 
+const style = css`
+	position: relative;
+	display: block;
+	margin-right: 16px;
+`;
+
 interface NavItemProps extends FlexProps {
-	icon: any;
-	children: ReactText;
+	icon: IconType;
+	path: string;
+	children: ReactNode;
 }
-const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
-	return (
-		<Link href="#" style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
-			<Flex
-				align="center"
-				p="4"
-				mx="4"
-				borderRadius="lg"
-				role="group"
-				cursor="pointer"
+const NavItem = ({ icon, path, children, ...rest }: NavItemProps) =>
+	!path.startsWith('https') ? (
+		<Link to={path} css={style}>
+			<Box
+				style={{ textDecoration: 'none' }}
+				_focus={{ boxShadow: 'none' }}
 				_hover={{
 					bg: 'cyan.400',
 					color: 'white',
 				}}
-				{...rest}
+				borderRadius="lg"
 			>
-				{icon && (
+				<Flex position="relative" align="center" p="4" mx="4" role="group" cursor="pointer" {...rest}>
 					<Icon
 						mr="4"
 						fontSize="16"
@@ -96,13 +101,36 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
 						}}
 						as={icon}
 					/>
-				)}
-				{children}
-			</Flex>
+					{children}
+				</Flex>
+			</Box>
 		</Link>
+	) : (
+		<a href={path} css={style} target="_blank" rel="noreferrer">
+			<Box
+				style={{ textDecoration: 'none' }}
+				_focus={{ boxShadow: 'none' }}
+				_hover={{
+					bg: 'cyan.400',
+					color: 'white',
+				}}
+				borderRadius="lg"
+			>
+				<Flex position="relative" align="center" p="4" mx="4" role="group" cursor="pointer" {...rest}>
+					<Icon
+						mr="4"
+						fontSize="16"
+						_groupHover={{
+							color: 'white',
+						}}
+						as={icon}
+					/>
+					{children}
+				</Flex>
+				<ExternalLinkIcon position="absolute" top="50%" right="4" mx="2px" transform="translateY(-50%)" />
+			</Box>
+		</a>
 	);
-};
-
 interface MobileProps extends FlexProps {
 	onOpen: () => void;
 }
