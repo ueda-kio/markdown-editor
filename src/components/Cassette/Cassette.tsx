@@ -3,7 +3,8 @@ import { Box, Flex, Grid, IconButton, Text } from '@chakra-ui/react';
 import { CopyIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { css } from '@emotion/react';
-import { FileType } from '../../reducks/slice/fileListSlice';
+import { FileType, putFileInTrash } from '../../reducks/slice/fileListSlice';
+import { useAppDispatch } from '../../reducks/hooks';
 
 const style = {
 	link: css`
@@ -19,9 +20,13 @@ type Props = {
 
 const Cassette: React.FC<Props> = ({ file }) => {
 	const { id, title, lead } = file;
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const handleEditClick = () => {
 		navigate(`/file/${id}/editor/`);
+	};
+	const handleDeleteClick = (id: string) => {
+		dispatch(putFileInTrash({ id }));
 	};
 
 	return (
@@ -55,6 +60,7 @@ const Cassette: React.FC<Props> = ({ file }) => {
 					rounded="full"
 					width={{ base: 12, md: 14 }}
 					height={{ base: 12, md: 14 }}
+					onClick={() => handleDeleteClick(id)}
 				></IconButton>
 				<IconButton
 					aria-label="open new editor"

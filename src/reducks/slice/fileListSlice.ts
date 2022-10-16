@@ -35,6 +35,26 @@ export const fetchFileList = createAsyncThunk('fileList/fetchFileList', async ()
 	return data;
 });
 
+/** firestoreから保存されているファイル一覧を取得する */
+export const fetchTrashList = createAsyncThunk('fileList/fetchTrashList', async () => {
+	const data = await trashRef
+		.orderBy('updated_at', 'desc')
+		.get()
+		.then((snapshots) => {
+			const dataArray: FileType[] = [];
+			snapshots.forEach((snapshot) => {
+				const data = snapshot.data();
+				if (!isFileType(data)) return;
+				dataArray.push(data);
+			});
+			return dataArray;
+		})
+		.catch((e) => {
+			throw Error(e);
+		});
+	return data;
+});
+
 /**
  * idからファイルを取得する
  * @param {string} id ファイルid
@@ -69,6 +89,20 @@ export const updateFile = createAsyncThunk<
 		{ merge: true }
 	);
 	return { id, value, updated_at, title, lead };
+});
+
+/** 指定されたファイルをtrashesへ移動する */
+export const putFileInTrash = createAsyncThunk<string, { id: string }>('fileList/trashFile', async ({ id }) => {
+	await fileRef
+		.doc(id)
+		.get()
+		.then((doc) => {
+			const data = doc.data();
+			if (!data) return;
+			trashRef.doc(data.id).set(data);
+			fileRef.doc(data.id).delete();
+		});
+	return id;
 });
 
 export const fileListSlice = createSlice({
@@ -140,6 +174,7 @@ export const fileListSlice = createSlice({
 		},
 	},
 	extraReducers: (builder) => {
+		// ファイル一覧の取得
 		builder.addCase(fetchFileList.pending, (state) => {
 			state.isLoading = true;
 		});
@@ -148,6 +183,16 @@ export const fileListSlice = createSlice({
 			state.isLoading = false;
 			state.files.isFetched = true;
 		});
+		// ゴミ箱一覧の取得
+		builder.addCase(fetchTrashList.pending, (state) => {
+			state.isLoading = true;
+		});
+		builder.addCase(fetchTrashList.fulfilled, (state, action) => {
+			state.trashes.list = action.payload;
+			state.isLoading = false;
+			state.trashes.isFetched = true;
+		});
+		// idからファイルの取得
 		builder.addCase(fetchFileById.pending, (state) => {
 			state.isLoading = true;
 		});
@@ -157,11 +202,20 @@ export const fileListSlice = createSlice({
 			const _file = [...state.files.list, action.payload];
 			state.files.list = _file;
 		});
+		// ファイルの更新
 		builder.addCase(updateFile.pending, (state) => {
 			state.isLoading = true;
 		});
 		builder.addCase(updateFile.fulfilled, (state) => {
 			state.isLoading = false;
+		});
+		// ファイルをゴミ箱へ移動
+		builder.addCase(putFileInTrash.pending, (state) => {
+			state.isLoading = true;
+		});
+		builder.addCase(putFileInTrash.fulfilled, (state, action) => {
+			state.isLoading = false;
+			trashFile(action.payload);
 		});
 	},
 	// [fetchFileList.fulfilled]: (state, action: PayloadAction<FileType[]>) => {

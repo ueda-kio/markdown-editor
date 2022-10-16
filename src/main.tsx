@@ -9,6 +9,7 @@ import GlobalStyle from './style/GlobalStyle';
 import Root from './routes/root';
 
 const Container = lazy(() => import('./routes/Container'));
+const Trashes = lazy(() => import('./routes/Trashes'));
 const Viwer = lazy(() => import('./routes/Viwer'));
 const Editor = lazy(() => import('./routes/Editor'));
 const SideBar = lazy(() => import('./routes/SideBar'));
@@ -23,6 +24,14 @@ export const router = createBrowserRouter([
 				element: (
 					<Suspense fallback="loading…">
 						<Container />
+					</Suspense>
+				),
+			},
+			{
+				path: '/trash/',
+				element: (
+					<Suspense fallback="loading…">
+						<Trashes />
 					</Suspense>
 				),
 			},
