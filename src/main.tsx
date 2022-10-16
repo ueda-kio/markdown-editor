@@ -20,7 +20,11 @@ export const router = createBrowserRouter([
 		children: [
 			{
 				index: true,
-				element: <Container />,
+				element: (
+					<Suspense fallback="loading…">
+						<Container />
+					</Suspense>
+				),
 			},
 		],
 	},

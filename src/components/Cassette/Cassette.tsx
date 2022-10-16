@@ -29,10 +29,10 @@ const Cassette: React.FC<Props> = ({ file }) => {
 			<Link to={`/file/${id}`} css={style.link}>
 				<Grid templateColumns={{ base: '1fr 176px', md: '1fr 200px' }} gap={{ base: 3, md: '5' }} alignItems="center">
 					<Box>
-						<Text fontSize="lg" fontWeight="bold" noOfLines={1}>
+						<Text h="27px" fontSize="lg" fontWeight="bold" noOfLines={1}>
 							{title}
 						</Text>
-						<Text fontSize="md" mt={2} opacity="0.8" noOfLines={2}>
+						<Text h="48px" fontSize="md" mt={2} opacity="0.8" noOfLines={2}>
 							{lead}
 						</Text>
 					</Box>

@@ -32,11 +32,16 @@ const getTitleAndLead = (value: string) => {
 
 	const marked = convertMarkdownToHTML(value.trim()).__html;
 	const { first, second } = split(marked);
-	const title = (() => {
-		if (isHeading(first)) return removeTag(first);
-		return '';
-	})();
-	const lead = removeTag(second);
+	const hasHeading = isHeading(first);
+
+	let title = '';
+	let lead = '';
+	if (hasHeading) {
+		title = removeTag(first);
+		lead = removeTag(second);
+	} else {
+		lead = `${removeTag(first)}\n${removeTag(second)}`;
+	}
 	return { title, lead };
 };
 
