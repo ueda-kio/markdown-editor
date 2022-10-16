@@ -1,11 +1,14 @@
-import { Spinner } from '@chakra-ui/react';
+import { Box, IconButton, Spinner } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
+import { ChevronLeftIcon } from '@chakra-ui/icons';
 import MarkdownViewer from '../components/Organisms/MarkdownViwer';
 import { fetchFileById } from '../reducks/slice/fileListSlice';
 import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from '../reducks/hooks';
+import { useNavigate } from 'react-router-dom';
 
 const Viwer = () => {
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 	const { fileList } = useFileListSelector();
 	const { isLoading } = useIsLoadingSelector();
 	const [value, setValue] = useState('');
@@ -21,7 +24,7 @@ const Viwer = () => {
 	const getFileById = useCallback(
 		(id: string) => {
 			const files = fileList.files;
-			const target = files.find((file) => file.id === id);
+			const target = files.list.find((file) => file.id === id);
 			return target;
 		},
 		[id, fileList]
@@ -46,7 +49,18 @@ const Viwer = () => {
 			{isLoading ? (
 				<Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
 			) : (
-				<MarkdownViewer markdownText={value} />
+				<Box maxWidth="840px" m="0 auto" px="5" pt="2">
+					<IconButton
+						aria-label="open new editor"
+						icon={<ChevronLeftIcon w={6} h={6} />}
+						colorScheme="teal"
+						rounded="full"
+						w="12"
+						h="12"
+						onClick={() => navigate(-1)}
+					></IconButton>
+					<MarkdownViewer markdownText={value} mt="4" />
+				</Box>
 			)}
 		</>
 	);

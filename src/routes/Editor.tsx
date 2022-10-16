@@ -3,7 +3,7 @@ import { useBeforeunload } from 'react-beforeunload';
 import { Button, Grid, Textarea } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import MarkdownViewer from '../components/Organisms/MarkdownViwer';
-import { useAppDispatch, useFileListSelector } from '../reducks/hooks';
+import { useAppDispatch, useFileListSelector, useFilesSelector } from '../reducks/hooks';
 import { fetchFileById } from '../libs/firebase.operation';
 import { updateFile } from '../reducks/slice/fileListSlice';
 import { convertMarkdownToHTML } from '../libs/sanitizer';
@@ -42,7 +42,7 @@ const getTitleAndLead = (value: string) => {
 
 const Editor = () => {
 	const dispatch = useAppDispatch();
-	const { fileList } = useFileListSelector();
+	const { files } = useFilesSelector();
 	const [value, setValue] = useState('');
 	useBeforeunload((event) => {
 		// if (value !== '') {
@@ -60,8 +60,7 @@ const Editor = () => {
 
 	/** urlのidと同じファイルをstateから取得する */
 	const getFileById = useCallback(() => {
-		const files = fileList.files;
-		const target = files.find((file) => file.id === id);
+		const target = files.list.find((file) => file.id === id);
 		return target;
 	}, [id]);
 

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Box, Button, IconButton, Spinner, Stack, Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { PlusSquareIcon, SearchIcon } from '@chakra-ui/icons';
 import Cassette from '../components/Cassette/Cassette';
-import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from '../reducks/hooks';
+import { useAppDispatch, useFileListSelector, useFilesSelector, useIsLoadingSelector } from '../reducks/hooks';
 import { fetchFileList } from '../reducks/slice/fileListSlice';
 import { db } from '../firebase';
 import { trashFile } from '../libs/firebase.operation';
@@ -11,12 +11,12 @@ import { useNavigate } from 'react-router-dom';
 const Container = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const { fileList } = useFileListSelector();
+	const { files } = useFilesSelector();
 	const { isLoading } = useIsLoadingSelector();
 
 	useEffect(() => {
-		dispatch(fetchFileList());
-	}, []);
+		if (files.isFetched === false) dispatch(fetchFileList());
+	}, [files.isFetched]);
 
 	const handleClick: React.MouseEventHandler = () => {
 		const timestamp = new Date().toISOString();
@@ -45,8 +45,8 @@ const Container = () => {
 				<Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
 			) : (
 				<Stack spacing="2" as="ol" height="100%" overflowY="auto" px="3">
-					{fileList.files.map((file) => (
-						<li key={file.id}>
+					{files.list.map((file, i) => (
+						<li key={`${file.id}_${i}`}>
 							<Cassette file={file} />
 						</li>
 					))}

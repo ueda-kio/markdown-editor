@@ -70,15 +70,24 @@ export const updateFile = createAsyncThunk<string, { id: string; value: string; 
 export const fileListSlice = createSlice({
 	name: 'fileList',
 	initialState: {
-		files: [] as FileType[],
-		trashes: [] as FileType[],
+		files: {
+			list: [] as FileType[],
+			isFetched: false,
+		},
+		trashes: {
+			list: [] as FileType[],
+			isFetched: false,
+		},
 		isLoading: false,
 	},
 	reducers: {
 		setState: (state, action: PayloadAction<FileType[]>) => {
 			return {
 				...state,
-				files: action.payload,
+				files: {
+					list: action.payload,
+					isFetched: state.files.isFetched,
+				},
 			};
 		},
 		/**
@@ -100,12 +109,15 @@ export const fileListSlice = createSlice({
 		 * @param {string} id 削除対象のファイルid
 		 */
 		trashFile: (state, action: PayloadAction<string>) => {
-			const target = state.files.find((files) => files.id === action.payload);
-			const _files = state.files.filter((files) => files.id !== action.payload);
-			target && state.trashes.push(target);
+			const target = state.files.list.find((files) => files.id === action.payload);
+			const _files = state.files.list.filter((files) => files.id !== action.payload);
+			target && state.trashes.list.push(target);
 			return {
 				...state,
-				files: _files,
+				files: {
+					list: _files,
+					isFetched: state.files.isFetched,
+				},
 			};
 		},
 		/**
@@ -113,10 +125,13 @@ export const fileListSlice = createSlice({
 		 * @param {string} id 削除対象のファイルid
 		 */
 		deleteFile: (state, action: PayloadAction<string>) => {
-			const _trash = state.trashes.filter((trashes) => trashes.id !== action.payload);
+			const _trash = state.trashes.list.filter((trashes) => trashes.id !== action.payload);
 			return {
 				...state,
-				trashes: _trash,
+				trashes: {
+					list: _trash,
+					isFetched: state.trashes.isFetched,
+				},
 			};
 		},
 	},
@@ -125,8 +140,9 @@ export const fileListSlice = createSlice({
 			state.isLoading = true;
 		});
 		builder.addCase(fetchFileList.fulfilled, (state, action) => {
-			state.files = action.payload;
+			state.files.list = action.payload;
 			state.isLoading = false;
+			state.files.isFetched = true;
 		});
 		builder.addCase(fetchFileById.pending, (state) => {
 			state.isLoading = true;
@@ -134,8 +150,8 @@ export const fileListSlice = createSlice({
 		builder.addCase(fetchFileById.fulfilled, (state, action) => {
 			state.isLoading = false;
 			if (!action.payload) return { ...state };
-			const _file = [...state.files, action.payload];
-			state.files = _file;
+			const _file = [...state.files.list, action.payload];
+			state.files.list = _file;
 		});
 		builder.addCase(updateFile.pending, (state) => {
 			state.isLoading = true;

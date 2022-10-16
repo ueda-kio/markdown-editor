@@ -1,6 +1,7 @@
 import React from 'react';
 import { css } from '@emotion/react';
 import { convertMarkdownToHTML } from '../../libs/sanitizer';
+import { Box, BoxProps } from '@chakra-ui/react';
 
 const style = css`
 	h1,
@@ -99,19 +100,19 @@ const style = css`
 	}
 `;
 
-type Props = {
+interface Props extends BoxProps {
 	markdownText: string;
-};
+}
 
-const MarkdownViewer: React.FC<Props> = ({ markdownText }) => {
+const MarkdownViewer: React.FC<Props> = ({ markdownText, ...rest }) => {
 	return (
-		<div css={style}>
+		<Box css={style} {...rest}>
 			{markdownText === '' ? (
 				<p className="markdown-viewer__message">※ 入力されるとプレビューに反映されます。</p>
 			) : (
 				<div className="md" dangerouslySetInnerHTML={convertMarkdownToHTML(markdownText)} />
 			)}
-		</div>
+		</Box>
 	);
 };
 
