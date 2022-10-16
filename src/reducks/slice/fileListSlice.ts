@@ -35,6 +35,10 @@ export const fetchFileList = createAsyncThunk('fileList/fetchFileList', async ()
 	return data;
 });
 
+/**
+ * idからファイルを取得する
+ * @param {string} id ファイルid
+ */
 export const fetchFileById = createAsyncThunk<FileType | undefined, { id: string }>('fileList/fetchFileById', async ({ id }) => {
 	try {
 		const data = await (await fileRef.doc(id).get()).data();
