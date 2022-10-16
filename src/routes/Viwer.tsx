@@ -1,15 +1,15 @@
-import { Box, IconButton, Spinner } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Box, IconButton, Spinner } from '@chakra-ui/react';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
 import MarkdownViewer from '../components/Organisms/MarkdownViwer';
 import { fetchFileById } from '../reducks/slice/fileListSlice';
-import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from '../reducks/hooks';
-import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useFilesSelector, useIsLoadingSelector } from '../reducks/hooks';
 
 const Viwer = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const { fileList } = useFileListSelector();
+	const { files } = useFilesSelector();
 	const { isLoading } = useIsLoadingSelector();
 	const [value, setValue] = useState('');
 
@@ -22,27 +22,28 @@ const Viwer = () => {
 
 	/** urlのidと同じファイルをstateから取得する */
 	const getFileById = useCallback(
-		(id: string) => {
-			const files = fileList.files;
-			const target = files.list.find((file) => file.id === id);
+		async (id: string) => {
+			const target = (async () => {
+				const _target = files.list.find((file) => file.id === id);
+				if (_target) {
+					return _target;
+				}
+				await dispatch(fetchFileById({ id }));
+				return files.list.find((file) => file.id === id);
+			})();
 			return target;
 		},
-		[id, fileList]
+		[id, files]
 	);
 
 	// ファイルのvalueをテキストエリアに反映
 	useEffect(() => {
 		(async () => {
-			if (id === '') return;
-			await dispatch(fetchFileById({ id }));
+			const file = await getFileById(id);
+			if (!file) return;
+			setValue(file.value);
 		})();
-	}, [id]);
-
-	useEffect(() => {
-		const file = getFileById(id);
-		if (!file) return;
-		setValue(file.value);
-	}, [fileList]);
+	}, [files]);
 
 	return (
 		<>
