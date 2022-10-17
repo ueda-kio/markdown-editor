@@ -18,6 +18,10 @@ const Container = () => {
 		if (files.isFetched === false) dispatch(fetchFileList());
 	}, [files.isFetched]);
 
+	/**
+	 * 新規作成ボタン押下挙動
+	 * @TODO `createNewFile`をdispatchしたい
+	 */
 	const handleClick: React.MouseEventHandler = () => {
 		const timestamp = new Date().toISOString();
 		const ref = db.collection('files');

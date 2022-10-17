@@ -15,6 +15,29 @@ export type FileType = {
 const fileRef = db.collection('files');
 const trashRef = db.collection('trashes');
 
+/** ファイルを新規作成する */
+export const createNewFile = createAsyncThunk<FileType | void>('fileList/createNewFile', async () => {
+	const timestamp = new Date().toISOString();
+	const doc = fileRef.doc();
+	const id = doc.id;
+	const data = {
+		id,
+		value: '',
+		created_at: timestamp,
+		updated_at: timestamp,
+		title: '',
+		lead: '',
+	};
+
+	try {
+		await fileRef.doc(id).set(data);
+		return data;
+	} catch (e) {
+		console.error(e);
+		return;
+	}
+});
+
 /** firestoreから保存されているファイル一覧を取得する */
 export const fetchFileList = createAsyncThunk('fileList/fetchFileList', async () => {
 	const data = await fileRef
@@ -134,14 +157,13 @@ export const fileListSlice = createSlice({
 		 * @param {string} created_at 作成時のタイムスタンプ
 		 * @param {string} updated_at 作成時のタイムスタンプ
 		 */
-		// addFile: (state, action: PayloadAction<{ id: string; created_at: string; updated_at: string }>) => {
-		// 	const { id, created_at, updated_at } = action.payload;
-		// 	state.files.push({ id, value: '', created_at, updated_at });
-		// 	return {
-		// 		...state,
-		// 		files: state.files,
-		// 	};
-		// },
+		addFile: (state, action: PayloadAction<FileType>) => {
+			state.files.list.push(action.payload);
+			return {
+				...state,
+				files: state.files,
+			};
+		},
 		/**
 		 * ファイルをゴミ箱へ移動する。
 		 * @param {string} id 削除対象のファイルid
@@ -174,6 +196,15 @@ export const fileListSlice = createSlice({
 		},
 	},
 	extraReducers: (builder) => {
+		// ファイルの新規作成
+		builder.addCase(createNewFile.pending, (state) => {
+			state.isLoading = true;
+		});
+		builder.addCase(createNewFile.fulfilled, (state, action) => {
+			state.isLoading = false;
+			if (!action.payload) return;
+			addFile(action.payload);
+		});
 		// ファイル一覧の取得
 		builder.addCase(fetchFileList.pending, (state) => {
 			state.isLoading = true;
@@ -224,5 +255,5 @@ export const fileListSlice = createSlice({
 	// }
 });
 
-export const { setState, trashFile, deleteFile } = fileListSlice.actions;
+export const { addFile, setState, trashFile, deleteFile } = fileListSlice.actions;
 export default fileListSlice.reducer;
