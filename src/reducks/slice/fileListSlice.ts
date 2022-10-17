@@ -98,21 +98,21 @@ export const fetchFileById = createAsyncThunk<FileType | undefined, { id: string
  * @param {string} value 入力値
  * @param {string} updated_at 更新時のタイムスタンプ
  */
-export const updateFile = createAsyncThunk<
-	{ id: string; value: string; updated_at: string; title: string; lead: string },
-	{ id: string; value: string; updated_at: string; title: string; lead: string }
->('fileList/updateFIle', async ({ id, value, updated_at, title, lead }) => {
-	await fileRef.doc(id).set(
-		{
-			value,
-			updated_at,
-			title,
-			lead,
-		},
-		{ merge: true }
-	);
-	return { id, value, updated_at, title, lead };
-});
+export const updateFile = createAsyncThunk<Omit<FileType, 'created_at'>, Omit<FileType, 'created_at'>>(
+	'fileList/updateFIle',
+	async ({ id, value, updated_at, title, lead }) => {
+		await fileRef.doc(id).set(
+			{
+				value,
+				updated_at,
+				title,
+				lead,
+			},
+			{ merge: true }
+		);
+		return { id, value, updated_at, title, lead };
+	}
+);
 
 /** 指定されたファイルをtrashesへ移動する */
 export const putFileInTrash = createAsyncThunk<string, { id: string }>('fileList/trashFile', async ({ id }) => {
