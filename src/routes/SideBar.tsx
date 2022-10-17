@@ -1,5 +1,7 @@
 import React, { ReactNode } from 'react';
+import { Outlet } from 'react-router-dom';
 import {
+	chakra,
 	IconButton,
 	Box,
 	CloseButton,
@@ -18,19 +20,17 @@ import {
 	DrawerOverlay,
 } from '@chakra-ui/react';
 import { ExternalLinkIcon, HamburgerIcon, SearchIcon } from '@chakra-ui/icons';
+import { IconType } from 'react-icons';
 import { AiOutlineHome, AiOutlineGithub, AiOutlineSetting } from 'react-icons/ai';
 import { BiArchiveIn } from 'react-icons/bi';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import { Outlet, Link } from 'react-router-dom';
-import { IconType } from 'react-icons';
-import { transform } from 'framer-motion';
-import { css } from '@emotion/react';
+import { Link } from '../components/Atoms/Link';
 
-interface LinkItemProps {
+type LinkItemProps = {
 	name: string;
 	path: string;
 	icon: IconType;
-}
+};
 const LinkItems: Array<LinkItemProps> = [
 	{ name: 'Home', path: '/', icon: AiOutlineHome },
 	{ name: 'Trash', path: '/trash/', icon: RiDeleteBin6Line },
@@ -39,10 +39,9 @@ const LinkItems: Array<LinkItemProps> = [
 	{ name: 'Github', path: 'https://github.com/ueda-kio/markdown-editor', icon: AiOutlineGithub },
 ];
 
-interface SidebarProps extends BoxProps {
+type SidebarProps = {
 	onClose: () => void;
-}
-
+} & BoxProps;
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 	return (
 		<Box
@@ -69,30 +68,24 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 	);
 };
 
-const style = css`
-	position: relative;
-	display: block;
-	margin-right: 16px;
-`;
-
-interface NavItemProps extends FlexProps {
+type NavItemProps = {
 	icon: IconType;
 	path: string;
 	children: ReactNode;
-}
+} & FlexProps;
 const NavItem = ({ icon, path, children, ...rest }: NavItemProps) =>
 	!path.startsWith('https') ? (
-		<Link to={path} css={style}>
+		<Link to={path} pos="relative" display="block" mx="4">
 			<Box
 				style={{ textDecoration: 'none' }}
 				_focus={{ boxShadow: 'none' }}
 				_hover={{
-					bg: 'cyan.400',
+					bg: 'teal',
 					color: 'white',
 				}}
 				borderRadius="lg"
 			>
-				<Flex position="relative" align="center" p="4" mx="4" role="group" cursor="pointer" {...rest}>
+				<Flex position="relative" align="center" p="4" role="group" cursor="pointer" {...rest}>
 					<Icon
 						mr="4"
 						fontSize="16"
@@ -106,17 +99,17 @@ const NavItem = ({ icon, path, children, ...rest }: NavItemProps) =>
 			</Box>
 		</Link>
 	) : (
-		<a href={path} css={style} target="_blank" rel="noreferrer">
+		<chakra.a href={path} pos="relative" display="block" mx="4" target="_blank" rel="noreferrer">
 			<Box
 				style={{ textDecoration: 'none' }}
 				_focus={{ boxShadow: 'none' }}
 				_hover={{
-					bg: 'cyan.400',
+					bg: 'teal',
 					color: 'white',
 				}}
 				borderRadius="lg"
 			>
-				<Flex position="relative" align="center" p="4" mx="4" role="group" cursor="pointer" {...rest}>
+				<Flex position="relative" align="center" p="4" role="group" cursor="pointer" {...rest}>
 					<Icon
 						mr="4"
 						fontSize="16"
@@ -129,11 +122,11 @@ const NavItem = ({ icon, path, children, ...rest }: NavItemProps) =>
 				</Flex>
 				<ExternalLinkIcon position="absolute" top="50%" right="4" mx="2px" transform="translateY(-50%)" />
 			</Box>
-		</a>
+		</chakra.a>
 	);
-interface MobileProps extends FlexProps {
+type MobileProps = {
 	onOpen: () => void;
-}
+} & FlexProps;
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 	return (
 		<Flex w="full" alignItems="center" justifyContent="flex-start" {...rest}>
@@ -172,7 +165,7 @@ const SimpleSidebar = () => {
 					<SidebarContent onClose={onClose} />
 				</DrawerContent>
 			</Drawer>
-			<Box height="100%" maxWidth="800px" mx="auto" id="ContainerWrapper">
+			<Box height="100%" maxWidth="800px" mx="auto">
 				<Box px="3" height="100vh">
 					<MobileNav onOpen={onOpen} />
 					<Outlet />
