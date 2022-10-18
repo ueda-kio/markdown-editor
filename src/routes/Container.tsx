@@ -3,7 +3,7 @@ import { Box, Button, IconButton, Spinner, Stack, Input, InputGroup, InputLeftEl
 import { PlusSquareIcon, SearchIcon } from '@chakra-ui/icons';
 import Cassette from '../components/Cassette/Cassette';
 import { useAppDispatch, useFileListSelector, useFilesSelector, useIsLoadingSelector } from '../reducks/hooks';
-import { fetchFileList } from '../reducks/slice/fileListSlice';
+import { createNewFile, fetchFileList } from '../reducks/slice/fileListSlice';
 import { db } from '../firebase';
 import { trashFile } from '../libs/firebase.operation';
 import { useNavigate } from 'react-router-dom';
@@ -20,27 +20,16 @@ const Container = () => {
 
 	/**
 	 * 新規作成ボタン押下挙動
-	 * @TODO `createNewFile`をdispatchしたい
 	 */
-	const handleClick: React.MouseEventHandler = () => {
-		const timestamp = new Date().toISOString();
-		const ref = db.collection('files');
-		const doc = ref.doc();
-		const id = doc.id;
-		const data = {
-			id,
-			value: '',
-			created_at: timestamp,
-			updated_at: timestamp,
-			title: '',
-			lead: '',
-		};
-		ref.doc(id)
-			.set(data)
-			.then(() => {
-				navigate(`/file/${id}/editor`);
-			})
-			.catch((e) => console.error(e));
+	const handleClick: React.MouseEventHandler = async () => {
+		try {
+			const originalPromiseResult = await dispatch(createNewFile()).unwrap();
+			if (!originalPromiseResult) return;
+			const { id } = originalPromiseResult;
+			navigate(`/file/${id}/editor`);
+		} catch (e) {
+			console.error(e);
+		}
 	};
 
 	return (
