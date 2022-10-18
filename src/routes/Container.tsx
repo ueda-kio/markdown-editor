@@ -1,18 +1,46 @@
 import React, { useEffect } from 'react';
-import { Box, Button, IconButton, Spinner, Stack, Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Button, IconButton, Spinner, Stack, Input, InputGroup, InputLeftElement, chakra } from '@chakra-ui/react';
 import { PlusSquareIcon, SearchIcon } from '@chakra-ui/icons';
 import Cassette from '../components/Cassette/Cassette';
 import { useAppDispatch, useFileListSelector, useFilesSelector, useIsLoadingSelector } from '../reducks/hooks';
-import { createNewFile, fetchFileList } from '../reducks/slice/fileListSlice';
+import { createNewFile, fetchFileList, putFileInTrash } from '../reducks/slice/fileListSlice';
 import { db } from '../firebase';
 import { trashFile } from '../libs/firebase.operation';
-import { useNavigate } from 'react-router-dom';
+import { FaEdit, FaCopy, FaTrash } from 'react-icons/fa';
+
+const ChakraFaEdit = chakra(FaEdit);
+const ChakraFaCopy = chakra(FaCopy);
+const ChakraFaTrash = chakra(FaTrash);
 
 const Container = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const { files } = useFilesSelector();
 	const { isLoading } = useIsLoadingSelector();
+	const icons = [
+		{
+			icon: FaEdit,
+			onClick: (id: string) => {
+				navigate(`/file/${id}/editor/`);
+			},
+			ariaLabel: 'edit this file',
+		},
+		{
+			icon: FaTrash,
+			onClick: (id: string) => {
+				dispatch(putFileInTrash({ id }));
+			},
+			ariaLabel: 'delete this file',
+		},
+		{
+			icon: FaCopy,
+			onClick: (id: string) => {
+				console.log(id);
+			},
+			ariaLabel: 'copy this file',
+		},
+	];
 
 	useEffect(() => {
 		if (files.isFetched === false) dispatch(fetchFileList());
@@ -40,7 +68,7 @@ const Container = () => {
 				<Stack spacing="2" as="ol" height="100%" overflowY="auto" px="3">
 					{files.list.map((file, i) => (
 						<li key={`${file.id}_${i}`}>
-							<Cassette file={file} />
+							<Cassette file={file} icons={icons} />
 						</li>
 					))}
 				</Stack>
