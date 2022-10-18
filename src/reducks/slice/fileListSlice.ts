@@ -99,7 +99,7 @@ export const fetchFileById = createAsyncThunk<FileType | undefined, { id: string
  * @param {string} updated_at 更新時のタイムスタンプ
  */
 export const updateFile = createAsyncThunk<Omit<FileType, 'created_at'>, Omit<FileType, 'created_at'>>(
-	'fileList/updateFIle',
+	'fileList/updateFile',
 	async ({ id, value, updated_at, title, lead }) => {
 		await fileRef.doc(id).set(
 			{
@@ -237,8 +237,23 @@ export const fileListSlice = createSlice({
 		builder.addCase(updateFile.pending, (state) => {
 			state.isLoading = true;
 		});
-		builder.addCase(updateFile.fulfilled, (state) => {
+		builder.addCase(updateFile.fulfilled, (state, action) => {
+			const { id, value, updated_at, title, lead } = action.payload;
+			const others = state.files.list.filter((file) => file.id !== id);
+			const changedFile = state.files.list.find((file) => file.id === id);
+			if (!changedFile) return;
+
+			const updatedFile = {
+				id,
+				value,
+				updated_at,
+				title,
+				lead,
+				created_at: changedFile.created_at,
+			};
+			others.push(updatedFile);
 			state.isLoading = false;
+			setState(others);
 		});
 		// ファイルをゴミ箱へ移動
 		builder.addCase(putFileInTrash.pending, (state) => {

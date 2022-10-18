@@ -98,7 +98,6 @@ const Editor = () => {
 	const handleSave = () => {
 		const { title, lead } = getTitleAndLead(value);
 		const updated_at = new Date().toISOString();
-		// updateFile(id, value, updated_at);
 		dispatch(updateFile({ id, value, updated_at, title, lead }));
 	};
 
