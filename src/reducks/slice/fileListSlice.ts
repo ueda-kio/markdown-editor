@@ -20,7 +20,7 @@ export const createNewFile = createAsyncThunk<FileType | void>('fileList/createN
 	const timestamp = new Date().toISOString();
 	const doc = fileRef.doc();
 	const id = doc.id;
-	const data = {
+	const data: FileType = {
 		id,
 		value: '',
 		created_at: timestamp,
@@ -203,7 +203,7 @@ export const fileListSlice = createSlice({
 		builder.addCase(createNewFile.fulfilled, (state, action) => {
 			state.isLoading = false;
 			if (!action.payload) return;
-			addFile(action.payload);
+			state.files.list.unshift(action.payload);
 		});
 		// ファイル一覧の取得
 		builder.addCase(fetchFileList.pending, (state) => {
@@ -263,7 +263,7 @@ export const fileListSlice = createSlice({
 
 			// 削除対象ファイルを取得しtrashesへ格納
 			const trashTarget = state.files.list.find((files) => files.id === action.payload);
-			trashTarget && state.trashes.list.push(trashTarget);
+			trashTarget && state.trashes.list.unshift(trashTarget);
 
 			// filesから削除対象ファイルを削除
 			state.files.list = state.files.list.filter((files) => files.id !== action.payload);
