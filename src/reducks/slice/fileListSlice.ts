@@ -251,9 +251,8 @@ export const fileListSlice = createSlice({
 				lead,
 				created_at: changedFile.created_at,
 			};
-			others.push(updatedFile);
+			state.files.list = [updatedFile, ...others];
 			state.isLoading = false;
-			setState(others);
 		});
 		// ファイルをゴミ箱へ移動
 		builder.addCase(putFileInTrash.pending, (state) => {
