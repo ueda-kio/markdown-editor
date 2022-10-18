@@ -9,10 +9,6 @@ import { db } from '../firebase';
 import { trashFile } from '../libs/firebase.operation';
 import { FaEdit, FaCopy, FaTrash } from 'react-icons/fa';
 
-const ChakraFaEdit = chakra(FaEdit);
-const ChakraFaCopy = chakra(FaCopy);
-const ChakraFaTrash = chakra(FaTrash);
-
 const Container = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();

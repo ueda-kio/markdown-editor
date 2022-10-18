@@ -260,13 +260,15 @@ export const fileListSlice = createSlice({
 		});
 		builder.addCase(putFileInTrash.fulfilled, (state, action) => {
 			state.isLoading = false;
-			trashFile(action.payload);
+
+			// 削除対象ファイルを取得しtrashesへ格納
+			const trashTarget = state.files.list.find((files) => files.id === action.payload);
+			trashTarget && state.trashes.list.push(trashTarget);
+
+			// filesから削除対象ファイルを削除
+			state.files.list = state.files.list.filter((files) => files.id !== action.payload);
 		});
 	},
-	// [fetchFileList.fulfilled]: (state, action: PayloadAction<FileType[]>) => {
-	// 	state.fileList =
-	// }
-	// }
 });
 
 export const { addFile, setState, trashFile, deleteFile } = fileListSlice.actions;
