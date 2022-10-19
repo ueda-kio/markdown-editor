@@ -4,7 +4,7 @@ import { Box, IconButton, Spinner, Stack, chakra } from '@chakra-ui/react';
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import Cassette from '../components/Cassette/Cassette';
 import { useAppDispatch, useIsLoadingSelector, useTrashesSelector } from '../reducks/hooks';
-import { fetchTrashList } from '../reducks/slice/fileListSlice';
+import { deleteFileCompletely, fetchTrashList } from '../reducks/slice/fileListSlice';
 import { FaTrashRestore, FaTrash } from 'react-icons/fa';
 
 const Trashes = () => {
@@ -21,8 +21,8 @@ const Trashes = () => {
 		},
 		{
 			icon: FaTrash,
-			onClick: () => {
-				console.log('test');
+			onClick: (id: string) => {
+				dispatch(deleteFileCompletely({ id }));
 			},
 			ariaLabel: 'test-label',
 		},

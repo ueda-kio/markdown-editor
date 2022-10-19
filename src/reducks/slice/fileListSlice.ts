@@ -128,6 +128,12 @@ export const putFileInTrash = createAsyncThunk<string, { id: string }>('fileList
 	return id;
 });
 
+/** ファイルを完全に削除する */
+export const deleteFileCompletely = createAsyncThunk<string, { id: string }>('fileList/deleteFile', async ({ id }) => {
+	await trashRef.doc(id).delete();
+	return id;
+});
+
 export const fileListSlice = createSlice({
 	name: 'fileList',
 	initialState: {
@@ -184,16 +190,16 @@ export const fileListSlice = createSlice({
 		 * ファイルを完全に削除する。
 		 * @param {string} id 削除対象のファイルid
 		 */
-		deleteFile: (state, action: PayloadAction<string>) => {
-			const _trash = state.trashes.list.filter((trashes) => trashes.id !== action.payload);
-			return {
-				...state,
-				trashes: {
-					list: _trash,
-					isFetched: state.trashes.isFetched,
-				},
-			};
-		},
+		// deleteFile: (state, action: PayloadAction<string>) => {
+		// 	const _trash = state.trashes.list.filter((trashes) => trashes.id !== action.payload);
+		// 	return {
+		// 		...state,
+		// 		trashes: {
+		// 			list: _trash,
+		// 			isFetched: state.trashes.isFetched,
+		// 		},
+		// 	};
+		// },
 	},
 	extraReducers: (builder) => {
 		// ファイルの新規作成
@@ -268,8 +274,16 @@ export const fileListSlice = createSlice({
 			// filesから削除対象ファイルを削除
 			state.files.list = state.files.list.filter((files) => files.id !== action.payload);
 		});
+		// ファイルを完全に削除
+		builder.addCase(deleteFileCompletely.pending, (state) => {
+			state.isLoading = true;
+		});
+		builder.addCase(deleteFileCompletely.fulfilled, (state, action) => {
+			state.isLoading = false;
+			state.trashes.list = state.trashes.list.filter((file) => file.id !== action.payload);
+		});
 	},
 });
 
-export const { addFile, setState, trashFile, deleteFile } = fileListSlice.actions;
+export const { addFile, setState, trashFile } = fileListSlice.actions;
 export default fileListSlice.reducer;
