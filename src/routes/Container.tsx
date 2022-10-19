@@ -24,8 +24,8 @@ const Container = () => {
 		},
 		{
 			icon: FaTrash,
-			onClick: (id: string) => {
-				dispatch(putFileInTrash({ id }));
+			onClick: async (id: string) => {
+				await dispatch(putFileInTrash({ id }));
 				dispatch(sortFiles({ listType: 'trashes', orderBy: 'desc' }));
 			},
 			ariaLabel: 'delete this file',

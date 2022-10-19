@@ -305,12 +305,12 @@ export const fileListSlice = createSlice({
 		builder.addCase(restoreTrashedFile.fulfilled, (state, action) => {
 			state.isLoading = false;
 
-			// 削除対象ファイルを取得しtrashesへ格納
+			// 削除対象ファイルを取得しfilesへ格納
 			const trashTarget = state.trashes.list.find((files) => files.id === action.payload);
 			trashTarget && state.files.list.unshift(trashTarget);
 
-			// filesから削除対象ファイルを削除
-			state.files.list = state.files.list.filter((files) => files.id !== action.payload);
+			// trashesから削除対象ファイルを削除
+			state.trashes.list = state.trashes.list.filter((files) => files.id !== action.payload);
 		});
 		// ファイルを完全に削除
 		builder.addCase(deleteFileCompletely.pending, (state) => {
