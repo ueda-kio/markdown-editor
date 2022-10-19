@@ -130,7 +130,14 @@ type MobileProps = {
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 	return (
 		<Flex w="full" alignItems="center" justifyContent="flex-start" {...rest}>
-			<IconButton variant="outline" rounded="full" onClick={onOpen} aria-label="open menu" icon={<HamburgerIcon />} />
+			<IconButton
+				variant="outline"
+				rounded="full"
+				onClick={onOpen}
+				display={{ base: 'block', xl: 'none' }}
+				aria-label="open menu"
+				icon={<HamburgerIcon />}
+			/>
 			<Box px="3" w="full">
 				<InputGroup>
 					<InputLeftElement
