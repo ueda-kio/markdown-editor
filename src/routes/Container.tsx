@@ -4,7 +4,7 @@ import { Box, Button, IconButton, Spinner, Stack, Input, InputGroup, InputLeftEl
 import { PlusSquareIcon, SearchIcon } from '@chakra-ui/icons';
 import Cassette from '../components/Cassette/Cassette';
 import { useAppDispatch, useFileListSelector, useFilesSelector, useIsLoadingSelector } from '../reducks/hooks';
-import { createNewFile, fetchFileList, putFileInTrash } from '../reducks/slice/fileListSlice';
+import { createNewFile, fetchFileList, putFileInTrash, sortFiles } from '../reducks/slice/fileListSlice';
 import { db } from '../firebase';
 import { trashFile } from '../libs/firebase.operation';
 import { FaEdit, FaCopy, FaTrash } from 'react-icons/fa';
@@ -26,6 +26,7 @@ const Container = () => {
 			icon: FaTrash,
 			onClick: (id: string) => {
 				dispatch(putFileInTrash({ id }));
+				dispatch(sortFiles({ listType: 'trashes', orderBy: 'desc' }));
 			},
 			ariaLabel: 'delete this file',
 		},

@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, current } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { db } from '../../firebase';
 import { isFileType } from '../../libs/firebase.operation';
@@ -128,6 +128,20 @@ export const putFileInTrash = createAsyncThunk<string, { id: string }>('fileList
 	return id;
 });
 
+/** ゴミ箱のファイルをrestoreする */
+export const restoreTrashedFile = createAsyncThunk<string, { id: string }>('fileList/restoreFile', async ({ id }) => {
+	await trashRef
+		.doc(id)
+		.get()
+		.then((doc) => {
+			const data = doc.data();
+			if (!data) return;
+			fileRef.doc(data.id).set(data);
+			trashRef.doc(data.id).delete();
+		});
+	return id;
+});
+
 /** ファイルを完全に削除する */
 export const deleteFileCompletely = createAsyncThunk<string, { id: string }>('fileList/deleteFile', async ({ id }) => {
 	await trashRef.doc(id).delete();
@@ -185,6 +199,16 @@ export const fileListSlice = createSlice({
 					isFetched: state.files.isFetched,
 				},
 			};
+		},
+		sortFiles: (state, action: PayloadAction<{ listType: 'files' | 'trashes'; orderBy: 'asc' | 'desc' }>) => {
+			const { listType, orderBy } = action.payload;
+			const targetList = listType === 'files' ? state.files : state.trashes;
+			targetList.list.sort((a, b) => {
+				return orderBy === 'asc'
+					? new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime()
+					: new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+			});
+			// return state;
 		},
 		/**
 		 * ファイルを完全に削除する。
@@ -274,6 +298,20 @@ export const fileListSlice = createSlice({
 			// filesから削除対象ファイルを削除
 			state.files.list = state.files.list.filter((files) => files.id !== action.payload);
 		});
+		// ゴミ箱のファイルをrestore
+		builder.addCase(restoreTrashedFile.pending, (state) => {
+			state.isLoading = true;
+		});
+		builder.addCase(restoreTrashedFile.fulfilled, (state, action) => {
+			state.isLoading = false;
+
+			// 削除対象ファイルを取得しtrashesへ格納
+			const trashTarget = state.trashes.list.find((files) => files.id === action.payload);
+			trashTarget && state.files.list.unshift(trashTarget);
+
+			// filesから削除対象ファイルを削除
+			state.files.list = state.files.list.filter((files) => files.id !== action.payload);
+		});
 		// ファイルを完全に削除
 		builder.addCase(deleteFileCompletely.pending, (state) => {
 			state.isLoading = true;
@@ -285,5 +323,5 @@ export const fileListSlice = createSlice({
 	},
 });
 
-export const { addFile, setState, trashFile } = fileListSlice.actions;
+export const { addFile, setState, trashFile, sortFiles } = fileListSlice.actions;
 export default fileListSlice.reducer;
