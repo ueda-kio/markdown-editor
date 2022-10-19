@@ -19,7 +19,7 @@ type Props = {
 	file: FileType;
 	icons: {
 		icon: IconType;
-		onClick: (id: string) => void;
+		onClick: ({ file }: { file: FileType }) => void;
 		ariaLabel: string;
 	}[];
 };
@@ -66,7 +66,7 @@ const Cassette: React.FC<Props> = ({ file, icons }) => {
 						rounded="full"
 						width={{ base: 12, md: 14 }}
 						height={{ base: 12, md: 14 }}
-						onClick={() => obj.onClick(id)}
+						onClick={() => obj.onClick({ file })}
 					></IconButton>
 				))}
 				{/* <IconButton

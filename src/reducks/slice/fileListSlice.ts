@@ -114,6 +114,28 @@ export const updateFile = createAsyncThunk<Omit<FileType, 'created_at'>, Omit<Fi
 	}
 );
 
+export const copyFile = createAsyncThunk<FileType | void, FileType>('fileList/copyFile', async ({ value, title, lead }) => {
+	const timestamp = new Date().toISOString();
+	const doc = fileRef.doc();
+	const id = doc.id;
+	const data: FileType = {
+		id,
+		value,
+		created_at: timestamp,
+		updated_at: timestamp,
+		title,
+		lead,
+	};
+
+	try {
+		await fileRef.doc(id).set(data);
+		return data;
+	} catch (e) {
+		console.error(e);
+		return;
+	}
+});
+
 /** 指定されたファイルをtrashesへ移動する */
 export const putFileInTrash = createAsyncThunk<string, { id: string }>('fileList/trashFile', async ({ id }) => {
 	await fileRef
@@ -281,6 +303,15 @@ export const fileListSlice = createSlice({
 				created_at: changedFile.created_at,
 			};
 			state.files.list = [updatedFile, ...others];
+			state.isLoading = false;
+		});
+		// idからファイルの取得
+		builder.addCase(copyFile.pending, (state) => {
+			state.isLoading = true;
+		});
+		builder.addCase(copyFile.fulfilled, (state, action) => {
+			if (!action.payload) return;
+			state.files.list.unshift(action.payload);
 			state.isLoading = false;
 		});
 		// ファイルをゴミ箱へ移動
