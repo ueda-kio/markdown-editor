@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, IconButton, Spinner, Stack, Input, InputGroup, InputLeftElement, chakra } from '@chakra-ui/react';
+import { Box, Button, IconButton, Stack, Input, InputGroup, InputLeftElement, chakra } from '@chakra-ui/react';
 import { PlusSquareIcon, SearchIcon } from '@chakra-ui/icons';
 import Cassette from '../components/Cassette/Cassette';
 import { useAppDispatch, useFileListSelector, useFilesSelector, useIsLoadingSelector } from '../reducks/hooks';
@@ -8,6 +8,7 @@ import { copyFile, createNewFile, fetchFileList, FileType, putFileInTrash, sortF
 import { db } from '../firebase';
 import { trashFile } from '../libs/firebase.operation';
 import { FaEdit, FaCopy, FaTrash } from 'react-icons/fa';
+import Loading from '../components/Atoms/Loading';
 
 const Container = () => {
 	const dispatch = useAppDispatch();
@@ -62,7 +63,7 @@ const Container = () => {
 	return (
 		<Box position="relative" height="calc(100% - 68px)" pb="24" mt="5" _before={{ content: '""', display: 'block' }}>
 			{isLoading ? (
-				<Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
+				<Loading />
 			) : (
 				<Stack spacing="2" as="ol" height="100%" overflowY="auto" px="3">
 					{files.list.map((file, i) => (

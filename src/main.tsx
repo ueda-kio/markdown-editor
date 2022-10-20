@@ -7,6 +7,7 @@ import { store } from './reducks/store/store';
 import theme from './theme';
 import GlobalStyle from './style/GlobalStyle';
 import Root from './routes/root';
+import Loading from './components/Atoms/Loading';
 
 const Container = lazy(() => import('./routes/Container'));
 const Trashes = lazy(() => import('./routes/Trashes'));
@@ -22,7 +23,7 @@ export const router = createBrowserRouter([
 			{
 				index: true,
 				element: (
-					<Suspense fallback="loading…">
+					<Suspense fallback={<Loading />}>
 						<Container />
 					</Suspense>
 				),
@@ -30,7 +31,7 @@ export const router = createBrowserRouter([
 			{
 				path: '/trash/',
 				element: (
-					<Suspense fallback="loading…">
+					<Suspense fallback={<Loading />}>
 						<Trashes />
 					</Suspense>
 				),
@@ -40,7 +41,7 @@ export const router = createBrowserRouter([
 	{
 		path: '/file/:fileId',
 		element: (
-			<Suspense fallback="loading…">
+			<Suspense fallback={<Loading />}>
 				<Viwer />
 			</Suspense>
 		),
@@ -48,7 +49,7 @@ export const router = createBrowserRouter([
 	{
 		path: '/file/:fileId/editor',
 		element: (
-			<Suspense fallback="loading…">
+			<Suspense fallback={<Loading />}>
 				<Editor />
 			</Suspense>
 		),
@@ -56,7 +57,7 @@ export const router = createBrowserRouter([
 	{
 		path: '/test',
 		element: (
-			<Suspense fallback="loading…">
+			<Suspense fallback={<Loading />}>
 				<SideBar />
 			</Suspense>
 		),

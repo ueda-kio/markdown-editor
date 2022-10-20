@@ -18,6 +18,7 @@ import {
 	InputLeftElement,
 	Input,
 	DrawerOverlay,
+	InputRightElement,
 } from '@chakra-ui/react';
 import { ExternalLinkIcon, HamburgerIcon, SearchIcon } from '@chakra-ui/icons';
 import { IconType } from 'react-icons';
@@ -142,6 +143,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 				<InputGroup>
 					<InputLeftElement
 						top="50%"
+						left="1"
 						transform="translateY(-50%)"
 						pointerEvents="none"
 						children={<SearchIcon w={5} h={5} color="gray.400" />}
