@@ -8,6 +8,7 @@ import theme from './theme';
 import GlobalStyle from './style/GlobalStyle';
 import Root from './routes/root';
 import Loading from './components/Atoms/Loading';
+import SignIn from './routes/SignIn';
 
 const Container = lazy(() => import('./routes/Container'));
 const Trashes = lazy(() => import('./routes/Trashes'));
@@ -55,12 +56,8 @@ export const router = createBrowserRouter([
 		),
 	},
 	{
-		path: '/test',
-		element: (
-			<Suspense fallback={<Loading />}>
-				<SideBar />
-			</Suspense>
-		),
+		path: '/signin',
+		element: <SignIn />,
 	},
 ]);
 
