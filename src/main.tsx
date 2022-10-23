@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { BrowserRouter, createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import { Provider } from 'react-redux';
 import { store } from './reducks/store/store';
@@ -9,6 +9,8 @@ import GlobalStyle from './style/GlobalStyle';
 import Root from './routes/root';
 import Loading from './components/Atoms/Loading';
 import SignIn from './routes/SignIn';
+import AuthGuard from './routes/AuthGuard';
+import Router from './routes/Router';
 
 const Container = lazy(() => import('./routes/Container'));
 const Trashes = lazy(() => import('./routes/Trashes'));
@@ -19,7 +21,11 @@ const SideBar = lazy(() => import('./routes/SideBar'));
 export const router = createBrowserRouter([
 	{
 		path: '/',
-		element: <Root />,
+		element: (
+			<AuthGuard>
+				<Root />
+			</AuthGuard>
+		),
 		children: [
 			{
 				index: true,
@@ -66,7 +72,10 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 		<ChakraProvider theme={theme} resetCSS>
 			<ColorModeScript initialColorMode={theme.config.initialColorMode} />
 			<GlobalStyle />
-			<RouterProvider router={router} />
+			<BrowserRouter>
+				<Router />
+			</BrowserRouter>
+			{/* <RouterProvider router={router} /> */}
 		</ChakraProvider>
 	</Provider>
 );
