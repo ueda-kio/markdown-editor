@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import {
 	chakra,
@@ -168,6 +168,10 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 
 const SimpleSidebar = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const { pathname } = useLocation();
+
+	// ページ変更時にドロワーを閉じる
+	useEffect(() => onClose(), [pathname]);
 
 	return (
 		<Box minH="100vh">
