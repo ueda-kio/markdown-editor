@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react';
-import { Outlet } from 'react-router-dom';
+import React, { ReactNode, useMemo } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 import {
 	chakra,
 	IconButton,
@@ -18,7 +18,6 @@ import {
 	InputLeftElement,
 	Input,
 	DrawerOverlay,
-	InputRightElement,
 } from '@chakra-ui/react';
 import { ExternalLinkIcon, HamburgerIcon, SearchIcon } from '@chakra-ui/icons';
 import { IconType } from 'react-icons';
@@ -34,7 +33,7 @@ type LinkItemProps = {
 };
 const LinkItems: Array<LinkItemProps> = [
 	{ name: 'Home', path: '/', icon: AiOutlineHome },
-	{ name: 'Trash', path: '/trash/', icon: RiDeleteBin6Line },
+	{ name: 'Trash', path: '/trash', icon: RiDeleteBin6Line },
 	{ name: 'Archive', path: '/archive', icon: BiArchiveIn },
 	{ name: 'Settings', path: '/setting', icon: AiOutlineSetting },
 	{ name: 'Github', path: 'https://github.com/ueda-kio/markdown-editor', icon: AiOutlineGithub },
@@ -74,57 +73,69 @@ type NavItemProps = {
 	path: string;
 	children: ReactNode;
 } & FlexProps;
-const NavItem = ({ icon, path, children, ...rest }: NavItemProps) =>
-	!path.startsWith('https') ? (
-		<Link to={path} pos="relative" display="block" mx="4">
-			<Box
-				style={{ textDecoration: 'none' }}
-				_focus={{ boxShadow: 'none' }}
-				_hover={{
-					bg: 'teal',
-					color: 'white',
-				}}
-				borderRadius="lg"
-			>
-				<Flex position="relative" align="center" p="4" role="group" cursor="pointer" {...rest}>
-					<Icon
-						mr="4"
-						fontSize="16"
-						_groupHover={{
+const NavItem = ({ icon, path, children, ...rest }: NavItemProps) => {
+	const { pathname } = useLocation();
+	const isCurrentPage = useMemo(() => pathname === path, [pathname]);
+
+	return (
+		<>
+			{!path.startsWith('https') ? (
+				<Link to={path} pos="relative" display="block" mx="4" {...(isCurrentPage && { 'aria-current': 'page' })}>
+					<Box
+						bg={isCurrentPage ? 'teal.100' : undefined}
+						textDecoration={'none'}
+						_focus={{ boxShadow: 'none' }}
+						_hover={{
+							bg: 'teal',
 							color: 'white',
 						}}
-						as={icon}
-					/>
-					{children}
-				</Flex>
-			</Box>
-		</Link>
-	) : (
-		<chakra.a href={path} pos="relative" display="block" mx="4" target="_blank" rel="noreferrer">
-			<Box
-				style={{ textDecoration: 'none' }}
-				_focus={{ boxShadow: 'none' }}
-				_hover={{
-					bg: 'teal',
-					color: 'white',
-				}}
-				borderRadius="lg"
-			>
-				<Flex position="relative" align="center" p="4" role="group" cursor="pointer" {...rest}>
-					<Icon
-						mr="4"
-						fontSize="16"
-						_groupHover={{
+						borderRadius="lg"
+						transition={'background 0.15s, color 0.15s'}
+					>
+						<Flex position="relative" align="center" p="4" role="group" cursor="pointer" {...rest}>
+							<Icon
+								mr="4"
+								fontSize="16"
+								_groupHover={{
+									color: 'white',
+								}}
+								as={icon}
+							/>
+							{children}
+						</Flex>
+					</Box>
+				</Link>
+			) : (
+				<chakra.a href={path} pos="relative" display="block" mx="4" target="_blank" rel="noreferrer">
+					<Box
+						bg={isCurrentPage ? 'teal.100' : undefined}
+						textDecoration={'none'}
+						_focus={{ boxShadow: 'none' }}
+						_hover={{
+							bg: 'teal',
 							color: 'white',
 						}}
-						as={icon}
-					/>
-					{children}
-				</Flex>
-				<ExternalLinkIcon position="absolute" top="50%" right="4" mx="2px" transform="translateY(-50%)" />
-			</Box>
-		</chakra.a>
+						borderRadius="lg"
+						transition={'background 0.15s, color 0.15s'}
+					>
+						<Flex position="relative" align="center" p="4" role="group" cursor="pointer" {...rest}>
+							<Icon
+								mr="4"
+								fontSize="16"
+								_groupHover={{
+									color: 'white',
+								}}
+								as={icon}
+							/>
+							{children}
+						</Flex>
+						<ExternalLinkIcon position="absolute" top="50%" right="4" mx="2px" transform="translateY(-50%)" />
+					</Box>
+				</chakra.a>
+			)}
+		</>
 	);
+};
 type MobileProps = {
 	onOpen: () => void;
 } & FlexProps;
