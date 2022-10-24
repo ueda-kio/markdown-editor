@@ -5,7 +5,14 @@ import 'firebase/storage';
 import 'firebase/functions';
 import { firebaseConfig } from './config';
 
-// firebaseの初期化
+/**
+ * @summary firebaseの初期化
+ * @see https://firebase.google.com/docs/web/setup?sdk_version=v9#add-sdks-initialize
+ * @todo
+ * ```
+ * import { initializeApp } from 'firebase/app';
+ * ```
+ */
 firebase.initializeApp(firebaseConfig);
 
 // 以下便利機能宣言

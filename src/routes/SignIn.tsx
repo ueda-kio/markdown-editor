@@ -2,22 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
 import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useUser } from '../reducks/hooks';
+import { signIn } from '../reducks/slice/userSlice';
 
 const SignIn = () => {
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
+	const { user } = useUser();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
 	const onSubmit: React.FormEventHandler = async (e) => {
 		e.preventDefault();
 		try {
-			const res = await auth.signInWithEmailAndPassword(email, password);
-			if (!res.user) throw Error();
-			const { uid } = res.user;
-			console.log('uid', uid);
+			await dispatch(signIn({ email, password }));
 			navigate('/');
 		} catch (e) {
-			console.log(e);
+			console.error(e);
 		}
 	};
 
@@ -72,7 +73,7 @@ const SignIn = () => {
 						isRequired
 					/>
 				</FormControl>
-				<Button type="submit" size="md" w="100%" mt="5">
+				<Button type="submit" size="md" w="100%" mt="5" {...(user.isLoading && { isLoading: true })}>
 					submit
 				</Button>
 				<Button type="button" size="md" w="100%" mt="5" onClick={handleClick}>

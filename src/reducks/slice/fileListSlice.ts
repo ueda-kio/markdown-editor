@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, current } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { db } from '../../firebase';
 import { isFileType } from '../../libs/firebase.operation';
+import { userUser } from '../hooks';
 
 export type FileType = {
 	id: string;
@@ -40,6 +41,8 @@ export const createNewFile = createAsyncThunk<FileType | void>('fileList/createN
 
 /** firestoreから保存されているファイル一覧を取得する */
 export const fetchFileList = createAsyncThunk('fileList/fetchFileList', async () => {
+	// const { user } = userUser();
+	// console.log(user);
 	const data = await fileRef
 		.orderBy('updated_at', 'desc')
 		.get()

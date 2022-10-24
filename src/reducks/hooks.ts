@@ -24,3 +24,8 @@ export const useIsLoadingSelector = () => {
 	const isLoading = useAppSelector((state: RootState) => state.fileList.isLoading);
 	return { isLoading };
 };
+
+export const useUser = () => {
+	const user = useAppSelector((state: RootState) => state.user);
+	return { user };
+};
