@@ -9,7 +9,7 @@ import GlobalStyle from './style/GlobalStyle';
 import Root from './routes/root';
 import Loading from './components/Atoms/Loading';
 import SignIn from './routes/SignIn';
-import AuthGuard from './routes/AuthGuard';
+import AuthGuard from './routes/Auth';
 import Router from './routes/Router';
 
 const Container = lazy(() => import('./routes/Container'));

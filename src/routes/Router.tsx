@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Auth from './AuthGuard';
+import Auth from './Auth';
 import Editor from './Editor';
 import SideBar from './SideBar';
 import SignIn from './SignIn';
