@@ -5,7 +5,7 @@ import { PlusSquareIcon, SearchIcon } from '@chakra-ui/icons';
 import Cassette from '../components/Cassette/Cassette';
 import { useAppDispatch, useFileListSelector, useFilesSelector, useIsLoadingSelector } from '../reducks/hooks';
 import { copyFile, createNewFile, fetchFileList, FileType, putFileInTrash, sortFiles } from '../reducks/slice/fileListSlice';
-import { db } from '../firebase';
+import { auth, db } from '../firebase';
 import { trashFile } from '../libs/firebase.operation';
 import { FaEdit, FaCopy, FaTrash } from 'react-icons/fa';
 import Loading from '../components/Atoms/Loading';
@@ -60,6 +60,11 @@ const Container = () => {
 		}
 	};
 
+	const signOut = () => {
+		auth.signOut();
+		navigate('/signin');
+	};
+
 	return (
 		<Box position="relative" height="calc(100% - 68px)" pb="24" mt="5" _before={{ content: '""', display: 'block' }}>
 			{isLoading ? (
@@ -83,7 +88,7 @@ const Container = () => {
 				right="4"
 				w="16"
 				h="16"
-				onClick={handleClick}
+				onClick={signOut}
 			></IconButton>
 		</Box>
 	);

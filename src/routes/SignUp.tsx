@@ -1,32 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
 import { auth } from '../firebase';
-import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
-	const navigate = useNavigate();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
 	const onSubmit: React.FormEventHandler = async (e) => {
 		e.preventDefault();
 		try {
-			const res = await auth.signInWithEmailAndPassword(email, password);
-			if (!res.user) throw Error();
-			const { uid } = res.user;
-			console.log('uid', uid);
-			navigate('/');
+			const user = await auth.createUserWithEmailAndPassword(email, password);
+			console.log(user.user?.uid);
 		} catch (e) {
 			console.log(e);
 		}
 	};
 
-	const handleClick = async () => {
-		await auth.signOut();
+	const handleClick = () => {
 		console.log('currentUser', auth.currentUser);
 	};
 
-	//TODO サインイン済みならルートへリダイレクトさせたい
 	useEffect(() => {
 		auth.onAuthStateChanged((user) => {
 			console.log('user', user);
@@ -48,7 +41,7 @@ const SignIn = () => {
 				onSubmit={onSubmit}
 			>
 				<Text as="h1" fontSize="2xl" fontWeight="bold">
-					SignIn
+					SignUp
 				</Text>
 				<FormControl>
 					<FormLabel>Email</FormLabel>
