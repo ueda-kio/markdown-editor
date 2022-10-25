@@ -2,33 +2,27 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { auth, db } from '../../firebase';
 
-export const signUp = createAsyncThunk<string | undefined, { email: string; password: string }>(
-	'user/signUp',
-	async ({ email, password }) => {
-		try {
-			const res = await auth.createUserWithEmailAndPassword(email, password);
-			if (!res.user) throw Error();
-			const { uid } = res.user;
-			return uid;
-		} catch (e) {
-			console.log(e);
-		}
+export const signUp = createAsyncThunk<void, { email: string; password: string }>('user/signUp', async ({ email, password }, thunkApi) => {
+	try {
+		const res = await auth.createUserWithEmailAndPassword(email, password);
+		if (!res.user) throw Error();
+		const { uid } = res.user;
+		thunkApi.dispatch(singInAction(uid));
+	} catch (e) {
+		console.log(e);
 	}
-);
+});
 
-export const signIn = createAsyncThunk<string | undefined, { email: string; password: string }>(
-	'user/signIn',
-	async ({ email, password }) => {
-		try {
-			const res = await auth.signInWithEmailAndPassword(email, password);
-			if (!res.user) throw Error();
-			const { uid } = res.user;
-			return uid;
-		} catch (e) {
-			console.log(e);
-		}
+export const signIn = createAsyncThunk<void, { email: string; password: string }>('user/signIn', async ({ email, password }, thunkApi) => {
+	try {
+		const res = await auth.signInWithEmailAndPassword(email, password);
+		if (!res.user) throw Error();
+		const { uid } = res.user;
+		thunkApi.dispatch(singInAction(uid));
+	} catch (e) {
+		console.log(e);
 	}
-);
+});
 
 export const listenAuthState = createAsyncThunk('user/listenAuthState', async (_, thunkApi) => {
 	auth.onAuthStateChanged((user) => {
@@ -40,7 +34,6 @@ export const listenAuthState = createAsyncThunk('user/listenAuthState', async (_
 			.then(() => {
 				thunkApi.dispatch(singInAction(uid));
 			});
-		// return uid;
 	});
 });
 
@@ -64,29 +57,20 @@ export const userSlice = createSlice({
 		builder.addCase(signUp.pending, (state) => {
 			state.isLoading = true;
 		});
-		builder.addCase(signUp.fulfilled, (state, action) => {
+		builder.addCase(signUp.fulfilled, (state) => {
 			state.isLoading = false;
-			state.isSignedIn = true;
-			state.uid = action.payload ?? '';
-			// userSlice.caseReducers.singInAction(state, { payload: uid, type: 'signIn' });
 		});
 		builder.addCase(signIn.pending, (state) => {
 			state.isLoading = true;
 		});
-		builder.addCase(signIn.fulfilled, (state, action) => {
+		builder.addCase(signIn.fulfilled, (state) => {
 			state.isLoading = false;
-			state.isSignedIn = true;
-			state.uid = action.payload ?? '';
-			// userSlice.caseReducers.singInAction(state, { payload: uid, type: 'signIn' });
 		});
 		builder.addCase(listenAuthState.pending, (state) => {
 			state.isLoading = true;
 		});
 		builder.addCase(listenAuthState.fulfilled, (state) => {
 			state.isLoading = false;
-			// state.isSignedIn = true;
-			// state.uid = action.payload ?? '';
-			// userSlice.caseReducers.singInAction(state, { payload: uid, type: 'signIn' });
 		});
 	},
 });
