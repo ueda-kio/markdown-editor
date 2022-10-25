@@ -1,23 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
+import { nanoid } from '@reduxjs/toolkit';
+import { useAppDispatch } from '../reducks/hooks';
+import { useNavigate } from 'react-router-dom';
+import { signUp } from '../reducks/slice/userSlice';
 
-const SignIn = () => {
+const usersRef = db.collection('users');
+
+const SignUp = () => {
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
 	const onSubmit: React.FormEventHandler = async (e) => {
 		e.preventDefault();
 		try {
-			const user = await auth.createUserWithEmailAndPassword(email, password);
-			console.log(user.user?.uid);
+			await dispatch(signUp({ email, password }));
+			navigate('/');
 		} catch (e) {
-			console.log(e);
+			console.error(e);
 		}
 	};
 
-	const handleClick = () => {
-		console.log('currentUser', auth.currentUser);
+	const handleClick = async () => {
+		const id = nanoid();
+		// const doc = usersRef.doc();
+		// const id = doc.id;
+		await usersRef.doc(id).set({ uid: id });
+		const fileDoc = usersRef.doc(id).collection('files').doc();
+		const fileId = fileDoc.id;
+		await usersRef.doc(id).collection('files').doc(fileId).set({ id: fileId, title: 'test title' });
 	};
 
 	useEffect(() => {
@@ -76,4 +90,4 @@ const SignIn = () => {
 	);
 };
 
-export default SignIn;
+export default SignUp;

@@ -2,12 +2,16 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { auth, db } from '../../firebase';
 
+const usersRef = db.collection('users');
+
 export const signUp = createAsyncThunk<void, { email: string; password: string }>('user/signUp', async ({ email, password }, thunkApi) => {
 	try {
 		const res = await auth.createUserWithEmailAndPassword(email, password);
 		if (!res.user) throw Error();
 		const { uid } = res.user;
 		thunkApi.dispatch(singInAction(uid));
+
+		await usersRef.doc(uid).set({ uid });
 	} catch (e) {
 		console.log(e);
 	}
