@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Button, IconButton, Stack, Input, InputGroup, InputLeftElement, chakra } from '@chakra-ui/react';
 import { PlusSquareIcon, SearchIcon } from '@chakra-ui/icons';
 import Cassette from '../components/Cassette/Cassette';
-import { useAppDispatch, useFileListSelector, useFilesSelector, useIsLoadingSelector, userUser } from '../reducks/hooks';
+import { useAppDispatch, useFileListSelector, useFilesSelector, useIsLoadingSelector, useUser } from '../reducks/hooks';
 import { copyFile, createNewFile, fetchFileList, FileType, putFileInTrash, sortFiles } from '../reducks/slice/fileListSlice';
 import { auth, db } from '../firebase';
 import { trashFile } from '../libs/firebase.operation';
@@ -13,6 +13,7 @@ import Loading from '../components/Atoms/Loading';
 const Container = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
+	const { user } = useUser();
 	const { files } = useFilesSelector();
 	const { isLoading } = useIsLoadingSelector();
 	const icons = [
@@ -50,8 +51,9 @@ const Container = () => {
 	 * 新規作成ボタン押下挙動
 	 */
 	const handleClick: React.MouseEventHandler = async () => {
+		const { uid } = user;
 		try {
-			const originalPromiseResult = await dispatch(createNewFile()).unwrap();
+			const originalPromiseResult = await dispatch(createNewFile({ uid })).unwrap();
 			if (!originalPromiseResult) return;
 			const { id } = originalPromiseResult;
 			navigate(`/file/${id}/editor`);
@@ -88,6 +90,7 @@ const Container = () => {
 				right="4"
 				w="16"
 				h="16"
+				// onClick={handleClick}
 				onClick={signOut}
 			></IconButton>
 		</Box>

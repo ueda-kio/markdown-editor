@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, current } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { db } from '../../firebase';
 import { isFileType } from '../../libs/firebase.operation';
-import { userUser } from '../hooks';
+import { useUser } from '../hooks';
 
 export type FileType = {
 	id: string;
@@ -13,13 +13,15 @@ export type FileType = {
 	lead: string;
 };
 
+const usersRef = db.collection('users');
 const fileRef = db.collection('files');
 const trashRef = db.collection('trashes');
 
 /** ファイルを新規作成する */
-export const createNewFile = createAsyncThunk<FileType | void>('fileList/createNewFile', async () => {
+export const createNewFile = createAsyncThunk<FileType | void, { uid: string }>('fileList/createNewFile', async ({ uid }) => {
 	const timestamp = new Date().toISOString();
-	const doc = fileRef.doc();
+	const files = usersRef.doc(uid).collection('files');
+	const doc = files.doc();
 	const id = doc.id;
 	const data: FileType = {
 		id,
