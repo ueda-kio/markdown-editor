@@ -13,7 +13,6 @@ import Loading from '../components/Atoms/Loading';
 const Container = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const { user } = useUser();
 	const { files } = useFilesSelector();
 	const { isLoading } = useIsLoadingSelector();
 	const icons = [
@@ -51,9 +50,8 @@ const Container = () => {
 	 * 新規作成ボタン押下挙動
 	 */
 	const handleClick: React.MouseEventHandler = async () => {
-		const { uid } = user;
 		try {
-			const originalPromiseResult = await dispatch(createNewFile({ uid })).unwrap();
+			const originalPromiseResult = await dispatch(createNewFile()).unwrap();
 			if (!originalPromiseResult) return;
 			const { id } = originalPromiseResult;
 			navigate(`/file/${id}/editor`);
@@ -90,8 +88,8 @@ const Container = () => {
 				right="4"
 				w="16"
 				h="16"
-				// onClick={handleClick}
-				onClick={signOut}
+				onClick={handleClick}
+				// onClick={signOut}
 			></IconButton>
 		</Box>
 	);
