@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
 import { auth, db } from '../firebase';
 import { nanoid } from '@reduxjs/toolkit';
-import { useAppDispatch } from '../reducks/hooks';
+import { useAppDispatch, useUser } from '../reducks/hooks';
 import { useNavigate } from 'react-router-dom';
 import { signUp } from '../reducks/slice/userSlice';
 
@@ -11,6 +11,7 @@ const usersRef = db.collection('users');
 const SignUp = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
+	const { user } = useUser();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
@@ -22,16 +23,6 @@ const SignUp = () => {
 		} catch (e) {
 			console.error(e);
 		}
-	};
-
-	const handleClick = async () => {
-		const id = nanoid();
-		// const doc = usersRef.doc();
-		// const id = doc.id;
-		await usersRef.doc(id).set({ uid: id });
-		const fileDoc = usersRef.doc(id).collection('files').doc();
-		const fileId = fileDoc.id;
-		await usersRef.doc(id).collection('files').doc(fileId).set({ id: fileId, title: 'test title' });
 	};
 
 	useEffect(() => {
@@ -79,11 +70,8 @@ const SignUp = () => {
 						isRequired
 					/>
 				</FormControl>
-				<Button type="submit" size="md" w="100%" mt="5">
+				<Button type="submit" size="md" w="100%" mt="5" {...(user.isLoading && { isLoading: true })}>
 					submit
-				</Button>
-				<Button type="button" size="md" w="100%" mt="5" onClick={handleClick}>
-					console
 				</Button>
 			</Box>
 		</Box>

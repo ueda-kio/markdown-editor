@@ -3,7 +3,7 @@ import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/rea
 import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useUser } from '../reducks/hooks';
-import { signIn } from '../reducks/slice/userSlice';
+import { listenAuthState, signIn } from '../reducks/slice/userSlice';
 
 const SignIn = () => {
 	const dispatch = useAppDispatch();
@@ -22,17 +22,12 @@ const SignIn = () => {
 		}
 	};
 
-	const handleClick = async () => {
-		await auth.signOut();
-		console.log('currentUser', auth.currentUser);
-	};
-
-	//TODO サインイン済みならルートへリダイレクトさせたい
 	useEffect(() => {
-		auth.onAuthStateChanged((user) => {
-			console.log('user', user);
-			console.log('currentUser', auth.currentUser);
-		});
+		console.log('signin', user.isSignedIn);
+		dispatch(listenAuthState());
+		// auth.onAuthStateChanged((user) => {
+		// 	if (user) navigate('/');
+		// });
 	}, []);
 
 	return (
@@ -75,9 +70,6 @@ const SignIn = () => {
 				</FormControl>
 				<Button type="submit" size="md" w="100%" mt="5" {...(user.isLoading && { isLoading: true })}>
 					submit
-				</Button>
-				<Button type="button" size="md" w="100%" mt="5" onClick={handleClick}>
-					console
 				</Button>
 			</Box>
 		</Box>
