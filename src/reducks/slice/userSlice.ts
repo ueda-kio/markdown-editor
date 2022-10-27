@@ -29,6 +29,10 @@ export const signIn = createAsyncThunk<void, { email: string; password: string }
 	}
 });
 
+export const signOut = createAsyncThunk('user/signOut', async (_, thunkApi) => {
+	thunkApi.dispatch(signOutAction());
+});
+
 export const listenAuthState = createAsyncThunk('user/listenAuthState', async (_, thunkApi) => {
 	auth.onAuthStateChanged((user) => {
 		if (!user) return;
@@ -42,14 +46,15 @@ export const listenAuthState = createAsyncThunk('user/listenAuthState', async (_
 	});
 });
 
+const initialState = {
+	isSignedIn: false,
+	uid: '',
+	isLoading: false,
+	isNewRegistrant: false,
+};
 export const userSlice = createSlice({
 	name: 'user',
-	initialState: {
-		isSignedIn: false,
-		uid: '',
-		isLoading: false,
-		isNewRegistrant: false,
-	},
+	initialState,
 	reducers: {
 		singInAction: (state, action: PayloadAction<string>) => {
 			return {
@@ -57,6 +62,9 @@ export const userSlice = createSlice({
 				isSignedIn: true,
 				uid: action.payload,
 			};
+		},
+		signOutAction: (state) => {
+			return initialState;
 		},
 		setNotNewRegistrant: (state) => {
 			return {
@@ -88,5 +96,5 @@ export const userSlice = createSlice({
 	},
 });
 
-export const { singInAction, setNotNewRegistrant } = userSlice.actions;
+export const { singInAction, signOutAction, setNotNewRegistrant } = userSlice.actions;
 export default userSlice.reducer;

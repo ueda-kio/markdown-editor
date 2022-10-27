@@ -76,11 +76,6 @@ const Container = () => {
 		}
 	};
 
-	const signOut = () => {
-		auth.signOut();
-		navigate('/signin');
-	};
-
 	return (
 		<Box position="relative" height="calc(100% - 68px)" pb="24" mt="5" _before={{ content: '""', display: 'block' }}>
 			{isLoading ? (
@@ -105,7 +100,6 @@ const Container = () => {
 				w="16"
 				h="16"
 				onClick={handleClick}
-				// onClick={signOut}
 			></IconButton>
 		</Box>
 	);

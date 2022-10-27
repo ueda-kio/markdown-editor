@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useMemo } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
 	chakra,
 	IconButton,
@@ -18,13 +18,18 @@ import {
 	InputLeftElement,
 	Input,
 	DrawerOverlay,
+	Stack,
 } from '@chakra-ui/react';
 import { ExternalLinkIcon, HamburgerIcon, SearchIcon } from '@chakra-ui/icons';
 import { IconType } from 'react-icons';
 import { AiOutlineHome, AiOutlineGithub, AiOutlineSetting } from 'react-icons/ai';
 import { BiArchiveIn } from 'react-icons/bi';
+import { FaSignOutAlt } from 'react-icons/fa';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Link } from '../components/Atoms/Link';
+import Confirm from '../components/Organisms/Modal/Confirm';
+import { useAppDispatch } from '../reducks/hooks';
+import { signOut } from '../reducks/slice/userSlice';
 
 type LinkItemProps = {
 	name: string;
@@ -43,44 +48,95 @@ type SidebarProps = {
 	onClose: () => void;
 } & BoxProps;
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
+	const { isOpen, onOpen, onClose: onCloseModal } = useDisclosure();
+	const handleClickSignOut = async () => {
+		await dispatch(signOut());
+		navigate('/signin');
+	};
 	return (
-		<Box
-			bg={useColorModeValue('white', 'gray.900')}
-			borderRight="1px"
-			borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-			w={{ base: 'full', xl: 60 }}
-			pos="fixed"
-			h="full"
-			{...rest}
-		>
-			<Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-				<Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-					Memo App.
+		<>
+			<Box
+				bg={useColorModeValue('white', 'gray.900')}
+				borderRight="1px"
+				borderRightColor={useColorModeValue('gray.200', 'gray.700')}
+				w={{ base: 'full', xl: 60 }}
+				pos="fixed"
+				h="full"
+				{...rest}
+			>
+				<Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
+					<Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
+						Memo App.
+					</Text>
+					<CloseButton display={{ base: 'flex', xl: 'none' }} onClick={onClose} />
+				</Flex>
+				<Stack spacing="2" as="ul" px="4">
+					{LinkItems.map((link) => (
+						<li key={link.name}>
+							<NavItem name={link.name} icon={link.icon} path={link.path}>
+								{link.name}
+							</NavItem>
+						</li>
+					))}
+				</Stack>
+				<Box pos="absolute" bottom="4" w="100%" px="4" onClick={onOpen}>
+					<NavItem name="SignOut" icon={FaSignOutAlt} path="">
+						SignOut
+					</NavItem>
+				</Box>
+			</Box>
+			<Confirm isOpen={isOpen} onClose={onCloseModal} onConfirm={handleClickSignOut} blockScrollOnMount={false}>
+				<Text fontWeight="bold" textAlign={'center'}>
+					Would you like to signOut?
 				</Text>
-				<CloseButton display={{ base: 'flex', xl: 'none' }} onClick={onClose} />
-			</Flex>
-			{LinkItems.map((link) => (
-				<NavItem key={link.name} icon={link.icon} path={link.path}>
-					{link.name}
-				</NavItem>
-			))}
-		</Box>
+			</Confirm>
+		</>
 	);
 };
 
 type NavItemProps = {
+	name: string;
 	icon: IconType;
 	path: string;
+	onClick?: () => void;
 	children: ReactNode;
 } & FlexProps;
-const NavItem = ({ icon, path, children, ...rest }: NavItemProps) => {
+const NavItem = ({ name, icon, path, onClick, children, ...rest }: NavItemProps) => {
 	const { pathname } = useLocation();
 	const isCurrentPage = useMemo(() => pathname === path, [pathname]);
 
 	return (
 		<>
-			{!path.startsWith('https') ? (
-				<Link to={path} pos="relative" display="block" mx="4" {...(isCurrentPage && { 'aria-current': 'page' })}>
+			{name === 'SignOut' ? (
+				<chakra.button pos="relative" display="block" w="100%" {...(isCurrentPage && { 'aria-current': 'page' })} onClick={onClick}>
+					<Box
+						bg={isCurrentPage ? 'teal.100' : undefined}
+						textDecoration={'none'}
+						_focus={{ boxShadow: 'none' }}
+						_hover={{
+							bg: 'teal',
+							color: 'white',
+						}}
+						borderRadius="lg"
+						transition={'background 0.15s, color 0.15s'}
+					>
+						<Flex position="relative" align="center" p="4" role="group" cursor="pointer" {...rest}>
+							<Icon
+								mr="4"
+								fontSize="16"
+								_groupHover={{
+									color: 'white',
+								}}
+								as={icon}
+							/>
+							{children}
+						</Flex>
+					</Box>
+				</chakra.button>
+			) : !path.startsWith('https') ? (
+				<Link to={path} pos="relative" display="block" {...(isCurrentPage && { 'aria-current': 'page' })}>
 					<Box
 						bg={isCurrentPage ? 'teal.100' : undefined}
 						textDecoration={'none'}
@@ -106,7 +162,7 @@ const NavItem = ({ icon, path, children, ...rest }: NavItemProps) => {
 					</Box>
 				</Link>
 			) : (
-				<chakra.a href={path} pos="relative" display="block" mx="4" target="_blank" rel="noreferrer">
+				<chakra.a href={path} pos="relative" display="block" target="_blank" rel="noreferrer">
 					<Box
 						bg={isCurrentPage ? 'teal.100' : undefined}
 						textDecoration={'none'}
