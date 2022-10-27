@@ -3,6 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { db } from '../../firebase';
 import { isFileType } from '../../libs/firebase.operation';
 import { RootState } from '../store/store';
+import { setNotNewRegistrant } from './userSlice';
 
 export type FileType = {
 	id: string;
@@ -46,6 +47,53 @@ export const createNewFile = createAsyncThunk<FileType | undefined, void, { stat
 
 		try {
 			await fileRef.doc(id).set(data);
+			return data;
+		} catch (e) {
+			console.error(e);
+			return;
+		}
+	}
+);
+
+/** ファイルを新規作成する */
+export const createNewSampleFile = createAsyncThunk<FileType | undefined, void, { state: RootState }>(
+	'fileList/createNewSampleFile',
+	async (_, thunkApi) => {
+		const { uid } = thunkApi.getState().user;
+		const { fileRef } = getRefs(uid);
+
+		const timestamp = new Date().toISOString();
+		const doc = fileRef.doc();
+		const id = doc.id;
+		const sampleTitle = `This is Sample!`;
+		const sampleLead = `Let's leave a nice note!\nThis memo can be written in markdown.`;
+		const value = `# This is Sample!
+		Let's leave a nice notes!
+		This memo can be written in markdown.
+
+		- this is list
+		- *bold text*
+		- ~delete text~
+		- \`code snippet\`
+
+		> this is quotation.
+
+		\`\`\`
+		const sample = 'this is code block.';
+		\`\`\`
+		`.replace(/\t/g, '');
+		const data: FileType = {
+			id,
+			value,
+			created_at: timestamp,
+			updated_at: timestamp,
+			title: sampleTitle,
+			lead: sampleLead,
+		};
+
+		try {
+			await fileRef.doc(id).set(data);
+			thunkApi.dispatch(setNotNewRegistrant());
 			return data;
 		} catch (e) {
 			console.error(e);
@@ -309,6 +357,16 @@ export const fileListSlice = createSlice({
 			state.isLoading = false;
 			if (!action.payload) return;
 			state.files.list.unshift(action.payload);
+		});
+		// サンプルファイルの新規作成
+		builder.addCase(createNewSampleFile.pending, (state) => {
+			state.isLoading = true;
+		});
+		builder.addCase(createNewSampleFile.fulfilled, (state, action) => {
+			state.isLoading = false;
+			if (!action.payload) return;
+			state.files.list.unshift(action.payload);
+			state.files.isFetched = true;
 		});
 		// ファイル一覧の取得
 		builder.addCase(fetchFileList.pending, (state) => {

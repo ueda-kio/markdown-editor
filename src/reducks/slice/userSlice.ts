@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { auth, db } from '../../firebase';
+import { createNewFile } from './fileListSlice';
 
 const usersRef = db.collection('users');
 
@@ -47,6 +48,7 @@ export const userSlice = createSlice({
 		isSignedIn: false,
 		uid: '',
 		isLoading: false,
+		isNewRegistrant: false,
 	},
 	reducers: {
 		singInAction: (state, action: PayloadAction<string>) => {
@@ -56,10 +58,17 @@ export const userSlice = createSlice({
 				uid: action.payload,
 			};
 		},
+		setNotNewRegistrant: (state) => {
+			return {
+				...state,
+				isNewRegistrant: false,
+			};
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(signUp.pending, (state) => {
 			state.isLoading = true;
+			state.isNewRegistrant = true;
 		});
 		builder.addCase(signUp.fulfilled, (state) => {
 			state.isLoading = false;
@@ -79,5 +88,5 @@ export const userSlice = createSlice({
 	},
 });
 
-export const { singInAction } = userSlice.actions;
+export const { singInAction, setNotNewRegistrant } = userSlice.actions;
 export default userSlice.reducer;
