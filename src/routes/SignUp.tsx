@@ -5,6 +5,7 @@ import { nanoid } from '@reduxjs/toolkit';
 import { useAppDispatch, useUser } from '../reducks/hooks';
 import { useNavigate } from 'react-router-dom';
 import { signUp } from '../reducks/slice/userSlice';
+import { Link } from '../components/Atoms/Link';
 
 const usersRef = db.collection('users');
 
@@ -73,6 +74,11 @@ const SignUp = () => {
 				<Button type="submit" size="md" w="100%" mt="5" {...(user.isLoading && { isLoading: true })}>
 					submit
 				</Button>
+				<Box display={'flex'} justifyContent="center" mt="4">
+					<Link to="/signin" fontSize={'14'} rounded="4" _hover={{ bg: 'teal.100' }}>
+						Already a member?
+					</Link>
+				</Box>
 			</Box>
 		</Box>
 	);

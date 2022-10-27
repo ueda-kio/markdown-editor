@@ -4,6 +4,7 @@ import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useUser } from '../reducks/hooks';
 import { listenAuthState, signIn } from '../reducks/slice/userSlice';
+import { Link } from '../components/Atoms/Link';
 
 const SignIn = () => {
 	const dispatch = useAppDispatch();
@@ -71,6 +72,11 @@ const SignIn = () => {
 				<Button type="submit" size="md" w="100%" mt="5" {...(user.isLoading && { isLoading: true })}>
 					submit
 				</Button>
+				<Box display={'flex'} justifyContent="center" mt="4">
+					<Link to="/signup" fontSize={'14'} rounded="4" _hover={{ bg: 'teal.100' }}>
+						Join This App.
+					</Link>
+				</Box>
 			</Box>
 		</Box>
 	);
