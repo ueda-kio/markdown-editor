@@ -5,6 +5,7 @@ import { ChevronLeftIcon } from '@chakra-ui/icons';
 import MarkdownViewer from '../components/Organisms/MarkdownViwer';
 import { fetchFileById } from '../reducks/slice/fileListSlice';
 import { useAppDispatch, useFilesSelector, useIsLoadingSelector } from '../reducks/hooks';
+import ViwerWrapper from './Layout/ViwerWrapper';
 
 const Viwer = () => {
 	const dispatch = useAppDispatch();
@@ -50,18 +51,9 @@ const Viwer = () => {
 			{isLoading ? (
 				<Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
 			) : (
-				<Box maxWidth="840px" m="0 auto" px="5" pt="2">
-					<IconButton
-						aria-label="open new editor"
-						icon={<ChevronLeftIcon w={6} h={6} />}
-						colorScheme="teal"
-						rounded="full"
-						w="12"
-						h="12"
-						onClick={() => navigate(-1)}
-					></IconButton>
+				<ViwerWrapper>
 					<MarkdownViewer markdownText={value} mt="4" />
-				</Box>
+				</ViwerWrapper>
 			)}
 		</>
 	);

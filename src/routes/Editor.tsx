@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useBeforeunload } from 'react-beforeunload';
-import { Button, Grid, Textarea } from '@chakra-ui/react';
+import { Box, Button, Grid, Textarea } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import MarkdownViewer from '../components/Organisms/MarkdownViwer';
 import { useAppDispatch, useFileListSelector, useFilesSelector } from '../reducks/hooks';
 import { fetchFileById } from '../libs/firebase.operation';
 import { updateFile } from '../reducks/slice/fileListSlice';
 import { convertMarkdownToHTML } from '../libs/sanitizer';
+import ViwerWrapper from './Layout/ViwerWrapper';
 
 const getTitleAndLead = (value: string) => {
 	const getTag = (txt: string) => {
@@ -102,23 +103,24 @@ const Editor = () => {
 	};
 
 	return (
-		<>
-			<Button onClick={handleSave}>SAVE</Button>
-			<Link to="/">BACK to HOME</Link>
-			<Grid gap={30} templateColumns={{ base: 'none', lg: 'repeat(2, 1fr)' }}>
-				<Textarea
-					placeholder="Here is a sample placeholder"
-					value={value}
-					onChange={(e) => setValue(e.target.value)}
-					resize="none"
-					size="lg"
-					rounded="md"
-					height="96"
-					variant="filled"
-				/>
-				<MarkdownViewer markdownText={value} />
-			</Grid>
-		</>
+		<ViwerWrapper>
+			<Box>
+				<Button onClick={handleSave}>SAVE</Button>
+				<Grid gap={30} templateColumns={{ base: 'none', lg: 'repeat(2, 1fr)' }}>
+					<Textarea
+						placeholder="Here is a sample placeholder"
+						value={value}
+						onChange={(e) => setValue(e.target.value)}
+						resize="none"
+						size="lg"
+						rounded="md"
+						height="96"
+						variant="filled"
+					/>
+					<MarkdownViewer markdownText={value} />
+				</Grid>
+			</Box>
+		</ViwerWrapper>
 	);
 };
 
