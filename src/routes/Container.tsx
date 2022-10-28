@@ -79,11 +79,11 @@ const Container = () => {
 
 	const Empty = useMemo(() => <NoCassettes page="files" />, []);
 	return (
-		<Box position="relative" height="calc(100% - 68px)" pb="24" mt="5" _before={{ content: '""', display: 'block' }}>
+		<Box position="relative" mt="5" pb="8" flexGrow={'1'} overflow="auto" _before={{ content: '""', display: 'block' }}>
 			{isLoading ? (
 				<Loading />
 			) : files.list.length ? (
-				<Stack spacing="2" as="ol" height="100%" overflowY="auto" px="3">
+				<Stack spacing="2" as="ol" height="100%" overflowY="auto" px="3" pt="1" pb="3">
 					{files.list.map((file, i) => (
 						<li key={`${file.id}_${i}`}>
 							<Cassette file={file} icons={icons} />
@@ -98,11 +98,12 @@ const Container = () => {
 				icon={<PlusSquareIcon w={6} h={6} />}
 				colorScheme="teal"
 				rounded="full"
-				position="fixed"
+				position="absolute"
 				bottom="4"
 				right="4"
 				w="16"
 				h="16"
+				boxShadow="lg"
 				onClick={handleClick}
 			></IconButton>
 		</Box>

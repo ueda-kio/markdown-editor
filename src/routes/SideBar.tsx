@@ -246,7 +246,7 @@ const SimpleSidebar = () => {
 				</DrawerContent>
 			</Drawer>
 			<Box height="100%" maxWidth="800px" mx="auto">
-				<Box px="3" height="100vh">
+				<Box height="100vh" display={'flex'} flexDirection="column">
 					<MobileNav onOpen={onOpen} />
 					<Outlet />
 				</Box>

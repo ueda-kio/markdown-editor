@@ -38,11 +38,11 @@ const Trashes = () => {
 
 	const Empty = useMemo(() => <NoCassettes page="trashes" />, []);
 	return (
-		<Box position="relative" height="calc(100% - 68px)" pb="24" mt="5" _before={{ content: '""', display: 'block' }}>
+		<Box position="relative" mt="5" pb="8" flexGrow={'1'} overflow="auto" _before={{ content: '""', display: 'block' }}>
 			{isLoading ? (
 				<Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
 			) : trashes.list.length ? (
-				<Stack spacing="2" as="ol" height="100%" overflowY="auto" px="3">
+				<Stack spacing="2" as="ol" height="100%" overflowY="auto" px="3" pt="1" pb="3">
 					{trashes.list.map((file, i) => (
 						<li key={`${file.id}_${i}`}>
 							<Cassette file={file} icons={icons} />
