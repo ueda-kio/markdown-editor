@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, IconButton, Stack, Input, InputGroup, InputLeftElement, chakra } from '@chakra-ui/react';
 import { PlusSquareIcon, SearchIcon } from '@chakra-ui/icons';
@@ -16,6 +16,7 @@ import {
 import { auth } from '../firebase';
 import { FaEdit, FaCopy, FaTrash } from 'react-icons/fa';
 import Loading from '../components/Atoms/Loading';
+import NoCassettes from '../components/Organisms/NoCassettes';
 
 const Container = () => {
 	const dispatch = useAppDispatch();
@@ -76,11 +77,12 @@ const Container = () => {
 		}
 	};
 
+	const Empty = useMemo(() => <NoCassettes page="files" />, []);
 	return (
 		<Box position="relative" height="calc(100% - 68px)" pb="24" mt="5" _before={{ content: '""', display: 'block' }}>
 			{isLoading ? (
 				<Loading />
-			) : (
+			) : files.list.length ? (
 				<Stack spacing="2" as="ol" height="100%" overflowY="auto" px="3">
 					{files.list.map((file, i) => (
 						<li key={`${file.id}_${i}`}>
@@ -88,6 +90,8 @@ const Container = () => {
 						</li>
 					))}
 				</Stack>
+			) : (
+				<>{Empty}</>
 			)}
 			<IconButton
 				aria-label="open new editor"

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, IconButton, Spinner, Stack, chakra } from '@chakra-ui/react';
 import { PlusSquareIcon } from '@chakra-ui/icons';
@@ -6,6 +6,7 @@ import Cassette from '../components/Cassette/Cassette';
 import { useAppDispatch, useIsLoadingSelector, useTrashesSelector } from '../reducks/hooks';
 import { deleteFileCompletely, fetchTrashList, FileType, restoreTrashedFile, sortFiles } from '../reducks/slice/fileListSlice';
 import { FaTrashRestore, FaTrash } from 'react-icons/fa';
+import NoCassettes from '../components/Organisms/NoCassettes';
 
 const Trashes = () => {
 	const dispatch = useAppDispatch();
@@ -35,11 +36,12 @@ const Trashes = () => {
 		if (trashes.isFetched === false) dispatch(fetchTrashList());
 	}, [trashes.isFetched]);
 
+	const Empty = useMemo(() => <NoCassettes page="trashes" />, []);
 	return (
 		<Box position="relative" height="calc(100% - 68px)" pb="24" mt="5" _before={{ content: '""', display: 'block' }}>
 			{isLoading ? (
 				<Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
-			) : (
+			) : trashes.list.length ? (
 				<Stack spacing="2" as="ol" height="100%" overflowY="auto" px="3">
 					{trashes.list.map((file, i) => (
 						<li key={`${file.id}_${i}`}>
@@ -47,6 +49,8 @@ const Trashes = () => {
 						</li>
 					))}
 				</Stack>
+			) : (
+				<>{Empty}</>
 			)}
 		</Box>
 	);
