@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, current } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { db } from '../../firebase';
-import { isFileType } from '../../libs/firebase.operation';
+import isFileType from '../../libs/isFileType';
 import { RootState } from '../store/store';
 import { setNotNewRegistrant } from './userSlice';
 

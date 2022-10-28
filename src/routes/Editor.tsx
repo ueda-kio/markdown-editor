@@ -4,9 +4,9 @@ import { Box, Button, Grid, Textarea } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import MarkdownViewer from '../components/Organisms/MarkdownViwer';
 import { useAppDispatch, useFileListSelector, useFilesSelector } from '../reducks/hooks';
-import { fetchFileById } from '../libs/firebase.operation';
+import { fetchFileById } from '../reducks/slice/fileListSlice';
 import { updateFile } from '../reducks/slice/fileListSlice';
-import { convertMarkdownToHTML } from '../libs/sanitizer';
+import convertMarkdownToHTML from '../libs/sanitizer';
 import ViwerWrapper from './Layout/ViwerWrapper';
 
 const getTitleAndLead = (value: string) => {
@@ -76,8 +76,7 @@ const Editor = () => {
 		(async () => {
 			const data = (async () => {
 				const _data = getFileById(); // stateから取得
-				if (_data) return _data;
-				return await fetchFileById(id); // stateにない場合firestoreから取得
+				return _data ? _data : await dispatch(fetchFileById({ id })).unwrap();
 			})();
 			const target = await data;
 			if (!target) return;
@@ -101,6 +100,19 @@ const Editor = () => {
 		const updated_at = new Date().toISOString();
 		dispatch(updateFile({ id, value, updated_at, title, lead }));
 	};
+
+	const handlePressSaveKey = (e: KeyboardEvent) => {
+		console.log(e.metaKey);
+		if (e.metaKey && e.key === 'KeyS') {
+			e.preventDefault();
+			console.log('is done!');
+		}
+	};
+
+	useEffect(() => {
+		window.addEventListener('keydown', handlePressSaveKey);
+		() => window.removeEventListener('keydown', handlePressSaveKey);
+	}, []);
 
 	return (
 		<ViwerWrapper>

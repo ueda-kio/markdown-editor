@@ -12,7 +12,7 @@ renderer.link = (href, _, text) => {
 	return `<a rel="noopener" target="_blank" href="${href}">${text}</a>`;
 };
 
-export const convertMarkdownToHTML = (markdownText: string): InnerHTML => {
+const convertMarkdownToHTML = (markdownText: string): InnerHTML => {
 	// マークダウン記法のテキストをHTMLの文字列に変換.
 	const markedText = marked(markdownText, {
 		silent: true,
@@ -23,3 +23,5 @@ export const convertMarkdownToHTML = (markdownText: string): InnerHTML => {
 	const htmlText = DOMPurify.sanitize(markedText, { USE_PROFILES: { html: true } });
 	return { __html: htmlText };
 };
+
+export default convertMarkdownToHTML;

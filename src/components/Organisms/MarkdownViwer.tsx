@@ -1,6 +1,6 @@
 import React from 'react';
 import { css } from '@emotion/react';
-import { convertMarkdownToHTML } from '../../libs/sanitizer';
+import convertMarkdownToHTML from '../../libs/sanitizer';
 import { Box, BoxProps } from '@chakra-ui/react';
 
 const style = css`
