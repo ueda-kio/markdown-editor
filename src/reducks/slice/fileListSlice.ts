@@ -174,22 +174,26 @@ export const fetchFileById = createAsyncThunk<FileType | undefined, { id: string
  * @param {string} value 入力値
  * @param {string} updated_at 更新時のタイムスタンプ
  */
-export const updateFile = createAsyncThunk<Omit<FileType, 'created_at'>, Omit<FileType, 'created_at'>, { state: RootState }>(
+export const updateFile = createAsyncThunk<Omit<FileType, 'created_at'> | false, Omit<FileType, 'created_at'>, { state: RootState }>(
 	'fileList/updateFile',
 	async ({ id, value, updated_at, title, lead }, thunkApi) => {
 		const { uid } = thunkApi.getState().user;
 		const { fileRef } = getRefs(uid);
 
-		await fileRef.doc(id).set(
-			{
-				value,
-				updated_at,
-				title,
-				lead,
-			},
-			{ merge: true }
-		);
-		return { id, value, updated_at, title, lead };
+		try {
+			await fileRef.doc(id).set(
+				{
+					value,
+					updated_at,
+					title,
+					lead,
+				},
+				{ merge: true }
+			);
+			return { id, value, updated_at, title, lead };
+		} catch {
+			return false;
+		}
 	}
 );
 
@@ -401,6 +405,7 @@ export const fileListSlice = createSlice({
 			state.isLoading = true;
 		});
 		builder.addCase(updateFile.fulfilled, (state, action) => {
+			if (!action.payload) return;
 			const { id, value, updated_at, title, lead } = action.payload;
 			const others = state.files.list.filter((file) => file.id !== id);
 			const changedFile = state.files.list.find((file) => file.id === id);

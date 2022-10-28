@@ -1,13 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { TextareaHTMLAttributes, useCallback, useEffect, useState } from 'react';
 import { useBeforeunload } from 'react-beforeunload';
-import { Box, Button, Grid, Textarea } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Box, Button, Grid, Icon, IconButton, Textarea, useToast } from '@chakra-ui/react';
+import { Link, useNavigate } from 'react-router-dom';
 import MarkdownViewer from '../components/Organisms/MarkdownViwer';
 import { useAppDispatch, useFileListSelector, useFilesSelector } from '../reducks/hooks';
 import { fetchFileById } from '../reducks/slice/fileListSlice';
 import { updateFile } from '../reducks/slice/fileListSlice';
 import convertMarkdownToHTML from '../libs/sanitizer';
 import ViwerWrapper from './Layout/ViwerWrapper';
+import { ChevronLeftIcon } from '@chakra-ui/icons';
+import { AiOutlineCloudSync } from 'react-icons/ai';
 
 const getTitleAndLead = (value: string) => {
 	const getTag = (txt: string) => {
@@ -48,8 +50,12 @@ const getTitleAndLead = (value: string) => {
 
 const Editor = () => {
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 	const { files } = useFilesSelector();
 	const [value, setValue] = useState('');
+	const [savedValue, setSavedValue] = useState('');
+	const [isChanged, setIsChanged] = useState(false);
+	const toast = useToast();
 	useBeforeunload((event) => {
 		// if (value !== '') {
 		// console.log('unload');
@@ -81,6 +87,7 @@ const Editor = () => {
 			const target = await data;
 			if (!target) return;
 			setValue(target.value);
+			setSavedValue(target.value);
 		})();
 	}, [id]);
 
@@ -94,35 +101,69 @@ const Editor = () => {
 	// 	};
 	// }, [value]);
 
-	/** 保存ボタン押下時の挙動 */
-	const handleSave = () => {
+	/** 入力値の保存 */
+	const save = async () => {
 		const { title, lead } = getTitleAndLead(value);
 		const updated_at = new Date().toISOString();
-		dispatch(updateFile({ id, value, updated_at, title, lead }));
+		const res = await dispatch(updateFile({ id, value, updated_at, title, lead })).unwrap();
+		if (res) {
+			setSavedValue(value);
+			setIsChanged(false);
+			toast({
+				title: 'save complete!',
+				duration: 3000,
+				isClosable: true,
+				icon: <Icon as={AiOutlineCloudSync} w="7" h="7" />,
+			});
+		} else {
+			toast({
+				title: 'save incomplete!',
+				duration: 3000,
+				status: 'error',
+				isClosable: true,
+			});
+		}
 	};
 
+	/** ショートカットで保存 */
 	const handlePressSaveKey = (e: KeyboardEvent) => {
-		console.log(e.metaKey);
-		if (e.metaKey && e.key === 'KeyS') {
+		if (e.metaKey && e.key === 's') {
 			e.preventDefault();
-			console.log('is done!');
+			save();
 		}
+	};
+
+	/** テキスト入力時の処理 */
+	const handleInputTextarea: React.ChangeEventHandler<HTMLTextAreaElement> = (e) => {
+		setValue(e.target.value);
+		e.target.value === savedValue ? setIsChanged(false) : setIsChanged(true);
 	};
 
 	useEffect(() => {
 		window.addEventListener('keydown', handlePressSaveKey);
-		() => window.removeEventListener('keydown', handlePressSaveKey);
+		return () => window.removeEventListener('keydown', handlePressSaveKey);
 	}, []);
 
 	return (
-		<ViwerWrapper>
+		<Box maxWidth="1440px" m="0 auto" px="5" pt="2">
+			<IconButton
+				aria-label="open new editor"
+				icon={<ChevronLeftIcon w={6} h={6} />}
+				colorScheme="teal"
+				rounded="full"
+				w="12"
+				h="12"
+				onClick={() => navigate('/')}
+			></IconButton>
 			<Box>
-				<Button onClick={handleSave}>SAVE</Button>
+				<Button onClick={save} {...(isChanged && { color: 'red' })}>
+					SAVE
+				</Button>
 				<Grid gap={30} templateColumns={{ base: 'none', lg: 'repeat(2, 1fr)' }}>
 					<Textarea
 						placeholder="Here is a sample placeholder"
 						value={value}
-						onChange={(e) => setValue(e.target.value)}
+						onChange={handleInputTextarea}
 						resize="none"
 						size="lg"
 						rounded="md"
@@ -132,7 +173,7 @@ const Editor = () => {
 					<MarkdownViewer markdownText={value} />
 				</Grid>
 			</Box>
-		</ViwerWrapper>
+		</Box>
 	);
 };
 
