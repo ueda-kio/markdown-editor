@@ -4,15 +4,15 @@ import convertMarkdownToHTML from '../../libs/sanitizer';
 import { Box, BoxProps } from '@chakra-ui/react';
 
 const style = css`
+	& > * + :where(h1, h2, h3, h4, h5) {
+		margin-top: 4rem;
+	}
 	h1,
 	h2,
 	h3,
 	h4,
 	h5 {
 		margin-bottom: 2.4rem;
-		&:not(:first-of-type) {
-			margin-top: 4rem;
-		}
 	}
 	h1 {
 		font-size: 1.8rem;
@@ -100,17 +100,17 @@ const style = css`
 	}
 `;
 
-interface Props extends BoxProps {
+type Props = {
 	markdownText: string;
-}
+} & BoxProps;
 
 const MarkdownViewer: React.FC<Props> = ({ markdownText, ...rest }) => {
 	return (
-		<Box css={style} {...rest}>
+		<Box {...rest}>
 			{markdownText === '' ? (
 				<p className="markdown-viewer__message">※ 入力されるとプレビューに反映されます。</p>
 			) : (
-				<div className="md" dangerouslySetInnerHTML={convertMarkdownToHTML(markdownText)} />
+				<div css={style} dangerouslySetInnerHTML={convertMarkdownToHTML(markdownText)} />
 			)}
 		</Box>
 	);
