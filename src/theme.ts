@@ -6,6 +6,9 @@ const theme = extendTheme({
 			100: 'red',
 		},
 	},
+	sizes: {
+		max: '840px',
+	},
 	shadows: {
 		base: '0 1px 3px 0 rgb(0 0 0 / 20%), 0 1px 2px 0 rgb(0 0 0 / 6%)',
 		md: '0 4px 6px -1px rgba(0, 0, 0, 20%), 0 2px 4px -1px rgba(0, 0, 0, 6%)',

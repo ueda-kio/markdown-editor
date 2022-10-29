@@ -30,7 +30,7 @@ const ViwerWrapper: React.FC<Props> = ({ children }) => {
 	};
 
 	return (
-		<Box maxWidth="840px" m="0 auto">
+		<Box maxWidth="max" m="0 auto">
 			<Flex
 				as="header"
 				pos="sticky"
