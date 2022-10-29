@@ -170,7 +170,7 @@ const Editor = () => {
 					overflow={'hidden'}
 					gap={30}
 					templateColumns={{ base: 'none', lg: 'repeat(2, 1fr)' }}
-					templateRows={{ base: 'repeat(2, 1fr)', lg: 'none' }}
+					templateRows={{ base: 'min-content 1fr', lg: 'none' }}
 					flexGrow="1"
 					w="100%"
 				>
@@ -178,10 +178,10 @@ const Editor = () => {
 						placeholder="Here is a sample placeholder"
 						value={value}
 						onChange={handleInputTextarea}
-						resize="none"
+						resize={{ base: 'vertical', lg: 'none' }}
 						size="lg"
 						rounded="md"
-						height="100%"
+						height={{ base: '42vh', lg: '100%' }}
 						variant="filled"
 						overflow={'auto'}
 					/>
