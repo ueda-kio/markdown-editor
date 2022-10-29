@@ -34,7 +34,7 @@ const Viwer = () => {
 			})();
 			return target;
 		},
-		[id, files]
+		[id]
 	);
 
 	// ファイルのvalueをテキストエリアに反映
@@ -44,7 +44,7 @@ const Viwer = () => {
 			if (!file) return;
 			setValue(file.value);
 		})();
-	}, [files]);
+	}, []);
 
 	return (
 		<>
