@@ -46,6 +46,10 @@ export const listenAuthState = createAsyncThunk('user/listenAuthState', async (_
 	});
 });
 
+export const resetPassword = createAsyncThunk<void, { email: string }>('user/resetPassword', async ({ email }) => {
+	auth.sendPasswordResetEmail(email);
+});
+
 const initialState = {
 	isSignedIn: false,
 	uid: '',
@@ -91,6 +95,12 @@ export const userSlice = createSlice({
 			state.isLoading = true;
 		});
 		builder.addCase(listenAuthState.fulfilled, (state) => {
+			state.isLoading = false;
+		});
+		builder.addCase(resetPassword.pending, (state) => {
+			state.isLoading = true;
+		});
+		builder.addCase(resetPassword.fulfilled, (state) => {
 			state.isLoading = false;
 		});
 	},

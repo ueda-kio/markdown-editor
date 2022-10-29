@@ -1,35 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
-import { auth } from '../../firebase';
-import { useNavigate } from 'react-router-dom';
+import { auth, db } from '../../firebase';
+import { nanoid } from '@reduxjs/toolkit';
 import { useAppDispatch, useUser } from '../../reducks/hooks';
-import { listenAuthState, signIn } from '../../reducks/slice/userSlice';
+import { useNavigate } from 'react-router-dom';
+import { resetPassword, signUp } from '../../reducks/slice/userSlice';
 import { Link } from '../../components/Atoms/Link';
 
-const SignIn = () => {
+const Reset = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const { user } = useUser();
 	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
 
 	const onSubmit: React.FormEventHandler = async (e) => {
 		e.preventDefault();
 		try {
-			await dispatch(signIn({ email, password }));
-			navigate('/');
+			await dispatch(resetPassword({ email }));
+			alert('An email to reset your password has been sent to the email address you entered.');
+			navigate('/signin');
 		} catch (e) {
 			console.error(e);
 		}
 	};
-
-	useEffect(() => {
-		console.log('signin', user.isSignedIn);
-		dispatch(listenAuthState());
-		// auth.onAuthStateChanged((user) => {
-		// 	if (user) navigate('/');
-		// });
-	}, []);
 
 	return (
 		<Box w="100vw" h="100vh" pos="relative">
@@ -45,7 +38,7 @@ const SignIn = () => {
 				onSubmit={onSubmit}
 			>
 				<Text as="h1" fontSize="2xl" fontWeight="bold">
-					SignIn
+					Reset
 				</Text>
 				<FormControl>
 					<FormLabel>Email</FormLabel>
@@ -58,28 +51,12 @@ const SignIn = () => {
 						isRequired
 					/>
 				</FormControl>
-				<FormControl>
-					<FormLabel>Password</FormLabel>
-					<Input
-						type="password"
-						variant="filled"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-						autoComplete={'current-password'}
-						isRequired
-					/>
-				</FormControl>
 				<Button type="submit" size="md" w="100%" mt="5" {...(user.isLoading && { isLoading: true })}>
 					submit
 				</Button>
 				<Box display={'flex'} justifyContent="center" mt="4">
-					<Link to="/signup" fontSize={'14'} rounded="4" _hover={{ bg: 'teal.100' }}>
-						Join This App
-					</Link>
-				</Box>
-				<Box display={'flex'} justifyContent="center" mt="4">
-					<Link to="/reset" fontSize={'14'} rounded="4" _hover={{ bg: 'teal.100' }}>
-						Reset Password
+					<Link to="/signin" fontSize={'14'} rounded="4" _hover={{ bg: 'teal.100' }}>
+						to signin page
 					</Link>
 				</Box>
 			</Box>
@@ -87,4 +64,4 @@ const SignIn = () => {
 	);
 };
 
-export default SignIn;
+export default Reset;

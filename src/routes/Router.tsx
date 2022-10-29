@@ -8,12 +8,14 @@ import SignUp from './Authentication/SignUp';
 import Container from './Container';
 import Trashes from './Trashes';
 import Viwer from './Viwer';
+import Reset from './Authentication/Reset';
 
 const Router = () => {
 	return (
 		<Routes>
 			<Route path="/signin" element={<SignIn />} />
 			<Route path="/signup" element={<SignUp />} />
+			<Route path="/reset" element={<Reset />} />
 			<Route
 				path="*"
 				element={
