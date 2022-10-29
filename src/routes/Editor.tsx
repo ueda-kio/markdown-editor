@@ -1,6 +1,6 @@
 import React, { TextareaHTMLAttributes, useCallback, useEffect, useState } from 'react';
 import { useBeforeunload } from 'react-beforeunload';
-import { Box, Button, Grid, Icon, IconButton, Textarea, useToast } from '@chakra-ui/react';
+import { Box, Button, Flex, Grid, Icon, IconButton, Textarea, useToast } from '@chakra-ui/react';
 import { Link, useNavigate } from 'react-router-dom';
 import MarkdownViewer from '../components/Organisms/MarkdownViwer';
 import { useAppDispatch, useFileListSelector, useFilesSelector } from '../reducks/hooks';
@@ -105,24 +105,33 @@ const Editor = () => {
 	const save = async () => {
 		const { title, lead } = getTitleAndLead(value);
 		const updated_at = new Date().toISOString();
-		const res = await dispatch(updateFile({ id, value, updated_at, title, lead })).unwrap();
-		if (res) {
-			setSavedValue(value);
-			setIsChanged(false);
-			toast({
-				title: 'save complete!',
-				duration: 3000,
-				isClosable: true,
-				icon: <Icon as={AiOutlineCloudSync} w="7" h="7" />,
-			});
-		} else {
-			toast({
-				title: 'save incomplete!',
-				duration: 3000,
-				status: 'error',
-				isClosable: true,
-			});
-		}
+		dispatch(updateFile({ id, value, updated_at, title, lead }));
+		setSavedValue(value);
+		setIsChanged(false);
+		toast({
+			title: 'save complete!',
+			duration: 3000,
+			isClosable: true,
+			icon: <Icon as={AiOutlineCloudSync} w="7" h="7" />,
+		});
+		// TODO エラーハンドリングしたい
+		// if (res) {
+		// 	setSavedValue(value);
+		// 	setIsChanged(false);
+		// 	toast({
+		// 		title: 'save complete!',
+		// 		duration: 3000,
+		// 		isClosable: true,
+		// 		icon: <Icon as={AiOutlineCloudSync} w="7" h="7" />,
+		// 	});
+		// } else {
+		// 	toast({
+		// 		title: 'save incomplete!',
+		// 		duration: 3000,
+		// 		status: 'error',
+		// 		isClosable: true,
+		// 	});
+		// }
 	};
 
 	/** ショートカットで保存 */
@@ -142,10 +151,10 @@ const Editor = () => {
 	useEffect(() => {
 		window.addEventListener('keydown', handlePressSaveKey);
 		return () => window.removeEventListener('keydown', handlePressSaveKey);
-	}, []);
+	}, [value]);
 
 	return (
-		<Box maxWidth="1440px" m="0 auto" px="5" pt="2">
+		<Flex direction="column" gap={'5'} maxWidth="1440px" h={'100vh'} m="0 auto" px="5" pt="2">
 			<IconButton
 				aria-label="open new editor"
 				icon={<ChevronLeftIcon w={6} h={6} />}
@@ -153,13 +162,18 @@ const Editor = () => {
 				rounded="full"
 				w="12"
 				h="12"
+				flex="none"
 				onClick={() => navigate('/')}
 			></IconButton>
-			<Box>
-				<Button onClick={save} {...(isChanged && { color: 'red' })}>
-					SAVE
-				</Button>
-				<Grid gap={30} templateColumns={{ base: 'none', lg: 'repeat(2, 1fr)' }}>
+			<Flex overflow={'hidden'} direction={'column'} alignItems="start" flexGrow="1" pb="20">
+				<Grid
+					overflow={'hidden'}
+					gap={30}
+					templateColumns={{ base: 'none', lg: 'repeat(2, 1fr)' }}
+					templateRows={{ base: 'repeat(2, 1fr)', lg: 'none' }}
+					flexGrow="1"
+					w="100%"
+				>
 					<Textarea
 						placeholder="Here is a sample placeholder"
 						value={value}
@@ -167,13 +181,14 @@ const Editor = () => {
 						resize="none"
 						size="lg"
 						rounded="md"
-						height="96"
+						height="100%"
 						variant="filled"
+						overflow={'auto'}
 					/>
-					<MarkdownViewer markdownText={value} />
+					<MarkdownViewer markdownText={value} overflow="auto" />
 				</Grid>
-			</Box>
-		</Box>
+			</Flex>
+		</Flex>
 	);
 };
 
