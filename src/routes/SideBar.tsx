@@ -36,7 +36,7 @@ type LinkItemProps = {
 	path: string;
 	icon: IconType;
 };
-const LinkItems: Array<LinkItemProps> = [
+const LinkItems: LinkItemProps[] = [
 	{ name: 'Home', path: '/', icon: AiOutlineHome },
 	{ name: 'Trash', path: '/trash', icon: RiDeleteBin6Line },
 	{ name: 'Archive', path: '/archive', icon: BiArchiveIn },
@@ -47,14 +47,17 @@ const LinkItems: Array<LinkItemProps> = [
 type SidebarProps = {
 	onClose: () => void;
 } & BoxProps;
-const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+const SidebarContent: React.FC<SidebarProps> = ({ onClose, ...rest }) => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const { isOpen, onOpen, onClose: onCloseModal } = useDisclosure();
+
+	/** サインアウト押下時処理 */
 	const handleClickSignOut = async () => {
 		await dispatch(signOut());
 		navigate('/signin');
 	};
+
 	return (
 		<>
 			<Box
@@ -103,7 +106,7 @@ type NavItemProps = {
 	onClick?: () => void;
 	children: ReactNode;
 } & FlexProps;
-const NavItem = ({ name, icon, path, onClick, children, ...rest }: NavItemProps) => {
+const NavItem: React.FC<NavItemProps> = ({ name, icon, path, onClick, children, ...rest }) => {
 	const { pathname } = useLocation();
 	const isCurrentPage = useMemo(() => pathname === path, [pathname]);
 
@@ -192,12 +195,13 @@ const NavItem = ({ name, icon, path, onClick, children, ...rest }: NavItemProps)
 		</>
 	);
 };
-type MobileProps = {
+
+type HeaderProps = {
 	onOpen: () => void;
 } & FlexProps;
-const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+const Header: React.FC<HeaderProps> = ({ onOpen, ...rest }) => {
 	return (
-		<Flex w="full" alignItems="center" justifyContent="flex-start" {...rest}>
+		<Flex w="full" alignItems="center" justifyContent="flex-start" gap="3" px="3" {...rest}>
 			<IconButton
 				variant="outline"
 				rounded="full"
@@ -206,7 +210,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 				aria-label="open menu"
 				icon={<HamburgerIcon />}
 			/>
-			<Box px="3" w="full">
+			<Box w="full">
 				<InputGroup>
 					<InputLeftElement
 						top="50%"
@@ -247,7 +251,7 @@ const SimpleSidebar = () => {
 			</Drawer>
 			<Box height="100%" maxWidth="800px" mx="auto">
 				<Box height="100vh" display={'flex'} flexDirection="column">
-					<MobileNav onOpen={onOpen} />
+					<Header onOpen={onOpen} />
 					<Outlet />
 				</Box>
 			</Box>
