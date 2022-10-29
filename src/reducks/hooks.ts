@@ -20,6 +20,11 @@ export const useTrashesSelector = () => {
 	return { trashes };
 };
 
+export const useArchiveSelector = () => {
+	const archives = useAppSelector((state: RootState) => state.fileList.archives);
+	return { archives };
+};
+
 export const useIsLoadingSelector = () => {
 	const isLoading = useAppSelector((state: RootState) => state.fileList.isLoading);
 	return { isLoading };

@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { RiInboxArchiveFill } from 'react-icons/ri';
 import { FaEdit, FaCopy, FaTrash } from 'react-icons/fa';
 import { useAppDispatch } from '../../reducks/hooks';
-import { putFileInTrash } from '../../reducks/slice/fileListSlice';
+import { putFileInArchive, putFileInTrash } from '../../reducks/slice/fileListSlice';
 
 type Props = {
 	children: React.ReactNode;
@@ -20,6 +20,12 @@ const ViwerWrapper: React.FC<Props> = ({ children }) => {
 	const handleTrash = async () => {
 		if (!fileId) return;
 		await dispatch(putFileInTrash({ id: fileId }));
+		navigate('/');
+	};
+	/** 削除処理 */
+	const handleArchive = async () => {
+		if (!fileId) return;
+		await dispatch(putFileInArchive({ id: fileId }));
 		navigate('/');
 	};
 
@@ -68,7 +74,7 @@ const ViwerWrapper: React.FC<Props> = ({ children }) => {
 						rounded="full"
 						w="12"
 						h="12"
-						onClick={() => navigate(-1)}
+						onClick={handleArchive}
 					></IconButton>
 				</HStack>
 			</Flex>

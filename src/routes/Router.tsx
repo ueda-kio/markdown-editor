@@ -9,6 +9,7 @@ import Container from './Container';
 import Trashes from './Trashes';
 import Viwer from './Viwer';
 import Reset from './Authentication/Reset';
+import Archive from './Archive';
 
 const Router = () => {
 	return (
@@ -24,6 +25,7 @@ const Router = () => {
 							<Route path="/" element={<SideBar />}>
 								<Route index element={<Container />} />
 								<Route path="trash" element={<Trashes />} />
+								<Route path="archive" element={<Archive />} />
 							</Route>
 							<Route path="/file/:fileId" element={<Viwer />} />
 							<Route path="/file/:fileId/editor" element={<Editor />} />

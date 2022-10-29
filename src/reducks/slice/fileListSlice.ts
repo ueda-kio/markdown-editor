@@ -23,7 +23,8 @@ const usersRef = db.collection('users');
 const getRefs = (uid: string) => {
 	const fileRef = usersRef.doc(uid).collection('files');
 	const trashRef = usersRef.doc(uid).collection('trashes');
-	return { fileRef, trashRef };
+	const archiveRef = usersRef.doc(uid).collection('archives');
+	return { fileRef, trashRef, archiveRef };
 };
 
 /** ファイルを新規作成する */
@@ -148,6 +149,32 @@ export const fetchTrashList = createAsyncThunk<FileType[], void, { state: RootSt
 	return data;
 });
 
+/** アーカイブ一覧を取得する */
+export const fetchArchiveList = createAsyncThunk<FileType[], void, { state: RootState }>(
+	'fileList/fetchArchiveList',
+	async (_, thunkApi) => {
+		const { uid } = thunkApi.getState().user;
+		const { archiveRef } = getRefs(uid);
+
+		const data = await archiveRef
+			.orderBy('updated_at', 'desc')
+			.get()
+			.then((snapshots) => {
+				const dataArray: FileType[] = [];
+				snapshots.forEach((snapshot) => {
+					const data = snapshot.data();
+					if (!isFileType(data)) return;
+					dataArray.push(data);
+				});
+				return dataArray;
+			})
+			.catch((e) => {
+				throw Error(e);
+			});
+		return data;
+	}
+);
+
 /**
  * idからファイルを取得する
  * @param {string} id ファイルid
@@ -226,18 +253,48 @@ export const copyFile = createAsyncThunk<FileType | void, FileType, { state: Roo
 );
 
 /** 指定されたファイルをtrashesへ移動する */
-export const putFileInTrash = createAsyncThunk<string, { id: string }, { state: RootState }>(
-	'fileList/trashFile',
+export const putFileInTrash = createAsyncThunk<
+	{ id: string; isArchive: boolean },
+	{ id: string; isArchive?: boolean },
+	{ state: RootState }
+>('fileList/trashFile', async ({ id, isArchive = false }, thunkApi) => {
+	const { uid } = thunkApi.getState().user;
+	const ref = (() => {
+		if (isArchive === true) {
+			const { archiveRef } = getRefs(uid);
+			return archiveRef;
+		}
+		const { fileRef } = getRefs(uid);
+		return fileRef;
+	})();
+	const { trashRef } = getRefs(uid);
+
+	await ref
+		.doc(id)
+		.get()
+		.then((doc) => {
+			const data = doc.data();
+			if (!data) return;
+			trashRef.doc(data.id).set(data);
+			ref.doc(data.id).delete();
+		});
+	return { id, isArchive };
+});
+
+/** 指定されたファイルをアーカイブへ移動する */
+export const putFileInArchive = createAsyncThunk<string, { id: string }, { state: RootState }>(
+	'fileList/putFileInArchive',
 	async ({ id }, thunkApi) => {
 		const { uid } = thunkApi.getState().user;
-		const { fileRef, trashRef } = getRefs(uid);
+		const { fileRef, archiveRef } = getRefs(uid);
+
 		await fileRef
 			.doc(id)
 			.get()
 			.then((doc) => {
 				const data = doc.data();
 				if (!data) return;
-				trashRef.doc(data.id).set(data);
+				archiveRef.doc(data.id).set(data);
 				fileRef.doc(data.id).delete();
 			});
 		return id;
@@ -264,6 +321,26 @@ export const restoreTrashedFile = createAsyncThunk<string, { id: string }, { sta
 	}
 );
 
+/** ゴミ箱のファイルをrestoreする */
+export const restoreArchivedFile = createAsyncThunk<string, { id: string }, { state: RootState }>(
+	'fileList/restoreArchivedFile',
+	async ({ id }, thunkApi) => {
+		const { uid } = thunkApi.getState().user;
+		const { fileRef, archiveRef } = getRefs(uid);
+
+		await archiveRef
+			.doc(id)
+			.get()
+			.then((doc) => {
+				const data = doc.data();
+				if (!data) return;
+				fileRef.doc(data.id).set(data);
+				archiveRef.doc(data.id).delete();
+			});
+		return id;
+	}
+);
+
 /** ファイルを完全に削除する */
 export const deleteFileCompletely = createAsyncThunk<string, { id: string }, { state: RootState }>(
 	'fileList/deleteFile',
@@ -284,6 +361,10 @@ export const fileListSlice = createSlice({
 			isFetched: false,
 		},
 		trashes: {
+			list: [] as FileType[],
+			isFetched: false,
+		},
+		archives: {
 			list: [] as FileType[],
 			isFetched: false,
 		},
@@ -390,6 +471,15 @@ export const fileListSlice = createSlice({
 			state.isLoading = false;
 			state.trashes.isFetched = true;
 		});
+		// アーカイブ一覧の取得
+		builder.addCase(fetchArchiveList.pending, (state) => {
+			state.isLoading = true;
+		});
+		builder.addCase(fetchArchiveList.fulfilled, (state, action) => {
+			state.archives.list = action.payload;
+			state.isLoading = false;
+			state.archives.isFetched = true;
+		});
 		// idからファイルの取得
 		builder.addCase(fetchFileById.pending, (state) => {
 			state.isLoading = true;
@@ -439,12 +529,30 @@ export const fileListSlice = createSlice({
 			state.isLoading = false;
 
 			// 削除対象ファイルを取得しtrashesへ格納
-			const trashTarget = state.files.list.find((files) => files.id === action.payload);
+			const targetList = action.payload.isArchive === true ? state.archives.list : state.files.list;
+			const trashTarget = targetList.find((files) => files.id === action.payload.id);
 			trashTarget && state.trashes.list.unshift(trashTarget);
+
+			// filesから削除対象ファイルを削除
+			action.payload.isArchive === true
+				? (state.archives.list = state.archives.list.filter((files) => files.id !== action.payload.id))
+				: (state.files.list = state.files.list.filter((files) => files.id !== action.payload.id));
+		});
+		// ファイルをアーカイブへ移動
+		builder.addCase(putFileInArchive.pending, (state) => {
+			state.isLoading = true;
+		});
+		builder.addCase(putFileInArchive.fulfilled, (state, action) => {
+			state.isLoading = false;
+
+			// 削除対象ファイルを取得しtrashesへ格納
+			const archiveTarget = state.files.list.find((files) => files.id === action.payload);
+			archiveTarget && state.archives.list.unshift(archiveTarget);
 
 			// filesから削除対象ファイルを削除
 			state.files.list = state.files.list.filter((files) => files.id !== action.payload);
 		});
+
 		// ゴミ箱のファイルをrestore
 		builder.addCase(restoreTrashedFile.pending, (state) => {
 			state.isLoading = true;
@@ -458,6 +566,21 @@ export const fileListSlice = createSlice({
 
 			// trashesから削除対象ファイルを削除
 			state.trashes.list = state.trashes.list.filter((files) => files.id !== action.payload);
+		});
+
+		// アーカイブをrestore
+		builder.addCase(restoreArchivedFile.pending, (state) => {
+			state.isLoading = true;
+		});
+		builder.addCase(restoreArchivedFile.fulfilled, (state, action) => {
+			state.isLoading = false;
+
+			// 削除対象ファイルを取得しfilesへ格納
+			const archiveTarget = state.archives.list.find((files) => files.id === action.payload);
+			archiveTarget && state.files.list.unshift(archiveTarget);
+
+			// アーカイブから削除対象ファイルを削除
+			state.archives.list = state.archives.list.filter((files) => files.id !== action.payload);
 		});
 		// ファイルを完全に削除
 		builder.addCase(deleteFileCompletely.pending, (state) => {
