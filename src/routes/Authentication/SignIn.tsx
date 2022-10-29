@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
-import { auth } from '../firebase';
+import { auth } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useUser } from '../reducks/hooks';
-import { listenAuthState, signIn } from '../reducks/slice/userSlice';
-import { Link } from '../components/Atoms/Link';
+import { useAppDispatch, useUser } from '../../reducks/hooks';
+import { listenAuthState, signIn } from '../../reducks/slice/userSlice';
+import { Link } from '../../components/Atoms/Link';
 
 const SignIn = () => {
 	const dispatch = useAppDispatch();

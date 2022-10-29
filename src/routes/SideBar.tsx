@@ -250,7 +250,7 @@ const SimpleSidebar = () => {
 				</DrawerContent>
 			</Drawer>
 			<Box height="100%" maxWidth="800px" mx="auto">
-				<Box height="100vh" display={'flex'} flexDirection="column">
+				<Box height="100vh" display={'flex'} flexDirection="column" pt={{ base: '4', lg: '8' }}>
 					<Header onOpen={onOpen} />
 					<Outlet />
 				</Box>

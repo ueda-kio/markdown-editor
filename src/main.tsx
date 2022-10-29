@@ -8,7 +8,7 @@ import theme from './theme';
 import GlobalStyle from './style/GlobalStyle';
 import Root from './routes/root';
 import Loading from './components/Atoms/Loading';
-import SignIn from './routes/SignIn';
+import SignIn from './routes/Authentication/SignIn';
 import AuthGuard from './routes/Auth';
 import Router from './routes/Router';
 

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
-import { auth, db } from '../firebase';
+import { auth, db } from '../../firebase';
 import { nanoid } from '@reduxjs/toolkit';
-import { useAppDispatch, useUser } from '../reducks/hooks';
+import { useAppDispatch, useUser } from '../../reducks/hooks';
 import { useNavigate } from 'react-router-dom';
-import { signUp } from '../reducks/slice/userSlice';
-import { Link } from '../components/Atoms/Link';
+import { signUp } from '../../reducks/slice/userSlice';
+import { Link } from '../../components/Atoms/Link';
 
 const usersRef = db.collection('users');
 
