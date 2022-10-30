@@ -10,6 +10,7 @@ import Trashes from './Trashes';
 import Viwer from './Viwer';
 import Reset from './Authentication/Reset';
 import Archive from './Archive';
+import Setting from './Setting';
 
 const Router = () => {
 	return (
@@ -29,6 +30,7 @@ const Router = () => {
 							</Route>
 							<Route path="/file/:fileId" element={<Viwer />} />
 							<Route path="/file/:fileId/editor" element={<Editor />} />
+							<Route path="/setting" element={<Setting />} />
 						</Routes>
 					</Auth>
 				}
