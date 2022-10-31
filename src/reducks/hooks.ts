@@ -6,23 +6,10 @@ export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export const useFileListSelector = () => {
-	const fileList = useAppSelector((state: RootState) => state.fileList);
-	return { fileList };
-};
-
-export const useFilesSelector = () => {
 	const files = useAppSelector((state: RootState) => state.fileList.files);
-	return { files };
-};
-
-export const useTrashesSelector = () => {
 	const trashes = useAppSelector((state: RootState) => state.fileList.trashes);
-	return { trashes };
-};
-
-export const useArchiveSelector = () => {
 	const archives = useAppSelector((state: RootState) => state.fileList.archives);
-	return { archives };
+	return { files, trashes, archives };
 };
 
 export const useIsLoadingSelector = () => {

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Button, IconButton, Stack, Input, InputGroup, InputLeftElement, chakra } from '@chakra-ui/react';
 import { PlusSquareIcon, SearchIcon } from '@chakra-ui/icons';
 import Cassette from '../components/Cassette/Cassette';
-import { useAppDispatch, useFileListSelector, useFilesSelector, useIsLoadingSelector, useUser } from '../reducks/hooks';
+import { useAppDispatch, useFileListSelector, useIsLoadingSelector, useUser } from '../reducks/hooks';
 import {
 	copyFile,
 	createNewFile,
@@ -21,7 +21,7 @@ import NoCassettes from '../components/Organisms/NoCassettes';
 const Container = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const { files } = useFilesSelector();
+	const { files } = useFileListSelector();
 	const { isLoading } = useIsLoadingSelector();
 	const { user } = useUser();
 	const icons = [

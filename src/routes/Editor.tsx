@@ -3,7 +3,7 @@ import { useBeforeunload } from 'react-beforeunload';
 import { Box, Button, Flex, Grid, Icon, IconButton, Textarea, useToast } from '@chakra-ui/react';
 import { Link, useNavigate } from 'react-router-dom';
 import MarkdownViewer from '../components/Organisms/MarkdownViwer';
-import { useAppDispatch, useFileListSelector, useFilesSelector } from '../reducks/hooks';
+import { useAppDispatch, useFileListSelector } from '../reducks/hooks';
 import { fetchFileById } from '../reducks/slice/fileListSlice';
 import { updateFile } from '../reducks/slice/fileListSlice';
 import convertMarkdownToHTML from '../libs/sanitizer';
@@ -51,7 +51,7 @@ const getTitleAndLead = (value: string) => {
 const Editor = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const { files } = useFilesSelector();
+	const { files } = useFileListSelector();
 	const [value, setValue] = useState('');
 	const [savedValue, setSavedValue] = useState('');
 	const [isChanged, setIsChanged] = useState(false);

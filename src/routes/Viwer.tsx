@@ -4,13 +4,13 @@ import { Box, IconButton, Spinner } from '@chakra-ui/react';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
 import MarkdownViewer from '../components/Organisms/MarkdownViwer';
 import { fetchFileById } from '../reducks/slice/fileListSlice';
-import { useAppDispatch, useFilesSelector, useIsLoadingSelector } from '../reducks/hooks';
+import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from '../reducks/hooks';
 import ViwerWrapper from './Layout/ViwerWrapper';
 
 const Viwer = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const { files } = useFilesSelector();
+	const { files } = useFileListSelector();
 	const { isLoading } = useIsLoadingSelector();
 	const [value, setValue] = useState('');
 

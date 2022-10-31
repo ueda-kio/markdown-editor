@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { Box, IconButton, Spinner, Stack, chakra } from '@chakra-ui/react';
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import Cassette from '../components/Cassette/Cassette';
-import { useAppDispatch, useIsLoadingSelector, useTrashesSelector } from '../reducks/hooks';
+import { useAppDispatch, useIsLoadingSelector, useFileListSelector } from '../reducks/hooks';
 import { deleteFileCompletely, fetchTrashList, FileType, restoreTrashedFile, sortFiles } from '../reducks/slice/fileListSlice';
 import { FaTrashRestore, FaTrash } from 'react-icons/fa';
 import NoCassettes from '../components/Organisms/NoCassettes';
 
 const Trashes = () => {
 	const dispatch = useAppDispatch();
-	const { trashes } = useTrashesSelector();
+	const { trashes } = useFileListSelector();
 	const { isLoading } = useIsLoadingSelector();
 	const icons = [
 		{
