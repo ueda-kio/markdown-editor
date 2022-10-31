@@ -3,16 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import { Box, IconButton, Spinner } from '@chakra-ui/react';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
 import MarkdownViewer from '../components/Organisms/MarkdownViwer';
-import { fetchFileById } from '../reducks/slice/fileListSlice';
+import { fetchFileById, FileListType, FileType } from '../reducks/slice/fileListSlice';
 import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from '../reducks/hooks';
 import ViwerWrapper from './Layout/ViwerWrapper';
+
+const getFile = (fileObj: { list: FileType[]; isFetched: boolean }, id: string) => {
+	return fileObj.list.find((file) => file.id === id);
+};
 
 const Viwer = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const { files } = useFileListSelector();
+	const { files, trashes, archives } = useFileListSelector();
 	const { isLoading } = useIsLoadingSelector();
 	const [value, setValue] = useState('');
+	const [forList, setForList] = useState<FileListType>('files');
 
 	/** urlの末尾から取得したファイルid */
 	const id = (() => {
@@ -24,15 +29,24 @@ const Viwer = () => {
 	/** urlのidと同じファイルをstateから取得する */
 	const getFileById = useCallback(
 		async (id: string) => {
-			const target = (async () => {
-				const _target = files.list.find((file) => file.id === id);
-				if (_target) {
-					return _target;
+			const forFiles = getFile(files, id);
+			const forTrashes = getFile(trashes, id);
+			const forArchives = getFile(archives, id);
+			switch (true) {
+				case typeof forFiles !== 'undefined': {
+					return forFiles;
 				}
-				await dispatch(fetchFileById({ id }));
-				return files.list.find((file) => file.id === id);
-			})();
-			return target;
+				case typeof forTrashes !== 'undefined': {
+					return forTrashes;
+				}
+				case typeof forArchives !== 'undefined': {
+					return forArchives;
+				}
+				default: {
+					const res = await dispatch(fetchFileById({ id })).unwrap();
+					return res && res.data;
+				}
+			}
 		},
 		[id]
 	);

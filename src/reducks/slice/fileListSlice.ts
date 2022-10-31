@@ -14,6 +14,8 @@ export type FileType = {
 	lead: string;
 };
 
+export type FileListType = 'files' | 'trashes' | 'archives';
+
 const usersRef = db.collection('users');
 /**
  * ドキュメントへの参照を取得する
@@ -176,24 +178,53 @@ export const fetchArchiveList = createAsyncThunk<FileType[], void, { state: Root
 );
 
 /**
+ * 指定されたIDのファイルを各ユーザーの前コレクションの中から検索し取得する
+ * @param {string} uid ユーザーID
+ * @param {string} id ファイルID
+ */
+const getFile = async (uid: string, id: string) => {
+	const { fileRef, trashRef, archiveRef } = getRefs(uid);
+	let fileListType!: FileListType;
+	const data = await (async () => {
+		const fromFiles = (await fileRef.doc(id).get()).data();
+		const fromTrashes = (await trashRef.doc(id).get()).data();
+		const fromArchives = (await archiveRef.doc(id).get()).data();
+		if (typeof fromFiles !== 'undefined') {
+			fileListType = 'files';
+			return fromFiles;
+		}
+		if (typeof fromTrashes !== 'undefined') {
+			fileListType = 'trashes';
+			return fromTrashes;
+		}
+		if (typeof fromArchives !== 'undefined') {
+			fileListType = 'archives';
+			return fromArchives;
+		}
+		return false as const;
+	})();
+	return { data, fileListType };
+};
+
+/**
  * idからファイルを取得する
  * @param {string} id ファイルid
  */
-export const fetchFileById = createAsyncThunk<FileType | undefined, { id: string }, { state: RootState }>(
-	'fileList/fetchFileById',
-	async ({ id }, thunkApi) => {
-		const { uid } = thunkApi.getState().user;
-		const { fileRef } = getRefs(uid);
+export const fetchFileById = createAsyncThunk<
+	{ data: FileType; fileListType: FileListType } | undefined,
+	{ id: string },
+	{ state: RootState }
+>('fileList/fetchFileById', async ({ id }, thunkApi) => {
+	const { uid } = thunkApi.getState().user;
 
-		try {
-			const data = await (await fileRef.doc(id).get()).data();
-			if (!data || !isFileType(data)) return;
-			return data;
-		} catch {
-			return;
-		}
+	try {
+		const { data, fileListType } = await getFile(uid, id);
+		if (data === false || !isFileType(data)) return;
+		return { data, fileListType };
+	} catch {
+		return;
 	}
-);
+});
 
 /**
  * ファイルを更新する
@@ -487,8 +518,21 @@ export const fileListSlice = createSlice({
 		builder.addCase(fetchFileById.fulfilled, (state, action) => {
 			state.isLoading = false;
 			if (!action.payload) return { ...state };
-			const _file = [...state.files.list, action.payload];
-			state.files.list = _file;
+			const { data, fileListType } = action.payload;
+			switch (fileListType) {
+				case 'files': {
+					state.files.list.push(data);
+					break;
+				}
+				case 'trashes': {
+					state.trashes.list.push(data);
+					break;
+				}
+				case 'archives': {
+					state.archives.list.push(data);
+					break;
+				}
+			}
 		});
 		// ファイルの更新
 		builder.addCase(updateFile.pending, (state) => {

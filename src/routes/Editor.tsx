@@ -82,7 +82,9 @@ const Editor = () => {
 		(async () => {
 			const data = (async () => {
 				const _data = getFileById(); // stateから取得
-				return _data ? _data : await dispatch(fetchFileById({ id })).unwrap();
+				if (_data) return _data;
+				const res = await dispatch(fetchFileById({ id })).unwrap();
+				return res && res.data;
 			})();
 			const target = await data;
 			if (!target) return;
