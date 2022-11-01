@@ -352,7 +352,7 @@ export const restoreTrashedFile = createAsyncThunk<string, { id: string }, { sta
 	}
 );
 
-/** ゴミ箱のファイルをrestoreする */
+/** アーカイブのファイルをrestoreする */
 export const restoreArchivedFile = createAsyncThunk<string, { id: string }, { state: RootState }>(
 	'fileList/restoreArchivedFile',
 	async ({ id }, thunkApi) => {

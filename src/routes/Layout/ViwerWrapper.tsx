@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Flex, HStack, Icon, IconButton, Stack, useColorModeValue } from '@chakra-ui/react';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -6,28 +6,21 @@ import { RiInboxArchiveFill } from 'react-icons/ri';
 import { FaEdit, FaCopy, FaTrash } from 'react-icons/fa';
 import { useAppDispatch } from '../../reducks/hooks';
 import { putFileInArchive, putFileInTrash } from '../../reducks/slice/fileListSlice';
+import { IconType } from 'react-icons';
 
 type Props = {
+	buttons: {
+		label: string;
+		icon: IconType;
+		handleClick: () => void;
+	}[];
 	children: React.ReactNode;
 };
 
-const ViwerWrapper: React.FC<Props> = ({ children }) => {
+const ViwerWrapper: React.FC<Props> = ({ buttons, children }) => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const { fileId } = useParams();
-
-	/** 削除処理 */
-	const handleTrash = async () => {
-		if (!fileId) return;
-		await dispatch(putFileInTrash({ id: fileId }));
-		navigate('/');
-	};
-	/** 削除処理 */
-	const handleArchive = async () => {
-		if (!fileId) return;
-		await dispatch(putFileInArchive({ id: fileId }));
-		navigate('/');
-	};
 
 	return (
 		<Box maxWidth="max" m="0 auto">
@@ -52,33 +45,18 @@ const ViwerWrapper: React.FC<Props> = ({ children }) => {
 					onClick={() => navigate(-1)}
 				></IconButton>
 				<HStack spacing="2">
-					<IconButton
-						aria-label="edit this file"
-						icon={<Icon as={FaEdit} w={5} h={5} />}
-						colorScheme="teal"
-						rounded="full"
-						w="12"
-						h="12"
-						onClick={() => navigate('./editor')}
-					></IconButton>
-					<IconButton
-						aria-label="delete this file"
-						icon={<Icon as={FaTrash} w={5} h={5} />}
-						colorScheme="teal"
-						rounded="full"
-						w="12"
-						h="12"
-						onClick={handleTrash}
-					></IconButton>
-					<IconButton
-						aria-label="archive this file"
-						icon={<Icon as={RiInboxArchiveFill} w={5} h={5} />}
-						colorScheme="teal"
-						rounded="full"
-						w="12"
-						h="12"
-						onClick={handleArchive}
-					></IconButton>
+					{buttons.map((button) => (
+						<IconButton
+							key={button.label}
+							aria-label={button.label}
+							icon={<Icon as={button.icon} w={5} h={5} />}
+							colorScheme="teal"
+							rounded="full"
+							w="12"
+							h="12"
+							onClick={button.handleClick}
+						></IconButton>
+					))}
 				</HStack>
 			</Flex>
 			{children}
