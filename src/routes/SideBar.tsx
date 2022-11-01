@@ -148,6 +148,7 @@ const NavItem: React.FC<NavItemProps> = ({ name, icon, path, onClick, children, 
 							bg: 'teal',
 							color: 'white',
 						}}
+						color={isCurrentPage ? 'black' : undefined}
 						borderRadius="lg"
 						transition={'background 0.15s, color 0.15s'}
 					>
@@ -174,6 +175,7 @@ const NavItem: React.FC<NavItemProps> = ({ name, icon, path, onClick, children, 
 							bg: 'teal',
 							color: 'white',
 						}}
+						color={isCurrentPage ? 'black' : undefined}
 						borderRadius="lg"
 						transition={'background 0.15s, color 0.15s'}
 					>
@@ -226,7 +228,7 @@ const Header: React.FC<HeaderProps> = ({ onOpen, ...rest }) => {
 	);
 };
 
-const SimpleSidebar = () => {
+const Sidebar = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { pathname } = useLocation();
 
@@ -259,4 +261,4 @@ const SimpleSidebar = () => {
 	);
 };
 
-export default SimpleSidebar;
+export default Sidebar;

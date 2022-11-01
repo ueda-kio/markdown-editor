@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Flex, HStack, Icon, IconButton, Stack } from '@chakra-ui/react';
+import { Box, Flex, HStack, Icon, IconButton, Stack, useColorModeValue } from '@chakra-ui/react';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { RiInboxArchiveFill } from 'react-icons/ri';
@@ -37,7 +37,10 @@ const ViwerWrapper: React.FC<Props> = ({ children }) => {
 				top="0"
 				justifyContent={'space-between'}
 				py="4"
-				bg="linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 15%, rgba(255,255,255,1) 24%, rgba(255,255,255,1) 100%)"
+				bg={useColorModeValue(
+					'linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 15%, rgba(255,255,255,1) 24%, rgba(255,255,255,1) 100%)',
+					'linear-gradient(0deg, rgba(26,32,44,0) 0%, rgba(26,32,44,0.9) 15%, rgba(26,32,44,1) 24%, rgba(26,32,44,1) 100%)'
+				)}
 			>
 				<IconButton
 					aria-label="open new editor"
