@@ -3,9 +3,10 @@ import { AiOutlineFolderOpen } from 'react-icons/ai';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { BiArchiveIn } from 'react-icons/bi';
 import { useCallback } from 'react';
+import { FileListType } from '../../reducks/slice/fileListSlice';
 
 type Props = {
-	page: 'files' | 'trashes' | 'archive';
+	page: FileListType;
 };
 
 const NoCassettes: React.FC<Props> = ({ page }) => {
@@ -15,7 +16,7 @@ const NoCassettes: React.FC<Props> = ({ page }) => {
 				return AiOutlineFolderOpen;
 			case 'trashes':
 				return RiDeleteBin6Line;
-			case 'archive':
+			case 'archives':
 				return BiArchiveIn;
 		}
 	}, [])();
@@ -25,7 +26,7 @@ const NoCassettes: React.FC<Props> = ({ page }) => {
 				return 'No files created.';
 			case 'trashes':
 				return 'No files in the trash.';
-			case 'archive':
+			case 'archives':
 				return 'No files in the archive.';
 		}
 	}, [])();

@@ -16,13 +16,13 @@ import {
 import { auth } from '../firebase';
 import { FaEdit, FaCopy, FaTrash } from 'react-icons/fa';
 import Loading from '../components/Atoms/Loading';
-import NoCassettes from '../components/Organisms/NoCassettes';
+import NoCassettes from '../components/Cassette/NoCassettes';
+import ListWrapper from './Layout/ListWrapper';
 
 const Container = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const { files } = useFileListSelector();
-	const { isLoading } = useIsLoadingSelector();
 	const { user } = useUser();
 	const icons = [
 		{
@@ -77,22 +77,9 @@ const Container = () => {
 		}
 	};
 
-	const Empty = useMemo(() => <NoCassettes page="files" />, []);
 	return (
-		<Box position="relative" mt="5" pb="8" flexGrow={'1'} overflow="auto" _before={{ content: '""', display: 'block' }}>
-			{isLoading ? (
-				<Loading />
-			) : files.list.length ? (
-				<Stack spacing="2" as="ol" height="100%" overflowY="auto" px="3" pt="1" pb="3">
-					{files.list.map((file, i) => (
-						<li key={`${file.id}_${i}`}>
-							<Cassette file={file} icons={icons} />
-						</li>
-					))}
-				</Stack>
-			) : (
-				<>{Empty}</>
-			)}
+		<>
+			<ListWrapper page="trashes" list={files} icons={icons} />
 			<IconButton
 				aria-label="open new editor"
 				icon={<PlusSquareIcon w={6} h={6} />}
@@ -106,7 +93,7 @@ const Container = () => {
 				boxShadow="lg"
 				onClick={handleClick}
 			></IconButton>
-		</Box>
+		</>
 	);
 };
 
