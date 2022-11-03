@@ -1,5 +1,5 @@
-import React, { ReactNode, useEffect, useMemo } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import { Outlet, useLocation, useNavigate, useOutlet, useParams } from 'react-router-dom';
 import {
 	chakra,
 	IconButton,
@@ -19,8 +19,10 @@ import {
 	Input,
 	DrawerOverlay,
 	Stack,
+	Heading,
+	useColorMode,
 } from '@chakra-ui/react';
-import { ExternalLinkIcon, HamburgerIcon, SearchIcon } from '@chakra-ui/icons';
+import { ExternalLinkIcon, HamburgerIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { IconType } from 'react-icons';
 import { AiOutlineHome, AiOutlineGithub, AiOutlineSetting } from 'react-icons/ai';
 import { BiArchiveIn } from 'react-icons/bi';
@@ -44,61 +46,6 @@ const LinkItems: LinkItemProps[] = [
 	{ name: 'Settings', path: '/setting', icon: AiOutlineSetting },
 	{ name: 'Github', path: 'https://github.com/ueda-kio/markdown-editor', icon: AiOutlineGithub },
 ];
-
-type SidebarProps = {
-	onClose: () => void;
-} & BoxProps;
-const SidebarContent: React.FC<SidebarProps> = ({ onClose, ...rest }) => {
-	const dispatch = useAppDispatch();
-	const navigate = useNavigate();
-	const { isOpen, onOpen, onClose: onCloseModal } = useDisclosure();
-
-	/** サインアウト押下時処理 */
-	const handleClickSignOut = async () => {
-		await dispatch(signOut());
-		navigate('/signin');
-	};
-
-	return (
-		<>
-			<Box
-				bg={useColorModeValue('white', 'gray.900')}
-				borderRight="1px"
-				borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-				w={{ base: 'full', xl: 60 }}
-				pos="fixed"
-				h="full"
-				{...rest}
-			>
-				<Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-					<Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-						Memo App.
-					</Text>
-					<CloseButton display={{ base: 'flex', xl: 'none' }} onClick={onClose} />
-				</Flex>
-				<Stack spacing="2" as="ul" px="4">
-					{LinkItems.map((link) => (
-						<li key={link.name}>
-							<NavItem name={link.name} icon={link.icon} path={link.path}>
-								{link.name}
-							</NavItem>
-						</li>
-					))}
-				</Stack>
-				<Box pos="absolute" bottom="4" w="100%" px="4" onClick={onOpen}>
-					<NavItem name="SignOut" icon={FaSignOutAlt} path="">
-						SignOut
-					</NavItem>
-				</Box>
-			</Box>
-			<Confirm isOpen={isOpen} onClose={onCloseModal} onConfirm={handleClickSignOut} blockScrollOnMount={false}>
-				<Text fontWeight="bold" textAlign={'center'}>
-					Would you like to signOut?
-				</Text>
-			</Confirm>
-		</>
-	);
-};
 
 type NavItemProps = {
 	name: string;
@@ -133,10 +80,68 @@ const NavItem: React.FC<NavItemProps> = ({ name, icon, path, onClick, children, 
 	);
 };
 
+type SidebarProps = {
+	onClose: () => void;
+} & BoxProps;
+const SidebarContent: React.FC<SidebarProps> = ({ onClose, ...rest }) => {
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
+	const { isOpen, onOpen, onClose: onCloseModal } = useDisclosure();
+
+	/** サインアウト押下時処理 */
+	const handleClickSignOut = async () => {
+		await dispatch(signOut());
+		navigate('/signin');
+	};
+
+	return (
+		<>
+			<Box
+				bg={useColorModeValue('white', 'gray.900')}
+				borderRight="1px"
+				borderRightColor={useColorModeValue('gray.200', 'gray.700')}
+				w={{ base: 'full', xl: 60 }}
+				pos="fixed"
+				h="full"
+				{...rest}
+			>
+				<Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
+					<Heading as="h1" fontSize="2xl" fontFamily="monospace" fontWeight="bold">
+						Editor App.
+					</Heading>
+					<CloseButton display={{ base: 'flex', xl: 'none' }} onClick={onClose} />
+				</Flex>
+				<Stack spacing="2" as="ul" px="4">
+					{LinkItems.map((link) => (
+						<li key={link.name}>
+							<NavItem name={link.name} icon={link.icon} path={link.path}>
+								{link.name}
+							</NavItem>
+						</li>
+					))}
+				</Stack>
+				<Box pos="absolute" bottom="4" w="100%" px="4" onClick={onOpen}>
+					<NavItem name="SignOut" icon={FaSignOutAlt} path="">
+						SignOut
+					</NavItem>
+				</Box>
+			</Box>
+			<Confirm isOpen={isOpen} onClose={onCloseModal} onConfirm={handleClickSignOut} blockScrollOnMount={false}>
+				<Text fontWeight="bold" textAlign={'center'}>
+					Would you like to signOut?
+				</Text>
+			</Confirm>
+		</>
+	);
+};
+
 type HeaderProps = {
 	onOpen: () => void;
+	title: string;
 } & FlexProps;
-const Header: React.FC<HeaderProps> = ({ onOpen, ...rest }) => {
+const Header: React.FC<HeaderProps> = ({ onOpen, title, ...rest }) => {
+	const { colorMode, toggleColorMode } = useColorMode();
+
 	return (
 		<Flex w="full" alignItems="center" justifyContent="flex-start" gap="3" {...rest}>
 			<IconButton
@@ -147,7 +152,17 @@ const Header: React.FC<HeaderProps> = ({ onOpen, ...rest }) => {
 				aria-label="open menu"
 				icon={<HamburgerIcon />}
 			/>
-			<Box w="full">Files</Box>
+			<Heading w="full">{title}</Heading>
+			{title !== 'Setting' && (
+				<IconButton
+					variant="outline"
+					rounded="full"
+					justifySelf={'end'}
+					onClick={toggleColorMode}
+					aria-label="toggle color mode"
+					icon={colorMode === 'light' ? <SunIcon /> : <MoonIcon />}
+				/>
+			)}
 		</Flex>
 	);
 };
@@ -155,9 +170,25 @@ const Header: React.FC<HeaderProps> = ({ onOpen, ...rest }) => {
 const Sidebar = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { pathname } = useLocation();
+	const [headerTitle, setHeaderTitle] = useState('');
 
 	// ページ変更時にドロワーを閉じる
 	useEffect(() => onClose(), [pathname]);
+	useEffect(() => {
+		switch (pathname) {
+			case '/trash':
+				setHeaderTitle('Trash');
+				break;
+			case '/archive':
+				setHeaderTitle('Archive');
+				break;
+			case '/setting':
+				setHeaderTitle('Setting');
+				break;
+			default:
+				setHeaderTitle('Files');
+		}
+	}, [pathname]);
 
 	return (
 		<Box minH="100vh">
@@ -177,7 +208,7 @@ const Sidebar = () => {
 			</Drawer>
 			<Box height="100%" maxWidth="max" mx="auto">
 				<Box position={'relative'} height="100vh" display={'flex'} flexDirection="column" pt={{ base: '4', lg: '8' }} px="3">
-					<Header onOpen={onOpen} />
+					<Header onOpen={onOpen} title={headerTitle} />
 					<Outlet />
 				</Box>
 			</Box>

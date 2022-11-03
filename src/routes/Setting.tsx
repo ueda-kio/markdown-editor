@@ -28,16 +28,7 @@ const Setting = () => {
 		{ label: 'ショートカットで保存', id: nanoid(), handleChange: () => console.log('test') },
 	];
 	return (
-		<Box maxWidth="max" m="0 auto">
-			<IconButton
-				aria-label="open new editor"
-				icon={<ChevronLeftIcon w={6} h={6} />}
-				colorScheme="teal"
-				rounded="full"
-				w="12"
-				h="12"
-				onClick={() => navigate(-1)}
-			></IconButton>
+		<Box maxWidth="max">
 			<VStack divider={<StackDivider h="1px" bg="gray.200" />} spacing="4" align="stretch">
 				<FormControl as="fieldset">
 					<FormLabel>theme</FormLabel>
@@ -59,7 +50,7 @@ const Setting = () => {
 					</RadioGroup>
 				</FormControl>
 				{switchArray.map((elm) => (
-					<FormControl display="flex" alignItems="center" justifyContent={'space-between'}>
+					<FormControl key={elm.label} display="flex" alignItems="center" justifyContent={'space-between'}>
 						<FormLabel htmlFor={elm.id} mb="0" flexGrow={'1'} cursor="pointer">
 							{elm.label}
 						</FormLabel>

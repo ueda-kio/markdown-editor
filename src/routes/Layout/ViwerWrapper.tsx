@@ -20,7 +20,7 @@ const ViwerWrapper: React.FC<Props> = ({ file, menus, children }) => {
 	const navigate = useNavigate();
 
 	return (
-		<Box maxWidth="max">
+		<Box maxWidth="max" mx="auto">
 			<Flex
 				as="header"
 				pos="sticky"

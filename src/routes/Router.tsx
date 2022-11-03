@@ -27,10 +27,10 @@ const Router = () => {
 								<Route index element={<Container />} />
 								<Route path="trash" element={<Trashes />} />
 								<Route path="archive" element={<Archive />} />
+								<Route path="/setting" element={<Setting />} />
 							</Route>
-							<Route path="/file/:fileId" element={<Viwer />} />
 							<Route path="/file/:fileId/editor" element={<Editor />} />
-							<Route path="/setting" element={<Setting />} />
+							<Route path="/file/:fileId" element={<Viwer />} />
 						</Routes>
 					</Auth>
 				}
