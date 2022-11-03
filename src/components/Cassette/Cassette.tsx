@@ -14,6 +14,7 @@ import {
 	PopoverBody,
 	VStack,
 	StackDivider,
+	useColorModeValue,
 } from '@chakra-ui/react';
 import { CopyIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { BsThreeDotsVertical } from 'react-icons/bs';
@@ -56,7 +57,7 @@ const Cassette: React.FC<Props> = ({ file, icons }) => {
 			borderColor={'gray.300'}
 			cursor="pointer"
 			transition="background 0.15s"
-			_hover={{ bg: 'gray.50' }}
+			_hover={{ bg: useColorModeValue('gray.50', 'whiteAlpha.50') }}
 			css={style.notTapHighlight}
 		>
 			<Link to={`/file/${id}`} display="block" px="4" py="5" lineHeight={'1.5'} {...{ '-webkit-tap-highlight-color': 'transparent' }}>
@@ -99,7 +100,9 @@ const Cassette: React.FC<Props> = ({ file, icons }) => {
 								pr="4"
 								w="100%"
 							>
-								<Text fontSize={'sm'}>{button.text}</Text>
+								<Text fontWeight={'bold'} fontSize={'sm'}>
+									{button.text}
+								</Text>
 							</IconLink>
 						))}
 					</VStack>
