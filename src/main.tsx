@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import { Provider } from 'react-redux';
+import { CacheProvider, EmotionCache } from '@emotion/react';
+import createEmotionCache from './createEmotionCache';
 import { store } from './reducks/store/store';
 import theme from './theme';
 import GlobalStyle from './style/GlobalStyle';
@@ -69,13 +71,15 @@ export const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 	<Provider store={store}>
-		<ChakraProvider theme={theme} resetCSS>
-			<ColorModeScript initialColorMode={theme.config.initialColorMode} />
-			<GlobalStyle />
-			<BrowserRouter>
-				<Router />
-			</BrowserRouter>
-			{/* <RouterProvider router={router} /> */}
-		</ChakraProvider>
+		<CacheProvider value={createEmotionCache()}>
+			<ChakraProvider theme={theme} resetCSS>
+				<ColorModeScript initialColorMode={theme.config.initialColorMode} />
+				<GlobalStyle />
+				<BrowserRouter>
+					<Router />
+				</BrowserRouter>
+				{/* <RouterProvider router={router} /> */}
+			</ChakraProvider>
+		</CacheProvider>
 	</Provider>
 );
