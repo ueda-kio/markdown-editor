@@ -8,7 +8,7 @@ import ListWrapper from './Layout/ListWrapper';
 const Archive = () => {
 	const dispatch = useAppDispatch();
 	const { archives } = useFileListSelector();
-	const icons = [
+	const menus = [
 		{
 			icon: BiArchiveOut,
 			onClick: async ({ file }: { file: FileType }) => {
@@ -33,7 +33,7 @@ const Archive = () => {
 		if (archives.isFetched === false) dispatch(fetchArchiveList());
 	}, []);
 
-	return <ListWrapper page="archives" list={archives} icons={icons} />;
+	return <ListWrapper page="archives" list={archives} menus={menus} />;
 };
 
 export default Archive;

@@ -1,30 +1,10 @@
 import React from 'react';
-import {
-	Box,
-	Flex,
-	Grid,
-	Icon,
-	IconButton,
-	Text,
-	chakra,
-	Popover,
-	PopoverTrigger,
-	PopoverContent,
-	PopoverArrow,
-	PopoverBody,
-	VStack,
-	StackDivider,
-	useColorModeValue,
-} from '@chakra-ui/react';
-import { CopyIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { useNavigate } from 'react-router-dom';
+import { Box, Text, Grid, chakra, useColorModeValue } from '@chakra-ui/react';
 import { Link } from '../Atoms/Link';
 import { css } from '@emotion/react';
-import { FileType, putFileInTrash } from '../../reducks/slice/fileListSlice';
-import { useAppDispatch } from '../../reducks/hooks';
+import { FileType } from '../../reducks/slice/fileListSlice';
 import { IconType } from 'react-icons';
-import IconLink from '../Atoms/IconLink';
+import Popover from '../Organisms/Popover';
 
 const style = {
 	notTapHighlight: css`
@@ -34,19 +14,19 @@ const style = {
 
 type Props = {
 	file: FileType;
-	icons: {
+	menus: {
 		icon: IconType;
 		onClick: ({ file }: { file: FileType }) => void;
 		text: string;
 	}[];
 };
 
-const Cassette: React.FC<Props> = ({ file, icons }) => {
+const Cassette: React.FC<Props> = ({ file, menus }) => {
 	const { id, title, lead } = file;
-	const iconArray = (() =>
-		icons.map((iconObj) => ({
-			...iconObj,
-			icon: chakra(iconObj.icon) as IconType,
+	const menuArray = (() =>
+		menus.map((menu) => ({
+			...menu,
+			icon: chakra(menu.icon) as IconType,
 		})))();
 
 	return (
@@ -72,42 +52,7 @@ const Cassette: React.FC<Props> = ({ file, icons }) => {
 					</Box>
 				</Grid>
 			</Link>
-			<Popover>
-				<PopoverTrigger>
-					<IconButton
-						position="absolute"
-						top="50%"
-						right="1rem"
-						transform="translateY(-50%)"
-						aria-label="open menu"
-						rounded={'full'}
-						bg="none"
-						icon={<BsThreeDotsVertical />}
-					>
-						Trigger
-					</IconButton>
-				</PopoverTrigger>
-				<PopoverContent cursor="default" border="1px" borderColor={'gray.300'} overflow="hidden" w="auto" minWidth="5xs">
-					<VStack spacing="1" p="1">
-						{iconArray.map((button) => (
-							<IconLink
-								to=""
-								type="button"
-								tag="button"
-								icon={button.icon}
-								onClick={() => button.onClick({ file })}
-								p="3"
-								pr="4"
-								w="100%"
-							>
-								<Text fontWeight={'bold'} fontSize={'sm'}>
-									{button.text}
-								</Text>
-							</IconLink>
-						))}
-					</VStack>
-				</PopoverContent>
-			</Popover>
+			<Popover menuArray={menuArray} file={file} />
 		</Box>
 	);
 };

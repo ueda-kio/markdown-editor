@@ -13,14 +13,14 @@ type Props = {
 		list: FileType[];
 		isFetched: boolean;
 	};
-	icons: {
+	menus: {
 		icon: IconType;
 		onClick: ({ file }: { file: FileType }) => void;
 		text: string;
 	}[];
 } & BoxProps;
 
-const ListWrapper: React.FC<Props> = ({ page, list, icons, ...rest }) => {
+const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
 	const { isLoading } = useIsLoadingSelector();
 	const Empty = useMemo(() => <NoCassettes page={page} />, []);
 
@@ -35,7 +35,7 @@ const ListWrapper: React.FC<Props> = ({ page, list, icons, ...rest }) => {
 						<Stack spacing="2" as="ol" flexGrow={'1'} height="100%" overflowY="auto">
 							{list.list.map((file, i) => (
 								<li key={`${file.id}_${i}`}>
-									<Cassette file={file} icons={icons} />
+									<Cassette file={file} menus={menus} />
 								</li>
 							))}
 						</Stack>

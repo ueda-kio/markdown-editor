@@ -25,7 +25,7 @@ const Container = () => {
 	const navigate = useNavigate();
 	const { files } = useFileListSelector();
 	const { user } = useUser();
-	const icons = [
+	const menus = [
 		{
 			icon: FaEdit,
 			onClick: ({ file: { id } }: { file: FileType }) => {
@@ -86,7 +86,7 @@ const Container = () => {
 
 	return (
 		<>
-			<ListWrapper page="trashes" list={files} icons={icons} />
+			<ListWrapper page="trashes" list={files} menus={menus} />
 			<IconButton
 				aria-label="open new editor"
 				icon={<PlusSquareIcon w={6} h={6} />}

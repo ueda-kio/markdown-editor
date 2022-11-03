@@ -1,29 +1,26 @@
-import React, { useEffect } from 'react';
-import { Box, Flex, HStack, Icon, IconButton, Stack, useColorModeValue } from '@chakra-ui/react';
+import React from 'react';
+import { Box, Flex, IconButton, useColorModeValue } from '@chakra-ui/react';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
-import { useNavigate, useParams } from 'react-router-dom';
-import { RiInboxArchiveFill } from 'react-icons/ri';
-import { FaEdit, FaCopy, FaTrash } from 'react-icons/fa';
-import { useAppDispatch } from '../../reducks/hooks';
-import { putFileInArchive, putFileInTrash } from '../../reducks/slice/fileListSlice';
+import { useNavigate } from 'react-router-dom';
+import { FileType } from '../../reducks/slice/fileListSlice';
 import { IconType } from 'react-icons';
+import Popover from '../../components/Organisms/Popover';
 
 type Props = {
-	buttons: {
-		label: string;
+	menus: {
+		text: string;
 		icon: IconType;
-		handleClick: () => void;
+		onClick: ({ file }: { file: FileType }) => void;
 	}[];
+	file: FileType;
 	children: React.ReactNode;
 };
 
-const ViwerWrapper: React.FC<Props> = ({ buttons, children }) => {
-	const dispatch = useAppDispatch();
+const ViwerWrapper: React.FC<Props> = ({ file, menus, children }) => {
 	const navigate = useNavigate();
-	const { fileId } = useParams();
 
 	return (
-		<Box maxWidth="max" m="0 auto">
+		<Box maxWidth="max">
 			<Flex
 				as="header"
 				pos="sticky"
@@ -35,6 +32,7 @@ const ViwerWrapper: React.FC<Props> = ({ buttons, children }) => {
 					'linear-gradient(0deg, rgba(26,32,44,0) 0%, rgba(26,32,44,0.9) 15%, rgba(26,32,44,1) 24%, rgba(26,32,44,1) 100%)'
 				)}
 			>
+				<Popover file={file} menuArray={menus} />
 				<IconButton
 					aria-label="open new editor"
 					icon={<ChevronLeftIcon w={6} h={6} />}
@@ -44,20 +42,6 @@ const ViwerWrapper: React.FC<Props> = ({ buttons, children }) => {
 					h="12"
 					onClick={() => navigate(-1)}
 				></IconButton>
-				<HStack spacing="2">
-					{buttons.map((button) => (
-						<IconButton
-							key={button.label}
-							aria-label={button.label}
-							icon={<Icon as={button.icon} w={5} h={5} />}
-							colorScheme="teal"
-							rounded="full"
-							w="12"
-							h="12"
-							onClick={button.handleClick}
-						></IconButton>
-					))}
-				</HStack>
 			</Flex>
 			{children}
 		</Box>

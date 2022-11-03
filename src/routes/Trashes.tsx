@@ -12,7 +12,7 @@ import ListWrapper from './Layout/ListWrapper';
 const Trashes = () => {
 	const dispatch = useAppDispatch();
 	const { trashes } = useFileListSelector();
-	const icons = [
+	const menus = [
 		{
 			icon: FaTrashRestore,
 			onClick: async ({ file }: { file: FileType }) => {
@@ -36,7 +36,7 @@ const Trashes = () => {
 		if (trashes.isFetched === false) dispatch(fetchTrashList());
 	}, []);
 
-	return <ListWrapper page="trashes" list={trashes} icons={icons} />;
+	return <ListWrapper page="trashes" list={trashes} menus={menus} />;
 };
 
 export default Trashes;
