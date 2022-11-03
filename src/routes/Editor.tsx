@@ -172,7 +172,7 @@ const Editor = () => {
 					overflow={'hidden'}
 					gap={30}
 					templateColumns={{ base: 'none', lg: 'repeat(2, 1fr)' }}
-					templateRows={{ base: 'min-content 1fr', lg: 'none' }}
+					templateRows={{ base: 'min-content 1fr', lg: '100%' }}
 					flexGrow="1"
 					w="100%"
 				>
