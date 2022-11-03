@@ -203,7 +203,7 @@ type HeaderProps = {
 } & FlexProps;
 const Header: React.FC<HeaderProps> = ({ onOpen, ...rest }) => {
 	return (
-		<Flex w="full" alignItems="center" justifyContent="flex-start" gap="3" px="3" {...rest}>
+		<Flex w="full" alignItems="center" justifyContent="flex-start" gap="3" {...rest}>
 			<IconButton
 				variant="outline"
 				rounded="full"
@@ -212,18 +212,7 @@ const Header: React.FC<HeaderProps> = ({ onOpen, ...rest }) => {
 				aria-label="open menu"
 				icon={<HamburgerIcon />}
 			/>
-			<Box w="full">
-				<InputGroup>
-					<InputLeftElement
-						top="50%"
-						left="1"
-						transform="translateY(-50%)"
-						pointerEvents="none"
-						children={<SearchIcon w={5} h={5} color="gray.400" />}
-					/>
-					<Input placeholder="search" size="lg" rounded="3xl" variant="filled" />
-				</InputGroup>
-			</Box>
+			<Box w="full">Files</Box>
 		</Flex>
 	);
 };
@@ -252,7 +241,7 @@ const Sidebar = () => {
 				</DrawerContent>
 			</Drawer>
 			<Box height="100%" maxWidth="max" mx="auto">
-				<Box height="100vh" display={'flex'} flexDirection="column" pt={{ base: '4', lg: '8' }}>
+				<Box height="100vh" display={'flex'} flexDirection="column" pt={{ base: '4', lg: '8' }} px="3">
 					<Header onOpen={onOpen} />
 					<Outlet />
 				</Box>
