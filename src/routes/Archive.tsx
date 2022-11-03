@@ -16,7 +16,7 @@ const Archive = () => {
 				await dispatch(restoreArchivedFile({ id }));
 				dispatch(sortFiles({ listType: 'files', orderBy: 'desc' }));
 			},
-			ariaLabel: 'test-label',
+			text: 'Restore Archive',
 		},
 		{
 			icon: FaTrash,
@@ -25,13 +25,13 @@ const Archive = () => {
 				await dispatch(putFileInTrash({ id, isArchive: true }));
 				dispatch(sortFiles({ listType: 'trashes', orderBy: 'desc' }));
 			},
-			ariaLabel: 'test-label',
+			text: 'Delete',
 		},
 	];
 
 	useEffect(() => {
 		if (archives.isFetched === false) dispatch(fetchArchiveList());
-	}, [archives.isFetched]);
+	}, []);
 
 	return <ListWrapper page="archives" list={archives} icons={icons} />;
 };

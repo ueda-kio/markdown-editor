@@ -1,12 +1,12 @@
 import React from 'react';
-import { chakra, Box, Flex, Icon } from '@chakra-ui/react';
+import { chakra, Box, Flex, Icon, ChakraComponent } from '@chakra-ui/react';
 import { Link, LinkProps } from './Link';
 import { IconType } from 'react-icons/lib';
 
 type TagType = 'a' | 'Link' | 'button';
 
 type LinkWrapperType = { tag: TagType; children: React.ReactNode } & LinkProps;
-const LinkWrapper: React.FC<LinkWrapperType> = ({ tag, to, type, children, ...rest }) => {
+const LinkWrapper: React.FC<LinkWrapperType> = ({ tag, to = '', type = 'button', children, ...rest }) => {
 	switch (tag) {
 		case 'a':
 			return (
@@ -41,7 +41,7 @@ type Props = {
 	children: React.ReactNode;
 } & LinkProps;
 
-const IconLink: React.FC<Props> = ({ tag, type, icon, isActive, children, ...rest }) => {
+const IconLink: React.FC<Props> = ({ tag, type, icon, isActive, children, to = '', ...rest }) => {
 	return (
 		<LinkWrapper
 			tag={tag}
@@ -61,6 +61,7 @@ const IconLink: React.FC<Props> = ({ tag, type, icon, isActive, children, ...res
 			}}
 			transition={'background 0.15s, color 0.15s'}
 			{...(isActive && { 'aria-current': 'page' })}
+			to={to}
 			{...rest}
 		>
 			<Icon mr="4" fontSize="16" as={icon} />

@@ -10,11 +10,12 @@ import {
 	createNewSampleFile,
 	fetchFileList,
 	FileType,
+	putFileInArchive,
 	putFileInTrash,
 	sortFiles,
 } from '../reducks/slice/fileListSlice';
 import { auth } from '../firebase';
-import { FaEdit, FaCopy, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaCopy, FaTrash, FaTrashRestore, FaArchive } from 'react-icons/fa';
 import Loading from '../components/Atoms/Loading';
 import NoCassettes from '../components/Cassette/NoCassettes';
 import ListWrapper from './Layout/ListWrapper';
@@ -27,11 +28,24 @@ const Container = () => {
 	const icons = [
 		{
 			icon: FaEdit,
-			onClick: ({ file }: { file: FileType }) => {
-				const { id } = file;
+			onClick: ({ file: { id } }: { file: FileType }) => {
 				navigate(`/file/${id}/editor/`);
 			},
-			ariaLabel: 'edit this file',
+			text: 'Edit',
+		},
+		{
+			icon: FaCopy,
+			onClick: async ({ file }: { file: FileType }) => {
+				await dispatch(copyFile(file));
+			},
+			text: 'Copy',
+		},
+		{
+			icon: FaArchive,
+			onClick: async ({ file: { id } }: { file: FileType }) => {
+				await dispatch(putFileInArchive({ id }));
+			},
+			text: 'Archive',
 		},
 		{
 			icon: FaTrash,
@@ -40,14 +54,7 @@ const Container = () => {
 				await dispatch(putFileInTrash({ id }));
 				dispatch(sortFiles({ listType: 'trashes', orderBy: 'desc' }));
 			},
-			ariaLabel: 'delete this file',
-		},
-		{
-			icon: FaCopy,
-			onClick: async ({ file }: { file: FileType }) => {
-				await dispatch(copyFile(file));
-			},
-			ariaLabel: 'copy this file',
+			text: 'Delete',
 		},
 	];
 

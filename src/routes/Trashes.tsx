@@ -20,7 +20,7 @@ const Trashes = () => {
 				await dispatch(restoreTrashedFile({ id }));
 				dispatch(sortFiles({ listType: 'files', orderBy: 'desc' }));
 			},
-			ariaLabel: 'test-label',
+			text: 'Restore Trash',
 		},
 		{
 			icon: FaTrash,
@@ -28,13 +28,13 @@ const Trashes = () => {
 				const { id } = file;
 				dispatch(deleteFileCompletely({ id }));
 			},
-			ariaLabel: 'test-label',
+			text: 'Delete Completely',
 		},
 	];
 
 	useEffect(() => {
 		if (trashes.isFetched === false) dispatch(fetchTrashList());
-	}, [trashes.isFetched]);
+	}, []);
 
 	return <ListWrapper page="trashes" list={trashes} icons={icons} />;
 };

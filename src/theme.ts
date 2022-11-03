@@ -7,6 +7,8 @@ const theme = extendTheme({
 		},
 	},
 	sizes: {
+		'5xs': '10rem',
+		'4xs': '12rem',
 		max: '840px',
 	},
 	shadows: {

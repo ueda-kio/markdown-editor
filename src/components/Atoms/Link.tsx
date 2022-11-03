@@ -1,8 +1,10 @@
 import React from 'react';
-import { Link as ChakraLink } from '@chakra-ui/react';
+import { Link as ChakraLink, Button } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 
-type LinkProps = React.ComponentProps<typeof ChakraLink> & React.ComponentProps<typeof RouterLink>;
+export type LinkProps = React.ComponentProps<typeof ChakraLink> &
+	React.ComponentProps<typeof RouterLink> &
+	React.ComponentProps<typeof Button>;
 
 export const Link = ({ children, ...props }: LinkProps) => {
 	return (

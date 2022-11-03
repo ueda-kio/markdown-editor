@@ -78,7 +78,7 @@ const Viwer = () => {
 		await dispatch(putFileInTrash({ id: fileId }));
 		navigate('/');
 	};
-	/** 削除処理 */
+	/** アーカイブ処理 */
 	const handleArchive = async () => {
 		if (!fileId) return;
 		await dispatch(putFileInArchive({ id: fileId }));

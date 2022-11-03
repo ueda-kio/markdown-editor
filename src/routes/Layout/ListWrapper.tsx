@@ -16,7 +16,7 @@ type Props = {
 	icons: {
 		icon: IconType;
 		onClick: ({ file }: { file: FileType }) => void;
-		ariaLabel: string;
+		text: string;
 	}[];
 } & BoxProps;
 
