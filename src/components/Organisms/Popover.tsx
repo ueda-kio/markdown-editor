@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconButton, Text, Popover as ChakraPopover, PopoverTrigger, PopoverContent, VStack } from '@chakra-ui/react';
+import { IconButton, Text, Popover as ChakraPopover, PopoverTrigger, PopoverContent, VStack, Portal } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IconType } from 'react-icons';
 import { FileType } from '../../reducks/slice/fileListSlice';
@@ -30,27 +30,29 @@ const Popover: React.FC<Props> = ({ menuArray, file }) => {
 					Trigger
 				</IconButton>
 			</PopoverTrigger>
-			<PopoverContent cursor="default" border="1px" borderColor={'gray.300'} overflow="hidden" w="auto" minWidth="5xs">
-				<VStack spacing="1" p="1">
-					{menuArray.map((menu) => (
-						<IconLink
-							key={menu.text}
-							to=""
-							type="button"
-							tag="button"
-							icon={menu.icon}
-							onClick={() => menu.onClick({ file })}
-							p="3"
-							pr="4"
-							w="100%"
-						>
-							<Text fontWeight={'bold'} fontSize={'sm'}>
-								{menu.text}
-							</Text>
-						</IconLink>
-					))}
-				</VStack>
-			</PopoverContent>
+			<Portal>
+				<PopoverContent cursor="default" border="1px" borderColor={'gray.300'} overflow="hidden" w="auto" minWidth="5xs">
+					<VStack spacing="1" p="1">
+						{menuArray.map((menu) => (
+							<IconLink
+								key={menu.text}
+								to=""
+								type="button"
+								tag="button"
+								icon={menu.icon}
+								onClick={() => menu.onClick({ file })}
+								p="3"
+								pr="4"
+								w="100%"
+							>
+								<Text fontWeight={'bold'} fontSize={'sm'}>
+									{menu.text}
+								</Text>
+							</IconLink>
+						))}
+					</VStack>
+				</PopoverContent>
+			</Portal>
 		</ChakraPopover>
 	);
 };

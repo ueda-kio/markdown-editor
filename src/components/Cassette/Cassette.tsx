@@ -1,16 +1,9 @@
 import React from 'react';
 import { Box, Text, Grid, chakra, useColorModeValue } from '@chakra-ui/react';
 import { Link } from '../Atoms/Link';
-import { css } from '@emotion/react';
 import { FileType } from '../../reducks/slice/fileListSlice';
 import { IconType } from 'react-icons';
 import Popover from '../Organisms/Popover';
-
-const style = {
-	notTapHighlight: css`
-		-webkit-tap-highlight-color: transparent;
-	`,
-};
 
 type Props = {
 	file: FileType;
@@ -38,9 +31,8 @@ const Cassette: React.FC<Props> = ({ file, menus }) => {
 			cursor="pointer"
 			transition="background 0.15s"
 			_hover={{ bg: useColorModeValue('gray.50', 'whiteAlpha.50') }}
-			css={style.notTapHighlight}
 		>
-			<Link to={`/file/${id}`} display="block" px="4" py="5" lineHeight={'1.5'} {...{ '-webkit-tap-highlight-color': 'transparent' }}>
+			<Link to={`/file/${id}`} display="block" px="4" py="5" lineHeight={'1.5'}>
 				<Grid templateColumns={{ base: '1fr 176px', md: '1fr 200px' }} gap={{ base: 3, md: '5' }} alignItems="center">
 					<Box>
 						<Text h="27px" fontSize="lg" fontWeight="bold" noOfLines={1}>
