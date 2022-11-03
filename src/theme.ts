@@ -24,6 +24,9 @@ const theme = extendTheme({
 			},
 		},
 	},
+	breakpoints: {
+		xl: '83em',
+	},
 	config: {
 		disableTransitionOnChange: false,
 	},
