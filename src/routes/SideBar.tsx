@@ -30,6 +30,7 @@ import { Link } from '../components/Atoms/Link';
 import Confirm from '../components/Organisms/Modal/Confirm';
 import { useAppDispatch } from '../reducks/hooks';
 import { signOut } from '../reducks/slice/userSlice';
+import IconLink from '../components/Atoms/IconLink';
 
 type LinkItemProps = {
 	name: string;
@@ -109,92 +110,26 @@ type NavItemProps = {
 const NavItem: React.FC<NavItemProps> = ({ name, icon, path, onClick, children, ...rest }) => {
 	const { pathname } = useLocation();
 	const isCurrentPage = useMemo(() => pathname === path, [pathname]);
+	const isExternalLink = path.startsWith('https');
+
+	const tag = useMemo(() => {
+		if (name === 'SignOut') return 'button';
+		if (isExternalLink) return 'a';
+		return 'Link';
+	}, [name]);
 
 	return (
-		<>
-			{name === 'SignOut' ? (
-				<chakra.button pos="relative" display="block" w="100%" {...(isCurrentPage && { 'aria-current': 'page' })} onClick={onClick}>
-					<Box
-						bg={isCurrentPage ? 'teal.100' : undefined}
-						textDecoration={'none'}
-						_focus={{ boxShadow: 'none' }}
-						_hover={{
-							bg: 'teal',
-							color: 'white',
-						}}
-						borderRadius="lg"
-						transition={'background 0.15s, color 0.15s'}
-					>
-						<Flex position="relative" align="center" p="4" role="group" cursor="pointer" {...rest}>
-							<Icon
-								mr="4"
-								fontSize="16"
-								_groupHover={{
-									color: 'white',
-								}}
-								as={icon}
-							/>
-							{children}
-						</Flex>
-					</Box>
-				</chakra.button>
-			) : !path.startsWith('https') ? (
-				<Link to={path} pos="relative" display="block" {...(isCurrentPage && { 'aria-current': 'page' })}>
-					<Box
-						bg={isCurrentPage ? 'teal.100' : undefined}
-						textDecoration={'none'}
-						_focus={{ boxShadow: 'none' }}
-						_hover={{
-							bg: 'teal',
-							color: 'white',
-						}}
-						color={isCurrentPage ? 'black' : undefined}
-						borderRadius="lg"
-						transition={'background 0.15s, color 0.15s'}
-					>
-						<Flex position="relative" align="center" p="4" role="group" cursor="pointer" {...rest}>
-							<Icon
-								mr="4"
-								fontSize="16"
-								_groupHover={{
-									color: 'white',
-								}}
-								as={icon}
-							/>
-							{children}
-						</Flex>
-					</Box>
-				</Link>
-			) : (
-				<chakra.a href={path} pos="relative" display="block" target="_blank" rel="noreferrer">
-					<Box
-						bg={isCurrentPage ? 'teal.100' : undefined}
-						textDecoration={'none'}
-						_focus={{ boxShadow: 'none' }}
-						_hover={{
-							bg: 'teal',
-							color: 'white',
-						}}
-						color={isCurrentPage ? 'black' : undefined}
-						borderRadius="lg"
-						transition={'background 0.15s, color 0.15s'}
-					>
-						<Flex position="relative" align="center" p="4" role="group" cursor="pointer" {...rest}>
-							<Icon
-								mr="4"
-								fontSize="16"
-								_groupHover={{
-									color: 'white',
-								}}
-								as={icon}
-							/>
-							{children}
-						</Flex>
-						<ExternalLinkIcon position="absolute" top="50%" right="4" mx="2px" transform="translateY(-50%)" />
-					</Box>
-				</chakra.a>
-			)}
-		</>
+		<IconLink
+			tag={tag}
+			to={path}
+			icon={icon}
+			onClick={onClick}
+			isActive={isCurrentPage}
+			target={isExternalLink ? '_blank' : undefined}
+			w={'100%'}
+		>
+			{children}
+		</IconLink>
 	);
 };
 
