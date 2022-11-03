@@ -176,7 +176,7 @@ const Sidebar = () => {
 				</DrawerContent>
 			</Drawer>
 			<Box height="100%" maxWidth="max" mx="auto">
-				<Box height="100vh" display={'flex'} flexDirection="column" pt={{ base: '4', lg: '8' }} px="3">
+				<Box position={'relative'} height="100vh" display={'flex'} flexDirection="column" pt={{ base: '4', lg: '8' }} px="3">
 					<Header onOpen={onOpen} />
 					<Outlet />
 				</Box>
