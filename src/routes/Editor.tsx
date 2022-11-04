@@ -1,13 +1,12 @@
-import React, { TextareaHTMLAttributes, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useBeforeunload } from 'react-beforeunload';
-import { Box, Button, Flex, Grid, Icon, IconButton, Textarea, useToast } from '@chakra-ui/react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Box, Button, Flex, Grid, Icon, IconButton, Textarea, useToast, useDisclosure, Portal, Fade, Text, Kbd } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 import MarkdownViewer from '../components/Organisms/MarkdownViwer';
 import { useAppDispatch, useFileListSelector } from '../reducks/hooks';
 import { fetchFileById } from '../reducks/slice/fileListSlice';
 import { updateFile } from '../reducks/slice/fileListSlice';
 import convertMarkdownToHTML from '../libs/sanitizer';
-import ViwerWrapper from './Layout/ViwerWrapper';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
 import { AiOutlineCloudSync } from 'react-icons/ai';
 
@@ -48,7 +47,7 @@ const getTitleAndLead = (value: string) => {
 	return { title, lead };
 };
 
-const Editor = () => {
+const Editor: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const { files } = useFileListSelector();
@@ -56,6 +55,7 @@ const Editor = () => {
 	const [savedValue, setSavedValue] = useState('');
 	const [isChanged, setIsChanged] = useState(false);
 	const toast = useToast();
+	const { isOpen, onOpen, onClose } = useDisclosure();
 	useBeforeunload((event) => {
 		// if (value !== '') {
 		// console.log('unload');
@@ -155,42 +155,66 @@ const Editor = () => {
 		return () => window.removeEventListener('keydown', handlePressSaveKey);
 	}, [value]);
 
+	// 変更が保存されていない場合ドロワー表示
+	useEffect(() => {
+		isChanged ? onOpen() : onClose();
+	}, [isChanged]);
+
 	return (
-		<Flex direction="column" gap={'5'} maxWidth="1440px" h={'100vh'} m="0 auto" px="5" pt="2">
-			<IconButton
-				aria-label="open new editor"
-				icon={<ChevronLeftIcon w={6} h={6} />}
-				colorScheme="teal"
-				rounded="full"
-				w="12"
-				h="12"
-				flex="none"
-				onClick={() => navigate('/')}
-			></IconButton>
-			<Flex overflow={'hidden'} direction={'column'} alignItems="start" flexGrow="1" pb="20">
-				<Grid
-					overflow={'hidden'}
-					gap={30}
-					templateColumns={{ base: 'none', lg: 'repeat(2, 1fr)' }}
-					templateRows={{ base: 'min-content 1fr', lg: '100%' }}
-					flexGrow="1"
-					w="100%"
-				>
-					<Textarea
-						placeholder="Here is a sample placeholder"
-						value={value}
-						onChange={handleInputTextarea}
-						resize={{ base: 'vertical', lg: 'none' }}
-						size="lg"
-						rounded="md"
-						height={{ base: '42vh', lg: '100%' }}
-						variant="filled"
-						overflow={'auto'}
-					/>
-					<MarkdownViewer markdownText={value} overflow="auto" />
-				</Grid>
+		<>
+			<Flex direction="column" gap={'5'} maxWidth="1440px" h={'100vh'} m="0 auto" px="5" pt="2">
+				<IconButton
+					aria-label="open new editor"
+					icon={<ChevronLeftIcon w={6} h={6} />}
+					colorScheme="teal"
+					rounded="full"
+					w="12"
+					h="12"
+					flex="none"
+					onClick={() => navigate(-1)}
+				></IconButton>
+				<Flex overflow={'hidden'} direction={'column'} alignItems="start" flexGrow="1" pb="20">
+					<Grid
+						overflow={'hidden'}
+						gap={30}
+						templateColumns={{ base: 'none', lg: 'repeat(2, 1fr)' }}
+						templateRows={{ base: 'min-content 1fr', lg: '100%' }}
+						flexGrow="1"
+						w="100%"
+					>
+						<Textarea
+							placeholder="Here is a sample placeholder"
+							value={value}
+							onChange={handleInputTextarea}
+							resize={{ base: 'vertical', lg: 'none' }}
+							size="lg"
+							rounded="md"
+							height={{ base: '42vh', lg: '100%' }}
+							variant="filled"
+							overflow={'auto'}
+						/>
+						<MarkdownViewer markdownText={value} overflow="auto" />
+					</Grid>
+				</Flex>
 			</Flex>
-		</Flex>
+			<Portal>
+				<Fade in={isOpen}>
+					<Box pos="fixed" bottom="0" w="100%" boxShadow={'top'}>
+						<Flex maxWidth={'1440px'} justify="space-between" align={'center'} mx="auto" px="5" py="3">
+							<Text fontSize={'sm'}>You have not saved your changes...</Text>
+							<Flex align="end" gap="2">
+								<Text>
+									<Kbd>command</Kbd>+<Kbd>s</Kbd>
+								</Text>
+								<Button justifySelf={'end'} colorScheme="teal" onClick={save}>
+									SAVE
+								</Button>
+							</Flex>
+						</Flex>
+					</Box>
+				</Fade>
+			</Portal>
+		</>
 	);
 };
 
