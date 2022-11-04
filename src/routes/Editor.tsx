@@ -56,10 +56,12 @@ const Editor: React.FC = () => {
 	const [isChanged, setIsChanged] = useState(false);
 	const toast = useToast();
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	useBeforeunload((event) => {
+	useBeforeunload((e) => {
 		// if (value !== '') {
-		// console.log('unload');
-		// event.preventDefault();
+		if (isChanged) {
+			console.log('unload');
+			e.preventDefault();
+		}
 		// }
 	});
 
