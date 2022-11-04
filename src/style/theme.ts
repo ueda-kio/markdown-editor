@@ -31,7 +31,7 @@ const theme = extendTheme({
 	config: {
 		disableTransitionOnChange: false,
 	},
-	initialColorMode: 'light',
+	initialColorMode: 'system',
 	useSystemColorMode: false,
 });
 
