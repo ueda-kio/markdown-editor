@@ -2,14 +2,14 @@ import React, { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, IconButton, Spinner, Stack, chakra } from '@chakra-ui/react';
 import { PlusSquareIcon } from '@chakra-ui/icons';
-import Cassette from '../components/Cassette/Cassette';
-import { useAppDispatch, useIsLoadingSelector, useFileListSelector } from '../reducks/hooks';
-import { deleteFileCompletely, fetchTrashList, FileType, restoreTrashedFile, sortFiles } from '../reducks/slice/fileListSlice';
+import Cassette from '../../components/Cassette/Cassette';
+import { useAppDispatch, useIsLoadingSelector, useFileListSelector } from '../../reducks/hooks';
+import { deleteFileCompletely, fetchTrashList, FileType, restoreTrashedFile, sortFiles } from '../../reducks/slice/fileListSlice';
 import { FaTrashRestore, FaTrash } from 'react-icons/fa';
-import NoCassettes from '../components/Cassette/NoCassettes';
-import ListWrapper from './Layout/ListWrapper';
+import NoCassettes from '../../components/Cassette/NoCassettes';
+import ListWrapper from '../Layout/ListWrapper';
 
-const Trashes = () => {
+const Trash = () => {
 	const dispatch = useAppDispatch();
 	const { trashes } = useFileListSelector();
 	const menus = [
@@ -39,4 +39,4 @@ const Trashes = () => {
 	return <ListWrapper page="trashes" list={trashes} menus={menus} />;
 };
 
-export default Trashes;
+export default Trash;

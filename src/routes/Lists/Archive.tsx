@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { useAppDispatch, useFileListSelector } from '../reducks/hooks';
-import { fetchArchiveList, FileType, putFileInTrash, restoreArchivedFile, sortFiles } from '../reducks/slice/fileListSlice';
+import { useAppDispatch, useFileListSelector } from '../../reducks/hooks';
+import { fetchArchiveList, FileType, putFileInTrash, restoreArchivedFile, sortFiles } from '../../reducks/slice/fileListSlice';
 import { FaTrash } from 'react-icons/fa';
 import { BiArchiveOut } from 'react-icons/bi';
-import ListWrapper from './Layout/ListWrapper';
+import ListWrapper from '../Layout/ListWrapper';
 
 const Archive = () => {
 	const dispatch = useAppDispatch();

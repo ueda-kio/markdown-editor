@@ -5,11 +5,11 @@ import Editor from './Editor';
 import SideBar from './SideBar';
 import SignIn from './Authentication/SignIn';
 import SignUp from './Authentication/SignUp';
-import Container from './Container';
-import Trashes from './Trashes';
+import Home from './Lists/Home';
+import Trash from './Lists/Trash';
 import Viwer from './Viwer';
 import Reset from './Authentication/Reset';
-import Archive from './Archive';
+import Archive from './Lists/Archive';
 import Setting from './Setting';
 
 const Router = () => {
@@ -24,10 +24,10 @@ const Router = () => {
 					<Auth>
 						<Routes>
 							<Route path="/" element={<SideBar />}>
-								<Route index element={<Container />} />
-								<Route path="trash" element={<Trashes />} />
+								<Route index element={<Home />} />
+								<Route path="trash" element={<Trash />} />
 								<Route path="archive" element={<Archive />} />
-								<Route path="/setting" element={<Setting />} />
+								<Route path="setting" element={<Setting />} />
 							</Route>
 							<Route path="/file/:fileId/editor" element={<Editor />} />
 							<Route path="/file/:fileId" element={<Viwer />} />

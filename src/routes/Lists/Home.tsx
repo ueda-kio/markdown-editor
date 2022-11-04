@@ -2,8 +2,8 @@ import React, { memo, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, IconButton, Stack, Input, InputGroup, InputLeftElement, chakra } from '@chakra-ui/react';
 import { PlusSquareIcon, SearchIcon } from '@chakra-ui/icons';
-import Cassette from '../components/Cassette/Cassette';
-import { useAppDispatch, useFileListSelector, useIsLoadingSelector, useUser } from '../reducks/hooks';
+import Cassette from '../../components/Cassette/Cassette';
+import { useAppDispatch, useFileListSelector, useIsLoadingSelector, useUser } from '../../reducks/hooks';
 import {
 	copyFile,
 	createNewFile,
@@ -13,14 +13,14 @@ import {
 	putFileInArchive,
 	putFileInTrash,
 	sortFiles,
-} from '../reducks/slice/fileListSlice';
-import { auth } from '../firebase';
+} from '../../reducks/slice/fileListSlice';
+import { auth } from '../../firebase';
 import { FaEdit, FaCopy, FaTrash, FaTrashRestore, FaArchive } from 'react-icons/fa';
-import Loading from '../components/Atoms/Loading';
-import NoCassettes from '../components/Cassette/NoCassettes';
-import ListWrapper from './Layout/ListWrapper';
+import Loading from '../../components/Atoms/Loading';
+import NoCassettes from '../../components/Cassette/NoCassettes';
+import ListWrapper from '../Layout/ListWrapper';
 
-const Container = () => {
+const Home = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const { files } = useFileListSelector();
@@ -104,4 +104,4 @@ const Container = () => {
 	);
 };
 
-export default Container;
+export default Home;
