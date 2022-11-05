@@ -1,15 +1,38 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { IconType } from 'react-icons';
 import { css } from '@emotion/react';
-import { Box, BoxProps, Flex, Spinner, Stack } from '@chakra-ui/react';
+import { Box, BoxProps, Flex, Spinner, Stack, useColorModeValue } from '@chakra-ui/react';
 import Cassette from '../../components/Cassette/Cassette';
 import NoCassettes from '../../components/Cassette/NoCassettes';
 import SearchInput from '../../components/Molecules/SearchInput';
 import { useIsLoadingSelector } from '../../reducks/hooks';
 import { FileListType, FileType } from '../../reducks/slice/fileListSlice';
 
+/** グラデーション装飾用スタイル */
 const style = {
 	gradient: css`
+		&::before,
+		&::after {
+			content: '';
+			position: absolute;
+			left: 0;
+			display: block;
+			width: 100%;
+			height: 12px;
+			opacity: 1;
+			transition: opacity 0.15s;
+		}
+		&::before {
+			top: 0;
+			background: linear-gradient(0deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 1) 100%);
+			z-index: 10;
+		}
+		&::after {
+			bottom: 0;
+			background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 1) 100%);
+		}
+	`,
+	'gradient-dark': css`
 		&::before,
 		&::after {
 			content: '';
@@ -97,6 +120,8 @@ const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
 		};
 	}, [isLoading]);
 
+	const gradient = useColorModeValue(style.gradient, style['gradient-dark']);
+
 	const Empty = useMemo(() => <NoCassettes page={page} />, []);
 
 	return (
@@ -113,10 +138,10 @@ const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
 							pos="relative"
 							overflow={'hidden'}
 							{...(isTop
-								? { css: [style.gradient, style.isTop] }
+								? { css: [gradient, style.isTop] }
 								: isBottom
-								? { css: [style.gradient, style.isBottom] }
-								: { css: style.gradient })}
+								? { css: [gradient, style.isBottom] }
+								: { css: gradient })}
 						>
 							<Stack spacing="2" as="ol" height="100%" overflowY="auto">
 								{list.list.map((file, i) => (
