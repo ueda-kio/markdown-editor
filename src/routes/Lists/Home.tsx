@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, IconButton, Stack, Input, InputGroup, InputLeftElement, chakra } from '@chakra-ui/react';
+import { Box, Button, Stack, Input, InputGroup, InputLeftElement, chakra } from '@chakra-ui/react';
 import { PlusSquareIcon, SearchIcon } from '@chakra-ui/icons';
 import Cassette from '../../components/Cassette/Cassette';
 import { useAppDispatch, useFileListSelector, useIsLoadingSelector, useUser } from '../../reducks/hooks';
@@ -19,6 +19,8 @@ import { FaEdit, FaCopy, FaTrash, FaTrashRestore, FaArchive } from 'react-icons/
 import Loading from '../../components/Atoms/Loading';
 import NoCassettes from '../../components/Cassette/NoCassettes';
 import ListWrapper from '../Layout/ListWrapper';
+import IconButton from '../../components/Atoms/IconButton';
+import { IconType } from 'react-icons';
 
 const Home = () => {
 	const dispatch = useAppDispatch();
@@ -73,7 +75,7 @@ const Home = () => {
 	/**
 	 * 新規作成ボタン押下挙動
 	 */
-	const handleClick: React.MouseEventHandler = async () => {
+	const handleClick = async () => {
 		try {
 			const originalPromiseResult = await dispatch(createNewFile()).unwrap();
 			if (!originalPromiseResult) return;
@@ -88,15 +90,11 @@ const Home = () => {
 		<>
 			<ListWrapper page="trashes" list={files} menus={menus} />
 			<IconButton
-				aria-label="open new editor"
-				icon={<PlusSquareIcon w={6} h={6} />}
-				colorScheme="teal"
-				rounded="full"
+				ariaLabel="open new editor"
+				icon={PlusSquareIcon as IconType}
 				position="absolute"
 				bottom="4"
 				right="4"
-				w="16"
-				h="16"
 				boxShadow="lg"
 				onClick={handleClick}
 			></IconButton>

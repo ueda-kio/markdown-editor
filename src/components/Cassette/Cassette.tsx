@@ -17,6 +17,7 @@ type Props = {
 
 const Cassette: React.FC<Props> = ({ file, menus, _ref, ...rest }) => {
 	const { id, title, lead } = file;
+	//TODO useCallBack?
 	const menuArray = (() =>
 		menus.map((menu) => ({
 			...menu,
@@ -35,13 +36,24 @@ const Cassette: React.FC<Props> = ({ file, menus, _ref, ...rest }) => {
 			ref={_ref}
 			{...rest}
 		>
-			<Link to={`/file/${id}`} display="block" px="4" py="5" lineHeight={'1.5'}>
-				<Grid templateColumns={{ base: '1fr 176px', md: '1fr 200px' }} gap={{ base: 3, md: '5' }} alignItems="center">
+			<Link to={`/file/${id}`} display="block" px={{ base: '3', md: '4' }} py={{ base: '4', md: '5' }} lineHeight={'1.5'}>
+				<Grid templateColumns={{ base: '4fr 1fr', md: '4fr 1fr' }} gap={{ base: 3, md: '5' }} alignItems="center">
 					<Box>
-						<Text h="27px" fontSize="lg" fontWeight="bold" noOfLines={1}>
+						<Text
+							minHeight={{ base: '24px', md: '27px' }}
+							fontSize={{ base: '16px', md: '18px' }}
+							fontWeight="bold"
+							noOfLines={1}
+						>
 							{title}
 						</Text>
-						<Text h="48px" fontSize="md" mt={2} opacity="0.8" noOfLines={2}>
+						<Text
+							minHeight={{ base: '42px', md: '48px' }}
+							fontSize={{ base: 'sm', md: 'md' }}
+							mt={2}
+							opacity="0.8"
+							noOfLines={2}
+						>
 							{lead}
 						</Text>
 					</Box>

@@ -1,10 +1,11 @@
 import React from 'react';
-import { Box, Flex, IconButton, useColorModeValue } from '@chakra-ui/react';
+import { Box, Flex, useColorModeValue } from '@chakra-ui/react';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import { FileType } from '../../reducks/slice/fileListSlice';
 import { IconType } from 'react-icons';
 import Popover from '../../components/Organisms/Popover';
+import IconButton from '../../components/Atoms/IconButton';
 
 type Props = {
 	menus: {
@@ -33,15 +34,7 @@ const ViwerWrapper: React.FC<Props> = ({ file, menus, children }) => {
 				)}
 			>
 				<Popover file={file} menuArray={menus} />
-				<IconButton
-					aria-label="open new editor"
-					icon={<ChevronLeftIcon w={6} h={6} />}
-					colorScheme="teal"
-					rounded="full"
-					w="12"
-					h="12"
-					onClick={() => navigate(-1)}
-				></IconButton>
+				<IconButton ariaLabel="back" icon={ChevronLeftIcon as IconType} onClick={() => navigate(-1)}></IconButton>
 			</Flex>
 			{children}
 		</Box>

@@ -106,7 +106,12 @@ const SidebarContent: React.FC<SidebarProps> = ({ onClose, ...rest }) => {
 				{...rest}
 			>
 				<Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-					<Heading as="h1" fontSize="2xl" fontFamily="monospace" fontWeight="bold">
+					<Heading
+						as="h1"
+						fontSize="2xl"
+						fontFamily="var(SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace)"
+						fontWeight="bold"
+					>
 						Editor App.
 					</Heading>
 					<CloseButton display={{ base: 'flex', xl: 'none' }} onClick={onClose} />
@@ -114,9 +119,16 @@ const SidebarContent: React.FC<SidebarProps> = ({ onClose, ...rest }) => {
 				<Stack spacing="2" as="ul" px="4">
 					{LinkItems.map((link) => (
 						<li key={link.name}>
-							<NavItem name={link.name} icon={link.icon} path={link.path}>
-								{link.name}
-							</NavItem>
+							{link.name === 'Github' ? (
+								<NavItem name={link.name} icon={link.icon} path={link.path}>
+									{link.name}
+									<ExternalLinkIcon position="absolute" top="50%" right="4" mx="2px" transform="translateY(-50%)" />
+								</NavItem>
+							) : (
+								<NavItem name={link.name} icon={link.icon} path={link.path}>
+									{link.name}
+								</NavItem>
+							)}
 						</li>
 					))}
 				</Stack>
@@ -206,11 +218,19 @@ const Sidebar = () => {
 					<SidebarContent onClose={onClose} />
 				</DrawerContent>
 			</Drawer>
-			<Box height="100%" maxWidth="max" mx="auto">
-				<Box position={'relative'} height="100vh" display={'flex'} flexDirection="column" pt={{ base: '4', lg: '8' }} px="3">
-					<Header onOpen={onOpen} title={headerTitle} />
-					<Outlet />
-				</Box>
+			<Box
+				// height="100%"
+				maxWidth="max"
+				mx="auto"
+				position={'relative'}
+				height="100vh"
+				display={'flex'}
+				flexDirection="column"
+				pt={{ base: '4', lg: '8' }}
+				px="3"
+			>
+				<Header onOpen={onOpen} title={headerTitle} />
+				<Outlet />
 			</Box>
 		</Box>
 	);
