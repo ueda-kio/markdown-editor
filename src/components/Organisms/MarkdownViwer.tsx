@@ -75,8 +75,8 @@ const style = css`
 		color: #e3e3e3;
 	}
 	& :not(pre) > code {
-		background-color: rgba(0, 0, 0, 0.08);
-		color: #333;
+		background-color: #364549;
+		color: #e3e3e3;
 		padding: 0.1em 0.4em;
 	}
 	code {
