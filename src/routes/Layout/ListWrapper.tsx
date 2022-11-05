@@ -65,47 +65,35 @@ const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
 	const topTargetRef = useRef<HTMLDivElement>(null);
 	const bottomTargetRef = useRef<HTMLDivElement>(null);
 
+	// グラデーションON/OFFのためのIntersection Observer
 	useEffect(() => {
 		const wrapper = wrapperRef.current;
 		const topTarget = topTargetRef.current;
 		const bottomTarget = bottomTargetRef.current;
 		if (!wrapper || !topTarget || !bottomTarget) return;
 
-		const observerForTop = new IntersectionObserver(
-			([entry], observer) => {
-				if (entry) {
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (typeof entry === 'undefined') return;
+
+				if (entry.target === topTarget) {
 					entry.isIntersecting ? setIsTop(true) : setIsTop(false);
-				}
-			},
-			{
-				root: wrapper,
-				threshold: 1,
-			}
-		);
-
-		const observerForBottom = new IntersectionObserver(
-			([entry], observer) => {
-				if (entry.isIntersecting) {
-					console.log('entry', entry.target);
-					console.log('root', observer.root);
-				}
-
-				if (entry) {
+				} else if (entry.target === bottomTarget) {
 					entry.isIntersecting ? setIsBottom(true) : setIsBottom(false);
 				}
 			},
 			{
 				root: wrapper,
-				threshold: 0.99,
+				rootMargin: '0px',
+				threshold: 1,
 			}
 		);
 
-		observerForTop.observe(topTarget);
-		observerForBottom.observe(bottomTarget);
+		observer.observe(topTarget);
+		observer.observe(bottomTarget);
 
 		return () => {
-			observerForTop.disconnect();
-			observerForBottom.disconnect();
+			observer.disconnect();
 		};
 	}, [isLoading]);
 
