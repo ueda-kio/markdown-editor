@@ -226,8 +226,8 @@ const Sidebar = () => {
 				height="100vh"
 				display={'flex'}
 				flexDirection="column"
-				pt={{ base: '4', lg: '8' }}
-				px="3"
+				pt={{ base: '5', lg: '8' }}
+				px="5"
 			>
 				<Header onOpen={onOpen} title={headerTitle} />
 				<Outlet />

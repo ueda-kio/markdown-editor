@@ -20,7 +20,7 @@ const Popover: React.FC<Props> = ({ menuArray, file }) => {
 				<IconButton
 					position="absolute"
 					top="50%"
-					right="1rem"
+					right={{ base: '12px', md: '16px' }}
 					transform="translateY(-50%)"
 					aria-label="open menu"
 					rounded={'full'}

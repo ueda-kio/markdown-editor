@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Spinner } from '@chakra-ui/react';
+import { IconType } from 'react-icons';
+import { Box, Flex, Spinner, useColorModeValue } from '@chakra-ui/react';
 import MarkdownViewer from '../components/Organisms/MarkdownViwer';
 import {
 	copyFile,
@@ -17,6 +18,9 @@ import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from '../re
 import ViwerWrapper from './Layout/ViwerWrapper';
 import { FaCopy, FaEdit, FaTrash, FaTrashRestore, FaArchive } from 'react-icons/fa';
 import { BiArchiveOut } from 'react-icons/bi';
+import Popover from '../components/Organisms/Popover';
+import IconButton from '../components/Atoms/IconButton';
+import { ChevronLeftIcon } from '@chakra-ui/icons';
 
 const getFile = (fileObj: { list: FileType[]; isFetched: boolean }, id: string) => {
 	return fileObj.list.find((file) => file.id === id);
@@ -144,14 +148,42 @@ const Viwer = () => {
 		return getMenusArray();
 	}, [fileId, forList]);
 
+	const gradient = useColorModeValue(
+		'linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 15%, rgba(255,255,255,1) 24%, rgba(255,255,255,1) 100%)',
+		'linear-gradient(0deg, rgba(26,32,44,0) 0%, rgba(26,32,44,0.9) 15%, rgba(26,32,44,1) 24%, rgba(26,32,44,1) 100%)'
+	);
+
 	return (
 		<>
 			{isLoading || typeof file === 'undefined' ? (
 				<Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
 			) : (
-				<ViwerWrapper menus={menus} file={file}>
-					<MarkdownViewer markdownText={file.value} mt="4" />
-				</ViwerWrapper>
+				<Flex direction={'column'} maxWidth="max" h="100vh" mx="auto" pt={{ base: '5', lg: '8' }} px="5">
+					<Flex
+						as="header"
+						pos="sticky"
+						top="0"
+						justifyContent={'space-between'}
+						bg={'var(--chakra-colors-chakra-body-bg)'}
+						_after={{
+							content: '""',
+							position: 'absolute',
+							bottom: '0',
+							left: '0',
+							display: 'block',
+							w: '100%',
+							h: '5',
+							bg: gradient,
+							transform: 'translateY(100%)',
+						}}
+					>
+						<Popover file={file} menuArray={menus} />
+						<IconButton ariaLabel="back" icon={ChevronLeftIcon as IconType} onClick={() => navigate(-1)}></IconButton>
+					</Flex>
+					<Box overflow={'auto'} h="100%" mt="4">
+						<MarkdownViewer markdownText={file.value} pb="8" />
+					</Box>
+				</Flex>
 			)}
 		</>
 	);
