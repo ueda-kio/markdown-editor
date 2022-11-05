@@ -36,7 +36,7 @@ const Trash = () => {
 		if (trashes.isFetched === false) dispatch(fetchTrashList());
 	}, []);
 
-	return <ListWrapper page="trashes" list={trashes} menus={menus} />;
+	return <ListWrapper page="trashes" list={trashes.list} menus={menus} />;
 };
 
 export default Trash;

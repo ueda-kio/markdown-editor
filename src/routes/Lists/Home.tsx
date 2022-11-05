@@ -88,7 +88,7 @@ const Home = () => {
 
 	return (
 		<>
-			<ListWrapper page="trashes" list={files} menus={menus} />
+			<ListWrapper page="trashes" list={files.list} menus={menus} />
 			<IconButton
 				ariaLabel="open new editor"
 				icon={PlusSquareIcon as IconType}

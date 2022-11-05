@@ -33,7 +33,7 @@ const Archive = () => {
 		if (archives.isFetched === false) dispatch(fetchArchiveList());
 	}, []);
 
-	return <ListWrapper page="archives" list={archives} menus={menus} />;
+	return <ListWrapper page="archives" list={archives.list} menus={menus} />;
 };
 
 export default Archive;

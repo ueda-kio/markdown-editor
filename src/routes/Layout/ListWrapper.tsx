@@ -7,6 +7,7 @@ import NoCassettes from '../../components/Cassette/NoCassettes';
 import SearchInput from '../../components/Molecules/SearchInput';
 import { useIsLoadingSelector } from '../../reducks/hooks';
 import { FileListType, FileType } from '../../reducks/slice/fileListSlice';
+import SkeltonCassette from '../../components/Cassette/SkeltonCassette';
 
 /** グラデーション装飾用スタイル */
 const style = {
@@ -68,10 +69,7 @@ const style = {
 
 type Props = {
 	page: FileListType;
-	list: {
-		list: FileType[];
-		isFetched: boolean;
-	};
+	list: FileType[];
 	menus: {
 		icon: IconType;
 		onClick: ({ file }: { file: FileType }) => void;
@@ -126,44 +124,42 @@ const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
 
 	return (
 		<Box position="relative" mt="5" pb="8" flexGrow={'1'} overflow="auto" {...rest}>
-			{isLoading ? (
-				<Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
-			) : (
-				<Flex direction={'column'} gap="3" h="100%">
-					<SearchInput></SearchInput>
-					{list.list.length ? (
-						<Box
-							ref={wrapperRef}
-							flexGrow="1"
-							pos="relative"
-							overflow={'hidden'}
-							{...(isTop
-								? { css: [gradient, style.isTop] }
-								: isBottom
-								? { css: [gradient, style.isBottom] }
-								: { css: gradient })}
-						>
-							<Stack spacing="2" as="ol" height="100%" overflowY="auto">
-								{list.list.map((file, i) => (
-									<li key={`${file.id}_${i}`}>
-										<Cassette
-											{...(i === 0
-												? { _ref: topTargetRef }
-												: i === list.list.length - 1
-												? { _ref: bottomTargetRef }
-												: undefined)}
-											file={file}
-											menus={menus}
-										/>
-									</li>
-								))}
-							</Stack>
-						</Box>
-					) : (
-						<>{Empty}</>
-					)}
-				</Flex>
-			)}
+			<Flex direction={'column'} gap="3" h="100%">
+				<SearchInput></SearchInput>
+				{isLoading ? (
+					<Box flexGrow="1" pos="relative" overflow={'hidden'}>
+						<Stack spacing="2" as="ol" height="100%" overflowY="auto">
+							{list.length ? list.map((_, i) => <SkeltonCassette key={String(i)} />) : <SkeltonCassette />}
+						</Stack>
+					</Box>
+				) : list.length ? (
+					<Box
+						ref={wrapperRef}
+						flexGrow="1"
+						pos="relative"
+						overflow={'hidden'}
+						{...(isTop ? { css: [gradient, style.isTop] } : isBottom ? { css: [gradient, style.isBottom] } : { css: gradient })}
+					>
+						<Stack spacing="2" as="ol" height="100%" overflowY="auto">
+							{list.map((file, i) => (
+								<li key={`${file.id}_${i}`}>
+									<Cassette
+										{...(i === 0
+											? { _ref: topTargetRef }
+											: i === list.length - 1
+											? { _ref: bottomTargetRef }
+											: undefined)}
+										file={file}
+										menus={menus}
+									/>
+								</li>
+							))}
+						</Stack>
+					</Box>
+				) : (
+					<>{Empty}</>
+				)}
+			</Flex>
 		</Box>
 	);
 };
