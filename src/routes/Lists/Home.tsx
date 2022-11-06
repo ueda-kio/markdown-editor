@@ -26,6 +26,7 @@ const Home = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const { files } = useFileListSelector();
+	const { isLoading } = useIsLoadingSelector();
 	const { user } = useUser();
 	const menus = [
 		{
@@ -97,6 +98,7 @@ const Home = () => {
 				right="4"
 				boxShadow="lg"
 				onClick={handleClick}
+				isLoading={isLoading}
 			></IconButton>
 		</>
 	);
