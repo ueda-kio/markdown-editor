@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { auth, db } from '../../firebase';
+import { auth, db, googleProvider } from '../../firebase';
 import { createNewFile } from './fileListSlice';
 
 const usersRef = db.collection('users');
@@ -23,6 +23,18 @@ export const signIn = createAsyncThunk<void, { email: string; password: string }
 		const res = await auth.signInWithEmailAndPassword(email, password);
 		if (!res.user) throw Error();
 		const { uid } = res.user;
+		thunkApi.dispatch(singInAction(uid));
+	} catch (e) {
+		console.log(e);
+	}
+});
+
+export const signInWithGoogleAPI = createAsyncThunk('user/signInWithGoogleAPI', async (_, thunkApi) => {
+	try {
+		const provider = googleProvider;
+		provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+		const res = await auth.signInWithPopup(provider);
+		const uid = res.user?.uid ?? '';
 		thunkApi.dispatch(singInAction(uid));
 	} catch (e) {
 		console.log(e);

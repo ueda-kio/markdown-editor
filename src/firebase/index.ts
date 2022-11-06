@@ -16,6 +16,7 @@ import { firebaseConfig } from './config';
 firebase.initializeApp(firebaseConfig);
 
 // 以下便利機能宣言
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
 export const auth = firebase.auth();
 export const db = firebase.firestore();
 export const storage = firebase.storage();

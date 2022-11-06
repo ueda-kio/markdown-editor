@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
-import { auth } from '../../firebase';
+import { auth, googleProvider } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useUser } from '../../reducks/hooks';
 import { listenAuthState, signIn } from '../../reducks/slice/userSlice';
@@ -20,6 +20,16 @@ const SignIn = () => {
 			navigate('/');
 		} catch (e) {
 			console.error(e);
+		}
+	};
+
+	//TODO
+	const googleSignIn = async () => {
+		try {
+			await dispatch(signInWithGoogleAPI());
+			navigate('/');
+		} catch (e) {
+			console.log(e);
 		}
 	};
 
@@ -72,6 +82,9 @@ const SignIn = () => {
 				<Button type="submit" size="md" w="100%" mt="5" {...(user.isLoading && { isLoading: true })}>
 					submit
 				</Button>
+				{/* <Button type="button" size="md" w="100%" mt="5" {...(user.isLoading && { isLoading: true })} onClick={googleSignIn}>
+					Google
+				</Button> */}
 				<Box display={'flex'} justifyContent="center" mt="4">
 					<Link to="/signup" fontSize={'14'} rounded="4" _hover={{ bg: 'teal.100' }}>
 						Join This App
