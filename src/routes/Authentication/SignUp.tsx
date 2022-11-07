@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
 import { auth, db } from '../../firebase';
 import { nanoid } from '@reduxjs/toolkit';
@@ -6,6 +6,7 @@ import { useAppDispatch, useUser } from '../../reducks/hooks';
 import { useNavigate } from 'react-router-dom';
 import { signUp } from '../../reducks/slice/userSlice';
 import { Link } from '../../components/Atoms/Link';
+import AuthWrapper from '../Layout/AuthWrapper';
 
 const usersRef = db.collection('users');
 
@@ -33,54 +34,38 @@ const SignUp = () => {
 		});
 	}, []);
 
+	const inputs = useMemo(
+		() => [
+			{
+				type: 'email',
+				value: email,
+				placeholder: 'Email',
+				onChange: (e: { target: { value: string } }) => setEmail(e.target.value),
+				autoComplete: 'email',
+				isRequired: true,
+			},
+			{
+				type: 'password',
+				value: password,
+				placeholder: 'Password',
+				onChange: (e: { target: { value: string } }) => setPassword(e.target.value),
+				autoComplete: 'current-password',
+				isRequired: true,
+			},
+		],
+		[email, password]
+	);
+
+	const otherLinks = useMemo(() => [{ text: 'Already have an account?', to: '/signin' }], []);
+
 	return (
-		<Box w="100vw" h="100vh" pos="relative">
-			<Box
-				as="form"
-				pos="absolute"
-				top="50%"
-				left="50%"
-				transform="translate(-50%, -50%)"
-				p="10"
-				rounded="md"
-				boxShadow="base"
-				onSubmit={onSubmit}
-			>
-				<Text as="h1" fontSize="2xl" fontWeight="bold">
-					SignUp
-				</Text>
-				<FormControl>
-					<FormLabel>Email</FormLabel>
-					<Input
-						type="email"
-						variant="filled"
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
-						autoComplete={'email'}
-						isRequired
-					/>
-				</FormControl>
-				<FormControl>
-					<FormLabel>Password</FormLabel>
-					<Input
-						type="password"
-						variant="filled"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-						autoComplete={'current-password'}
-						isRequired
-					/>
-				</FormControl>
-				<Button type="submit" size="md" w="100%" mt="5" {...(user.isLoading && { isLoading: true })}>
-					submit
-				</Button>
-				<Box display={'flex'} justifyContent="center" mt="4">
-					<Link to="/signin" fontSize={'14'} rounded="4" _hover={{ bg: 'teal.100' }}>
-						Already a member?
-					</Link>
-				</Box>
-			</Box>
-		</Box>
+		<AuthWrapper
+			title="Sign up"
+			inputs={inputs}
+			otherLinks={otherLinks}
+			submitButtonLabel={'Sign up'}
+			onSubmit={onSubmit}
+		></AuthWrapper>
 	);
 };
 

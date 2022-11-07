@@ -32,7 +32,7 @@ const Confirm: React.FC<Props> = ({ title, isOpen, onClose, onConfirm, children,
 						Cancel
 					</Button>
 					<Button bg="red.500" _hover={{ bg: 'red.700' }} color="white" variant="ghost" onClick={onConfirm}>
-						SignOut
+						Sign out
 					</Button>
 				</ModalFooter>
 			</ModalContent>

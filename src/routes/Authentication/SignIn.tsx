@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
 import { auth, googleProvider } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useUser } from '../../reducks/hooks';
-import { listenAuthState, signIn } from '../../reducks/slice/userSlice';
+import { listenAuthState, signIn, signInWithGoogleAPI } from '../../reducks/slice/userSlice';
 import { Link } from '../../components/Atoms/Link';
+import AuthWrapper from '../Layout/AuthWrapper';
 
 const SignIn = () => {
 	const dispatch = useAppDispatch();
@@ -41,62 +42,38 @@ const SignIn = () => {
 		// });
 	}, []);
 
+	const inputs = useMemo(
+		() => [
+			{
+				type: 'email',
+				value: email,
+				placeholder: 'Email',
+				onChange: (e: { target: { value: string } }) => setEmail(e.target.value),
+				autoComplete: 'email',
+				isRequired: true,
+			},
+			{
+				type: 'password',
+				value: password,
+				placeholder: 'Password',
+				onChange: (e: { target: { value: string } }) => setPassword(e.target.value),
+				autoComplete: 'current-password',
+				isRequired: true,
+			},
+		],
+		[email, password]
+	);
+
+	const otherLinks = useMemo(
+		() => [
+			{ text: 'No account yet?', to: '/signup' },
+			{ text: 'Forgot your password?', to: '/reset' },
+		],
+		[]
+	);
+
 	return (
-		<Box w="100vw" h="100vh" pos="relative">
-			<Box
-				as="form"
-				pos="absolute"
-				top="50%"
-				left="50%"
-				transform="translate(-50%, -50%)"
-				p="10"
-				rounded="md"
-				boxShadow="base"
-				onSubmit={onSubmit}
-			>
-				<Text as="h1" fontSize="2xl" fontWeight="bold">
-					SignIn
-				</Text>
-				<FormControl>
-					<FormLabel>Email</FormLabel>
-					<Input
-						type="email"
-						variant="filled"
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
-						autoComplete={'email'}
-						isRequired
-					/>
-				</FormControl>
-				<FormControl>
-					<FormLabel>Password</FormLabel>
-					<Input
-						type="password"
-						variant="filled"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-						autoComplete={'current-password'}
-						isRequired
-					/>
-				</FormControl>
-				<Button type="submit" size="md" w="100%" mt="5" {...(user.isLoading && { isLoading: true })}>
-					submit
-				</Button>
-				{/* <Button type="button" size="md" w="100%" mt="5" {...(user.isLoading && { isLoading: true })} onClick={googleSignIn}>
-					Google
-				</Button> */}
-				<Box display={'flex'} justifyContent="center" mt="4">
-					<Link to="/signup" fontSize={'14'} rounded="4" _hover={{ bg: 'teal.100' }}>
-						Join This App
-					</Link>
-				</Box>
-				<Box display={'flex'} justifyContent="center" mt="4">
-					<Link to="/reset" fontSize={'14'} rounded="4" _hover={{ bg: 'teal.100' }}>
-						Reset Password
-					</Link>
-				</Box>
-			</Box>
-		</Box>
+		<AuthWrapper title="Log in" inputs={inputs} otherLinks={otherLinks} submitButtonLabel={'Log in'} onSubmit={onSubmit}></AuthWrapper>
 	);
 };
 

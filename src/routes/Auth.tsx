@@ -15,7 +15,6 @@ const Auth: React.FC<Props> = ({ children }) => {
 	const { user } = useUser();
 
 	useEffect(() => {
-		console.log('auth');
 		if (!user.isSignedIn) {
 			dispatch(listenAuthState());
 			auth.onAuthStateChanged((user) => {
@@ -25,6 +24,7 @@ const Auth: React.FC<Props> = ({ children }) => {
 			});
 		}
 	}, []);
+
 	if (!user.isSignedIn) {
 		return <Loading />;
 	} else {

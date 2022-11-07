@@ -42,6 +42,7 @@ export const signInWithGoogleAPI = createAsyncThunk('user/signInWithGoogleAPI', 
 });
 
 export const signOut = createAsyncThunk('user/signOut', async (_, thunkApi) => {
+	await auth.signOut();
 	thunkApi.dispatch(signOutAction());
 });
 
