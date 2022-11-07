@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { auth, db, googleProvider } from '../../firebase';
-import { createNewFile } from './fileListSlice';
+import { resetFileList } from './fileListSlice';
 
 const usersRef = db.collection('users');
 
@@ -44,6 +44,7 @@ export const signInWithGoogleAPI = createAsyncThunk('user/signInWithGoogleAPI', 
 export const signOut = createAsyncThunk('user/signOut', async (_, thunkApi) => {
 	await auth.signOut();
 	thunkApi.dispatch(signOutAction());
+	thunkApi.dispatch(resetFileList());
 });
 
 export const listenAuthState = createAsyncThunk('user/listenAuthState', async (_, thunkApi) => {

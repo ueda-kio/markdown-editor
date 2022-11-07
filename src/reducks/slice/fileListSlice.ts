@@ -384,23 +384,24 @@ export const deleteFileCompletely = createAsyncThunk<string, { id: string }, { s
 	}
 );
 
+const initialState = {
+	files: {
+		list: [] as FileType[],
+		isFetched: false,
+	},
+	trashes: {
+		list: [] as FileType[],
+		isFetched: false,
+	},
+	archives: {
+		list: [] as FileType[],
+		isFetched: false,
+	},
+	isLoading: false,
+};
 export const fileListSlice = createSlice({
 	name: 'fileList',
-	initialState: {
-		files: {
-			list: [] as FileType[],
-			isFetched: false,
-		},
-		trashes: {
-			list: [] as FileType[],
-			isFetched: false,
-		},
-		archives: {
-			list: [] as FileType[],
-			isFetched: false,
-		},
-		isLoading: false,
-	},
+	initialState,
 	reducers: {
 		setState: (state, action: PayloadAction<FileType[]>) => {
 			return {
@@ -449,6 +450,7 @@ export const fileListSlice = createSlice({
 					: new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
 			});
 		},
+		resetFileList: () => initialState,
 		/**
 		 * ファイルを完全に削除する。
 		 * @param {string} id 削除対象のファイルid
@@ -637,5 +639,5 @@ export const fileListSlice = createSlice({
 	},
 });
 
-export const { addFile, setState, trashFile, sortFiles } = fileListSlice.actions;
+export const { addFile, setState, trashFile, sortFiles, resetFileList } = fileListSlice.actions;
 export default fileListSlice.reducer;
