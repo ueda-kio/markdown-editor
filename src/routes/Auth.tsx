@@ -2,7 +2,9 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../components/Atoms/Loading';
 import { auth } from '../firebase';
+import { isListType } from '../libs/isListType';
 import { useAppDispatch, useUser } from '../reducks/hooks';
+import { setListType } from '../reducks/slice/fileListSlice';
 import { listenAuthState } from '../reducks/slice/userSlice';
 
 type Props = {
@@ -15,6 +17,12 @@ const Auth: React.FC<Props> = ({ children }) => {
 	const { user } = useUser();
 
 	useEffect(() => {
+		// get listType by localStorage
+		const listTypeByStorage = window.localStorage.getItem('list-type') ?? 'list';
+		if (isListType(listTypeByStorage)) {
+			dispatch(setListType(listTypeByStorage));
+		}
+
 		if (!user.isSignedIn) {
 			dispatch(listenAuthState());
 			auth.onAuthStateChanged((user) => {

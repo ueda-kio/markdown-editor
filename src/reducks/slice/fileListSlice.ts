@@ -1,10 +1,9 @@
-import { createSlice, createAsyncThunk, current } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { db } from '../../firebase';
 import isFileType from '../../libs/isFileType';
 import { RootState } from '../store/store';
 import { setNotNewRegistrant } from './userSlice';
-import { isListType } from '../../libs/isListType';
 
 export type FileType = {
 	id: string;
@@ -114,11 +113,6 @@ export const fetchFileList = createAsyncThunk<FileType[], void, { state: RootSta
 
 	try {
 		const snapshots = await fileRef.get();
-		const listTypeByStorage = window.localStorage.getItem('list-type') ?? 'list';
-		if (isListType(listTypeByStorage)) {
-			thunkApi.dispatch(setListType(listTypeByStorage));
-		}
-
 		const dataArray: FileType[] = [];
 		snapshots.forEach((snapshot) => {
 			const data = snapshot.data();
@@ -461,20 +455,6 @@ export const fileListSlice = createSlice({
 				listType: action.payload,
 			};
 		},
-		/**
-		 * ファイルを完全に削除する。
-		 * @param {string} id 削除対象のファイルid
-		 */
-		// deleteFile: (state, action: PayloadAction<string>) => {
-		// 	const _trash = state.trashes.list.filter((trashes) => trashes.id !== action.payload);
-		// 	return {
-		// 		...state,
-		// 		trashes: {
-		// 			list: _trash,
-		// 			isFetched: state.trashes.isFetched,
-		// 		},
-		// 	};
-		// },
 	},
 	extraReducers: (builder) => {
 		// ファイルの新規作成

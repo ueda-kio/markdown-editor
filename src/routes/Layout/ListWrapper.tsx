@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { IconType } from 'react-icons';
 import { IoGridOutline } from 'react-icons/io5';
 import { TfiViewList } from 'react-icons/tfi';
 import { css } from '@emotion/react';
-import { Box, BoxProps, Flex, Grid, IconButton, Stack, useColorModeValue } from '@chakra-ui/react';
+import { Box, BoxProps, Flex, Grid, Icon, IconButton, Stack, useColorModeValue } from '@chakra-ui/react';
 import Cassette from '../../components/Cassette/Cassette';
 import NoCassettes from '../../components/Cassette/NoCassettes';
 import SearchInput from '../../components/Molecules/SearchInput';
@@ -153,9 +153,9 @@ const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
 	const Empty = useMemo(() => <NoCassettes page={page} />, []);
 
 	/** リストタイプ変更処理 */
-	const handleChangeListType = () => {
+	const handleChangeListType = useCallback(() => {
 		listType === 'list' ? dispatch(setListType('panel')) : dispatch(setListType('list'));
-	};
+	}, [listType]);
 
 	/** 選択されたリストタイプをlocalStorageに格納 */
 	useEffect(() => {
@@ -168,7 +168,13 @@ const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
 				<Flex alignItems={'center'} gap={{ base: '2', md: '4' }}>
 					<SearchInput></SearchInput>
 					<IconButton
-						icon={listType === 'list' ? <IoGridOutline /> : <TfiViewList />}
+						icon={
+							listType === 'list' ? (
+								<Icon w="5" h="5" color={useColorModeValue('gray.700', 'gray.200')} as={IoGridOutline} />
+							) : (
+								<Icon w="4" h="4" color={useColorModeValue('gray.700', 'gray.200')} as={TfiViewList} />
+							)
+						}
 						aria-label="change list type"
 						rounded={'full'}
 						onClick={handleChangeListType}
@@ -176,9 +182,9 @@ const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
 				</Flex>
 				{isLoading ? (
 					<Box flexGrow="1" pos="relative" overflow={'hidden'}>
-						<Stack spacing="2" as="ol" height="100%" overflowY="auto">
+						<ListTypeWrapper>
 							{list.length ? list.map((_, i) => <SkeltonCassette key={String(i)} />) : <SkeltonCassette />}
-						</Stack>
+						</ListTypeWrapper>
 					</Box>
 				) : list.length ? (
 					<Box
