@@ -114,7 +114,7 @@ const SidebarContent: React.FC<SidebarProps> = ({ onClose, ...rest }) => {
 					>
 						Editor App.
 					</Heading>
-					<CloseButton display={{ base: 'flex', xl: 'none' }} onClick={onClose} />
+					<CloseButton display={{ base: 'flex', xl: 'none' }} rounded="full" onClick={onClose} />
 				</Flex>
 				<Stack spacing="2" as="ul" px="4">
 					{LinkItems.map((link) => (
