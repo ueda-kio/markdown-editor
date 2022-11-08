@@ -12,6 +12,11 @@ export const useFileListSelector = () => {
 	return { files, trashes, archives };
 };
 
+export const useListTypeSelector = () => {
+	const listType = useAppSelector((state: RootState) => state.fileList.listType);
+	return { listType };
+};
+
 export const useIsLoadingSelector = () => {
 	const isLoading = useAppSelector((state: RootState) => state.fileList.isLoading);
 	return { isLoading };

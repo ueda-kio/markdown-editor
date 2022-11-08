@@ -33,7 +33,7 @@ const ViwerWrapper: React.FC<Props> = ({ file, menus, children }) => {
 					'linear-gradient(0deg, rgba(26,32,44,0) 0%, rgba(26,32,44,0.9) 15%, rgba(26,32,44,1) 24%, rgba(26,32,44,1) 100%)'
 				)}
 			>
-				<Popover file={file} menuArray={menus} />
+				<Popover file={file} menuArray={menus} aria-label="open menu" />
 				<IconButton ariaLabel="back" icon={ChevronLeftIcon as IconType} onClick={() => navigate(-1)}></IconButton>
 			</Flex>
 			{children}

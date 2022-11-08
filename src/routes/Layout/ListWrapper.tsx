@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { IconType } from 'react-icons';
 import { css } from '@emotion/react';
-import { Box, BoxProps, Flex, Spinner, Stack, useColorModeValue } from '@chakra-ui/react';
+import { Box, BoxProps, Flex, Grid, Spinner, Stack, useColorModeValue } from '@chakra-ui/react';
 import Cassette from '../../components/Cassette/Cassette';
 import NoCassettes from '../../components/Cassette/NoCassettes';
 import SearchInput from '../../components/Molecules/SearchInput';
-import { useIsLoadingSelector } from '../../reducks/hooks';
+import { useIsLoadingSelector, useListTypeSelector } from '../../reducks/hooks';
 import { FileListType, FileType } from '../../reducks/slice/fileListSlice';
 import SkeltonCassette from '../../components/Cassette/SkeltonCassette';
 
@@ -77,6 +77,31 @@ type Props = {
 	}[];
 } & BoxProps;
 
+const ListTypeWrapper = ({ children }: { children: React.ReactNode }) => {
+	const { listType } = useListTypeSelector();
+
+	if (listType === 'panel') {
+		return (
+			<Grid
+				as="ol"
+				templateColumns={'1fr 1fr'}
+				rowGap={{ base: '2', md: '6' }}
+				columnGap={{ base: '2', md: '4' }}
+				height="100%"
+				overflowY="auto"
+			>
+				{children}
+			</Grid>
+		);
+	} else {
+		return (
+			<Stack spacing="2" as="ol" height="100%" overflowY="auto">
+				{children}
+			</Stack>
+		);
+	}
+};
+
 const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
 	const { isLoading } = useIsLoadingSelector();
 	const [isTop, setIsTop] = useState(true);
@@ -140,9 +165,9 @@ const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
 						overflow={'hidden'}
 						{...(isTop ? { css: [gradient, style.isTop] } : isBottom ? { css: [gradient, style.isBottom] } : { css: gradient })}
 					>
-						<Stack spacing="2" as="ol" height="100%" overflowY="auto">
+						<ListTypeWrapper>
 							{list.map((file, i) => (
-								<li key={`${file.id}_${i}`}>
+								<li key={`${file.id}_${i}`} css={{ height: 'fit-content' }}>
 									<Cassette
 										{...(i === 0
 											? { _ref: topTargetRef }
@@ -154,7 +179,7 @@ const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
 									/>
 								</li>
 							))}
-						</Stack>
+						</ListTypeWrapper>
 					</Box>
 				) : (
 					<>{Empty}</>

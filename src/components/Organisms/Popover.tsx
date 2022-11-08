@@ -1,5 +1,14 @@
 import React from 'react';
-import { IconButton, Text, Popover as ChakraPopover, PopoverTrigger, PopoverContent, VStack, Portal } from '@chakra-ui/react';
+import {
+	IconButton,
+	Text,
+	Popover as ChakraPopover,
+	PopoverTrigger,
+	PopoverContent,
+	VStack,
+	Portal,
+	IconButtonProps,
+} from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IconType } from 'react-icons';
 import { FileType } from '../../reducks/slice/fileListSlice';
@@ -12,8 +21,8 @@ type Props = {
 		text: string;
 	}[];
 	file: FileType;
-};
-const Popover: React.FC<Props> = ({ menuArray, file }) => {
+} & IconButtonProps;
+const Popover: React.FC<Props> = ({ menuArray, file, ...rest }) => {
 	return (
 		<ChakraPopover>
 			<PopoverTrigger>
@@ -22,10 +31,10 @@ const Popover: React.FC<Props> = ({ menuArray, file }) => {
 					top="50%"
 					right={{ base: '12px', md: '16px' }}
 					transform="translateY(-50%)"
-					aria-label="open menu"
 					rounded={'full'}
 					bg="none"
 					icon={<BsThreeDotsVertical />}
+					{...rest}
 				>
 					Trigger
 				</IconButton>

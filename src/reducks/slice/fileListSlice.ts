@@ -4,6 +4,7 @@ import { db } from '../../firebase';
 import isFileType from '../../libs/isFileType';
 import { RootState } from '../store/store';
 import { setNotNewRegistrant } from './userSlice';
+import { isListType } from '../../libs/isListType';
 
 export type FileType = {
 	id: string;
@@ -13,8 +14,9 @@ export type FileType = {
 	title: string;
 	lead: string;
 };
-
 export type FileListType = 'files' | 'trashes' | 'archives';
+export const listTypeArray = ['list', 'panel'] as const;
+export type ListType = typeof listTypeArray[number];
 
 const usersRef = db.collection('users');
 /**
@@ -110,22 +112,23 @@ export const fetchFileList = createAsyncThunk<FileType[], void, { state: RootSta
 	const { uid } = thunkApi.getState().user;
 	const { fileRef } = getRefs(uid);
 
-	const data = await fileRef
-		.orderBy('updated_at', 'desc')
-		.get()
-		.then((snapshots) => {
-			const dataArray: FileType[] = [];
-			snapshots.forEach((snapshot) => {
-				const data = snapshot.data();
-				if (!isFileType(data)) return;
-				dataArray.push(data);
-			});
-			return dataArray;
-		})
-		.catch((e) => {
-			throw Error(e);
+	try {
+		const snapshots = await fileRef.get();
+		const listTypeByStorage = window.localStorage.getItem('list-type') ?? 'list';
+		if (isListType(listTypeByStorage)) {
+			thunkApi.dispatch(setListType(listTypeByStorage));
+		}
+
+		const dataArray: FileType[] = [];
+		snapshots.forEach((snapshot) => {
+			const data = snapshot.data();
+			if (!isFileType(data)) return;
+			dataArray.push(data);
 		});
-	return data;
+		return dataArray;
+	} catch {
+		throw Error();
+	}
 });
 
 /** ゴミ箱一覧を取得する */
@@ -398,6 +401,7 @@ const initialState = {
 		isFetched: false,
 	},
 	isLoading: false,
+	listType: 'list' as ListType,
 };
 export const fileListSlice = createSlice({
 	name: 'fileList',
@@ -451,6 +455,12 @@ export const fileListSlice = createSlice({
 			});
 		},
 		resetFileList: () => initialState,
+		setListType: (state, action: PayloadAction<ListType>) => {
+			return {
+				...state,
+				listType: action.payload,
+			};
+		},
 		/**
 		 * ファイルを完全に削除する。
 		 * @param {string} id 削除対象のファイルid
@@ -639,5 +649,5 @@ export const fileListSlice = createSlice({
 	},
 });
 
-export const { addFile, setState, trashFile, sortFiles, resetFileList } = fileListSlice.actions;
+export const { addFile, setState, trashFile, sortFiles, resetFileList, setListType } = fileListSlice.actions;
 export default fileListSlice.reducer;
