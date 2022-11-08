@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { IconType } from 'react-icons';
+import { IoGridOutline } from 'react-icons/io5';
+import { TfiViewList } from 'react-icons/tfi';
 import { css } from '@emotion/react';
-import { Box, BoxProps, Flex, Grid, Spinner, Stack, useColorModeValue } from '@chakra-ui/react';
+import { Box, BoxProps, Flex, Grid, IconButton, Stack, useColorModeValue } from '@chakra-ui/react';
 import Cassette from '../../components/Cassette/Cassette';
 import NoCassettes from '../../components/Cassette/NoCassettes';
 import SearchInput from '../../components/Molecules/SearchInput';
-import { useIsLoadingSelector, useListTypeSelector } from '../../reducks/hooks';
-import { FileListType, FileType } from '../../reducks/slice/fileListSlice';
+import { useAppDispatch, useIsLoadingSelector, useListTypeSelector } from '../../reducks/hooks';
+import { FileListType, FileType, setListType } from '../../reducks/slice/fileListSlice';
 import SkeltonCassette from '../../components/Cassette/SkeltonCassette';
 
 /** グラデーション装飾用スタイル */
@@ -87,6 +89,7 @@ const ListTypeWrapper = ({ children }: { children: React.ReactNode }) => {
 				templateColumns={'1fr 1fr'}
 				rowGap={{ base: '2', md: '6' }}
 				columnGap={{ base: '2', md: '4' }}
+				alignContent="start"
 				height="100%"
 				overflowY="auto"
 			>
@@ -103,7 +106,9 @@ const ListTypeWrapper = ({ children }: { children: React.ReactNode }) => {
 };
 
 const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
+	const dispatch = useAppDispatch();
 	const { isLoading } = useIsLoadingSelector();
+	const { listType } = useListTypeSelector();
 	const [isTop, setIsTop] = useState(true);
 	const [isBottom, setIsBottom] = useState(false);
 
@@ -141,16 +146,34 @@ const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
 		return () => {
 			observer.disconnect();
 		};
-	}, [isLoading]);
+	}, [isLoading, listType]);
 
 	const gradient = useColorModeValue(style.gradient, style['gradient-dark']);
 
 	const Empty = useMemo(() => <NoCassettes page={page} />, []);
 
+	/** リストタイプ変更処理 */
+	const handleChangeListType = () => {
+		listType === 'list' ? dispatch(setListType('panel')) : dispatch(setListType('list'));
+	};
+
+	/** 選択されたリストタイプをlocalStorageに格納 */
+	useEffect(() => {
+		window.localStorage.setItem('list-type', listType);
+	}, [listType]);
+
 	return (
 		<Box position="relative" mt="5" pb="8" flexGrow={'1'} overflow="auto" {...rest}>
 			<Flex direction={'column'} gap="3" h="100%">
-				<SearchInput></SearchInput>
+				<Flex alignItems={'center'} gap={{ base: '2', md: '4' }}>
+					<SearchInput></SearchInput>
+					<IconButton
+						icon={listType === 'list' ? <IoGridOutline /> : <TfiViewList />}
+						aria-label="change list type"
+						rounded={'full'}
+						onClick={handleChangeListType}
+					/>
+				</Flex>
 				{isLoading ? (
 					<Box flexGrow="1" pos="relative" overflow={'hidden'}>
 						<Stack spacing="2" as="ol" height="100%" overflowY="auto">
