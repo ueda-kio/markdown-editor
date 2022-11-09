@@ -175,6 +175,7 @@ const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
 								<Icon w="4" h="4" color={useColorModeValue('gray.700', 'gray.200')} as={TfiViewList} />
 							)
 						}
+						variant="outline"
 						aria-label="change list type"
 						rounded={'full'}
 						onClick={handleChangeListType}

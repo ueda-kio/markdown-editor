@@ -8,6 +8,7 @@ import {
 	VStack,
 	Portal,
 	IconButtonProps,
+	useBreakpointValue,
 } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IconType } from 'react-icons';
@@ -23,6 +24,7 @@ type Props = {
 	file: FileType;
 } & IconButtonProps;
 const Popover: React.FC<Props> = ({ menuArray, file, ...rest }) => {
+	const triggerSize = useBreakpointValue({ base: 'sm', md: 'md' }, { fallback: 'sm' });
 	return (
 		<ChakraPopover>
 			<PopoverTrigger>
@@ -31,7 +33,9 @@ const Popover: React.FC<Props> = ({ menuArray, file, ...rest }) => {
 					top="50%"
 					right={{ base: '12px', md: '16px' }}
 					transform="translateY(-50%)"
-					rounded={'full'}
+					variant={'ghost'}
+					isRound
+					size={triggerSize}
 					bg="none"
 					icon={<BsThreeDotsVertical />}
 					{...rest}

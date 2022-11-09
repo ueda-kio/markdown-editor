@@ -71,7 +71,7 @@ const Cassette: React.FC<Props> = ({ file, menus, _ref, ...rest }) => {
 					</Box>
 				</Grid>
 			</Link>
-			<Popover menuArray={menuArray} file={file} aria-label="open menu" top={isListType ? '50%' : '20%'} />
+			<Popover menuArray={menuArray} file={file} aria-label="open menu" top={isListType ? '50%' : { base: '27px', md: '17%' }} />
 		</Box>
 	);
 };
