@@ -27,7 +27,11 @@ const Setting = () => {
 	/** 選択されたリストタイプをlocalStorageに格納 */
 	useEffect(() => {
 		dispatch(setListTypeReducer(listType));
-		window.localStorage.setItem('list-type', listType);
+		try {
+			window.localStorage.setItem('list-type', listType);
+		} catch {
+			console.error('Failed to store to storage.');
+		}
 	}, [listType]);
 
 	return (
