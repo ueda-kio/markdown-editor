@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import { Provider } from 'react-redux';
 import { CacheProvider } from '@emotion/react';
-import createEmotionCache from './createEmotionCache';
+import createEmotionCache from './style/createEmotionCache';
 import { store } from './reducks/store/store';
 import theme from './style/theme';
 import GlobalStyle from './style/GlobalStyle';
