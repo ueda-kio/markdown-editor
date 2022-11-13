@@ -177,7 +177,7 @@ const Viwer = () => {
 							transform: 'translateY(100%)',
 						}}
 					>
-						<Popover file={file} menuArray={menus} />
+						<Popover file={file} menuArray={menus} aria-label="open menu" />
 						<IconButton ariaLabel="back" icon={ChevronLeftIcon as IconType} onClick={() => navigate(-1)}></IconButton>
 					</Flex>
 					<Box overflow={'auto'} h="100%" mt="4">
