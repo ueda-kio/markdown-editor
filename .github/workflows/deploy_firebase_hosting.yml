@@ -8,7 +8,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@main
+        uses: actions/checkout@v3
 	# ポイント１
 	# ↓↓↓ node_modulesはgit管理していないと思いますので、ここで、nodeモジュールを取得するコマンドをjobとして設定します。
       - name: Install Dependencies # ← コマンド識別名
