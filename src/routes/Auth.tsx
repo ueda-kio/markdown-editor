@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Loading from '../components/Atoms/Loading';
 import { auth } from '../firebase';
 import { isListType } from '../libs/isListType';
-import { useAppDispatch, useUser } from '../reducks/hooks';
+import { useAppDispatch, useUser } from '../reducks/selectors';
 import { setListType } from '../reducks/slice/fileListSlice';
 import { listenAuthState } from '../reducks/slice/userSlice';
 

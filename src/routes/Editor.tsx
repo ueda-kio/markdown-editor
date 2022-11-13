@@ -3,7 +3,7 @@ import { useBeforeunload } from 'react-beforeunload';
 import { Box, Button, Flex, Grid, Icon, IconButton, Textarea, useToast, useDisclosure, Portal, Fade, Text, Kbd } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import MarkdownViewer from '../components/Organisms/MarkdownViwer';
-import { useAppDispatch, useFileListSelector } from '../reducks/hooks';
+import { useAppDispatch, useFileListSelector } from '../reducks/selectors';
 import { fetchFileById } from '../reducks/slice/fileListSlice';
 import { updateFile } from '../reducks/slice/fileListSlice';
 import convertMarkdownToHTML from '../libs/sanitizer';

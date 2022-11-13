@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Button, FormControl, Input, InputProps, Text, useColorModeValue, VStack } from '@chakra-ui/react';
-import { useUser } from '../../reducks/hooks';
+import { useUser } from '../../reducks/selectors';
 import { Link } from '../../components/Atoms/Link';
 
 type InputType = {

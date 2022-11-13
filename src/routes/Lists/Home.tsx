@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Button, Stack, Input, InputGroup, InputLeftElement, chakra } from '@chakra-ui/react';
 import { PlusSquareIcon, SearchIcon } from '@chakra-ui/icons';
 import Cassette from '../../components/Cassette/Cassette';
-import { useAppDispatch, useFileListSelector, useIsLoadingSelector, useUser } from '../../reducks/hooks';
+import { useAppDispatch, useFileListSelector, useIsLoadingSelector, useUser } from '../../reducks/selectors';
 import {
 	copyFile,
 	createNewFile,

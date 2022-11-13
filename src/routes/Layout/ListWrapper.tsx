@@ -7,7 +7,7 @@ import { Box, BoxProps, Flex, Grid, Icon, IconButton, Stack, useColorModeValue }
 import Cassette from '../../components/Cassette/Cassette';
 import NoCassettes from '../../components/Cassette/NoCassettes';
 import SearchInput from '../../components/Molecules/SearchInput';
-import { useAppDispatch, useIsLoadingSelector, useListTypeSelector } from '../../reducks/hooks';
+import { useAppDispatch, useIsLoadingSelector, useListTypeSelector } from '../../reducks/selectors';
 import { FileListType, FileType, setListType } from '../../reducks/slice/fileListSlice';
 import SkeltonCassette from '../../components/Cassette/SkeltonCassette';
 

@@ -3,7 +3,7 @@ import { Box, FormControl, FormLabel, Grid, StackDivider, Switch, Text, useColor
 import { nanoid } from '@reduxjs/toolkit';
 import { ListType, setListType as setListTypeReducer } from '../reducks/slice/fileListSlice';
 import { isListType } from '../libs/isListType';
-import { useAppDispatch, useListTypeSelector } from '../reducks/hooks';
+import { useAppDispatch, useListTypeSelector } from '../reducks/selectors';
 import { css } from '@emotion/react';
 import useCustomColorMode from '../hooks/useCustomColorMode';
 import IsColorModeType from '../libs/isColorModeType';

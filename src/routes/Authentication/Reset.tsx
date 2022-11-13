@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
 import { auth, db } from '../../firebase';
 import { nanoid } from '@reduxjs/toolkit';
-import { useAppDispatch, useUser } from '../../reducks/hooks';
+import { useAppDispatch, useUser } from '../../reducks/selectors';
 import { useNavigate } from 'react-router-dom';
 import { resetPassword, signUp } from '../../reducks/slice/userSlice';
 import { Link } from '../../components/Atoms/Link';

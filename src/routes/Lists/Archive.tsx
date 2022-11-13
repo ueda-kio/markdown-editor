@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useAppDispatch, useFileListSelector } from '../../reducks/hooks';
+import { useAppDispatch, useFileListSelector } from '../../reducks/selectors';
 import { fetchArchiveList, FileType, putFileInTrash, restoreArchivedFile, sortFiles } from '../../reducks/slice/fileListSlice';
 import { FaTrash } from 'react-icons/fa';
 import { BiArchiveOut } from 'react-icons/bi';

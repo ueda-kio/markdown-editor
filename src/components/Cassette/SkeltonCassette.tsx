@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Grid, BoxProps, Skeleton, VStack } from '@chakra-ui/react';
-import { useListTypeSelector } from '../../reducks/hooks';
+import { useListTypeSelector } from '../../reducks/selectors';
 
 const SkeltonCassette: React.FC<BoxProps> = ({ ...rest }) => {
 	const { listType } = useListTypeSelector();

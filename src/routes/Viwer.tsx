@@ -14,7 +14,7 @@ import {
 	restoreArchivedFile,
 	restoreTrashedFile,
 } from '../reducks/slice/fileListSlice';
-import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from '../reducks/hooks';
+import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from '../reducks/selectors';
 import ViwerWrapper from './Layout/ViwerWrapper';
 import { FaCopy, FaEdit, FaTrash, FaTrashRestore, FaArchive } from 'react-icons/fa';
 import { BiArchiveOut } from 'react-icons/bi';

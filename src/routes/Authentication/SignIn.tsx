@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
 import { auth, googleProvider } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useUser } from '../../reducks/hooks';
+import { useAppDispatch, useUser } from '../../reducks/selectors';
 import { listenAuthState, signIn, signInWithGoogleAPI } from '../../reducks/slice/userSlice';
 import { Link } from '../../components/Atoms/Link';
 import AuthWrapper from '../Layout/AuthWrapper';

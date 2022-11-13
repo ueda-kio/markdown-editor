@@ -4,7 +4,7 @@ import { Box, Text, Grid, chakra, useColorModeValue, BoxProps } from '@chakra-ui
 import { Link } from '../Atoms/Link';
 import { FileType } from '../../reducks/slice/fileListSlice';
 import Popover from '../Organisms/Popover';
-import { useListTypeSelector } from '../../reducks/hooks';
+import { useListTypeSelector } from '../../reducks/selectors';
 
 type Props = {
 	file: FileType;

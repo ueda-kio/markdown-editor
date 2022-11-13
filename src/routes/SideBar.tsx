@@ -30,7 +30,7 @@ import { FaSignOutAlt } from 'react-icons/fa';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Link } from '../components/Atoms/Link';
 import Confirm from '../components/Organisms/Modal/Confirm';
-import { useAppDispatch } from '../reducks/hooks';
+import { useAppDispatch } from '../reducks/selectors';
 import { signOut } from '../reducks/slice/userSlice';
 import IconLink from '../components/Atoms/IconLink';
 
