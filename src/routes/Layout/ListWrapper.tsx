@@ -91,6 +91,8 @@ const ListTypeWrapper = ({ children }: { children: React.ReactNode }) => {
 				columnGap={{ base: '2', md: '4' }}
 				alignContent="start"
 				height="100%"
+				mx="-1"
+				p="1"
 				overflowY="auto"
 			>
 				{children}
@@ -98,7 +100,7 @@ const ListTypeWrapper = ({ children }: { children: React.ReactNode }) => {
 		);
 	} else {
 		return (
-			<Stack spacing="2" as="ol" height="100%" overflowY="auto">
+			<Stack spacing="2" as="ol" mx="-1" p="1" height="100%" overflowY="auto">
 				{children}
 			</Stack>
 		);
@@ -163,7 +165,7 @@ const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
 	}, [listType]);
 
 	return (
-		<Box position="relative" mt="5" pb="8" flexGrow={'1'} overflow="auto" {...rest}>
+		<Box position="relative" mt="5" mx="-1" px="1" pb="8" flexGrow={'1'} overflow="auto" {...rest}>
 			<Flex direction={'column'} gap="3" h="100%">
 				<Flex alignItems={'center'} gap={{ base: '2', md: '4' }}>
 					<SearchInput></SearchInput>
@@ -192,6 +194,8 @@ const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
 						ref={wrapperRef}
 						flexGrow="1"
 						pos="relative"
+						mx="-1"
+						px="1"
 						overflow={'hidden'}
 						{...(isTop ? { css: [gradient, style.isTop] } : isBottom ? { css: [gradient, style.isBottom] } : { css: gradient })}
 					>

@@ -46,6 +46,7 @@ const Cassette: React.FC<Props> = ({ file, menus, _ref, ...rest }) => {
 				display="block"
 				px={{ base: '3', md: '4' }}
 				py={{ base: '4', md: '5' }}
+				rounded="md"
 				lineHeight={'1.5'}
 				height={isListType ? undefined : '100%'}
 			>
