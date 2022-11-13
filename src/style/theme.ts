@@ -1,17 +1,6 @@
 import { extendTheme } from '@chakra-ui/react';
 
 const theme = extendTheme({
-	components: {
-		Input: {
-			baseStyle: {
-				control: {
-					_focusVisible: {
-						'border-color': 'rgba(50, 151, 149, 0.7)',
-					},
-				},
-			},
-		},
-	},
 	colors: {
 		brand: {
 			100: 'red',

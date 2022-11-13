@@ -80,8 +80,17 @@ const BigRadio: React.FC<RadioProps> = ({ name, value, label, checked, onChange,
 			_active={{ bg: useColorModeValue('var(--chakra-colors-gray-200)', 'var(--chakra-colors-whiteAlpha-300)') }}
 		>
 			<input type="radio" name={name} value={value} onChange={() => onChange(value)} css={style.input} checked={checked} />
-			<Box as={'span'} display="block" rounded={'md'} p={{ base: '1', sm: '2' }}>
-				<Box as={'span'}>{children}</Box>
+			<Box
+				as={'span'}
+				display="block"
+				rounded={'md'}
+				p={{ base: '1', sm: '2' }}
+				transitionProperty="var(--chakra-transition-property-common)"
+				transitionDuration="var(--chakra-transition-duration-normal)"
+			>
+				<Box as={'span'} aria-hidden="true">
+					{children}
+				</Box>
 				<Text as="span" display={'block'} fontSize="sm" align="center" mt="1">
 					{label}
 				</Text>
