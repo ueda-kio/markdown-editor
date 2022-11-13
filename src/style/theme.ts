@@ -1,6 +1,23 @@
-import { extendTheme } from '@chakra-ui/react';
+import { defineStyleConfig, extendTheme } from '@chakra-ui/react';
+
+const Button = defineStyleConfig({
+	baseStyle: {},
+	sizes: {
+		sm: {
+			fontSize: '14px',
+			h: 9,
+			px: 3,
+		},
+		md: {
+			fontSize: '16px',
+		},
+	},
+});
 
 const theme = extendTheme({
+	components: {
+		Button,
+	},
 	colors: {
 		brand: {
 			100: 'red',

@@ -138,10 +138,14 @@ const SidebarContent: React.FC<SidebarProps> = ({ onClose, ...rest }) => {
 					</NavItem>
 				</Box>
 			</Box>
-			<Confirm isOpen={isOpen} onClose={onCloseModal} onConfirm={handleClickSignOut} blockScrollOnMount={false}>
-				<Text fontWeight="bold" textAlign={'center'}>
-					Would you like to Sign out?
-				</Text>
+			<Confirm
+				isOpen={isOpen}
+				onClose={onCloseModal}
+				onConfirm={handleClickSignOut}
+				blockScrollOnMount={false}
+				title="Confirm Sign out"
+			>
+				<Text textAlign={'start'}>Are you sure to sign out?</Text>
 			</Confirm>
 		</>
 	);

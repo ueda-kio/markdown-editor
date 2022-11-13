@@ -22,16 +22,25 @@ const Confirm: React.FC<Props> = ({ title, isOpen, onClose, onConfirm, children,
 	return (
 		<Modal isOpen={isOpen} onClose={onClose} {...rest} isCentered>
 			<ModalOverlay />
-			<ModalContent>
-				{title && <ModalHeader>{title}</ModalHeader>}
+			<ModalContent maxWidth={{ base: 'sm', md: 'md' }} mx={{ base: '5', md: undefined }}>
+				{title && <ModalHeader fontSize={{ base: '18px', md: '20px' }}>{title}</ModalHeader>}
 				<ModalCloseButton />
-				<ModalBody {...(!title && { pt: '12' })}>{children}</ModalBody>
+				<ModalBody {...(!title && { pt: '12' })} fontWeight="medium" fontSize={{ base: '14px', md: '16px' }}>
+					{children}
+				</ModalBody>
 
 				<ModalFooter>
-					<Button mr={3} onClick={onClose}>
+					<Button mr={3} size={{ base: 'sm', md: 'md' }} onClick={onClose}>
 						Cancel
 					</Button>
-					<Button bg="red.500" _hover={{ bg: 'red.700' }} color="white" variant="ghost" onClick={onConfirm}>
+					<Button
+						bg="red.500"
+						color="white"
+						variant="ghost"
+						size={{ base: 'sm', md: 'md' }}
+						_hover={{ bg: 'red.700' }}
+						onClick={onConfirm}
+					>
 						Sign out
 					</Button>
 				</ModalFooter>
