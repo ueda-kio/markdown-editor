@@ -20,6 +20,7 @@ const SearchInput = () => {
 				rounded="3xl"
 				fontSize={{ base: '14px', md: '16px' }}
 				variant="filled"
+				focusBorderColor="focusOutline"
 				_placeholder={{ fontSize: placeholderFontSize }}
 			/>
 		</InputGroup>
