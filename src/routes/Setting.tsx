@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
 	Box,
+	BoxProps,
 	ColorMode as DefaultColorMode,
 	FormControl,
 	FormLabel,
@@ -56,14 +57,14 @@ type ColorMode = DefaultColorMode | 'system';
 
 type RadioProps = {
 	name: string;
-	value: ColorMode;
+	value: string;
 	checked: boolean;
-	onChange: (e: ColorMode) => void;
+	onChange: (e: string) => void;
 	children: React.ReactNode;
 };
 const BigRadio: React.FC<RadioProps> = ({ name, value, checked, onChange, children }) => {
 	const boxShadowWhenChecked = useColorModeValue(
-		'0px 0px 0px 2px rgba(225, 225, 225, 1) inset',
+		'0px 0px 0px 2px rgba(210, 210, 210, 1) inset',
 		'0px 0px 0px 2px rgba(225, 225, 225, 0.55) inset'
 	);
 	return (
@@ -81,9 +82,9 @@ const BigRadio: React.FC<RadioProps> = ({ name, value, checked, onChange, childr
 			_active={{ bg: useColorModeValue('var(--chakra-colors-gray-200)', 'var(--chakra-colors-whiteAlpha-300)') }}
 		>
 			<input type="radio" name={name} value={value} onChange={() => onChange(value)} css={style.input} checked={checked} />
-			<Box as={'span'} display="block" rounded={'md'} p="2">
+			<Box as={'span'} display="block" rounded={'md'} p={{ base: '1', sm: '2' }}>
 				<Box as={'span'}>{children}</Box>
-				<Text as="span" fontSize={'md'}>
+				<Text as="span" fontSize={{ base: 'sm', md: 'md' }}>
 					{value}
 				</Text>
 			</Box>
@@ -98,8 +99,9 @@ const Setting = () => {
 	const [listType, setListType] = useState<ListType>(listTypeState);
 
 	/** カラーモードの切り替え処理 */
-	const handleChangeTheme = (e: ColorMode) => {
-		setColorMode(e);
+	const handleChangeTheme = (e: string) => {
+		//TODO delete as
+		setColorMode(e as ColorMode);
 	};
 
 	/** リストタイプの切り替え処理 */
@@ -140,46 +142,93 @@ const Setting = () => {
 						<Grid
 							as="dd"
 							templateColumns={'repeat(3, 1fr)'}
-							gap={{ base: '2', md: '4' }}
+							gap={{ base: '1', sm: '2' }}
 							mt={{ base: '4', md: 0 }}
 							pr={{ base: 0, md: '4' }}
 						>
-							<BigRadio name="name" value="light" checked={colorMode === 'light'} onChange={handleChangeTheme}>
+							<BigRadio name="color-mode" value="light" checked={colorMode === 'light'} onChange={handleChangeTheme}>
 								<Box
 									w="100%"
-									h="70px"
 									bg="white"
 									border={'1px'}
 									borderColor={useColorModeValue('gray.200', 'gray.400')}
+									css={{ aspectRatio: '5/3' }}
 								></Box>
 							</BigRadio>
-							<BigRadio name="name" value="dark" checked={colorMode === 'dark'} onChange={handleChangeTheme}>
+							<BigRadio name="color-mode" value="dark" checked={colorMode === 'dark'} onChange={handleChangeTheme}>
 								<Box
 									w="100%"
-									h="70px"
 									bg="black"
 									border={'1px'}
 									borderColor={useColorModeValue('gray.200', 'gray.400')}
+									css={{ aspectRatio: '5/3' }}
 								></Box>
 							</BigRadio>
-							<BigRadio name="name" value="system" checked={colorMode === 'system'} onChange={handleChangeTheme}>
-								<Box w="100%" h="70px" border={'1px'} borderColor={useColorModeValue('gray.200', 'gray.400')} bg="white">
+							<BigRadio name="color-mode" value="system" checked={colorMode === 'system'} onChange={handleChangeTheme}>
+								<Box
+									w="100%"
+									border={'1px'}
+									borderColor={useColorModeValue('gray.200', 'gray.400')}
+									bg="white"
+									css={{ aspectRatio: '5/3' }}
+								>
 									<Box w="100%" h="100%" bg="black" clipPath={'polygon(100% 0, 0% 100%, 100% 100%)'}></Box>
 								</Box>
 							</BigRadio>
 						</Grid>
 					</Box>
 				</FormControl>
-				<FormControl as="fieldset" display={'flex'}>
-					<Grid gap="4" templateColumns={'200px 1fr'}>
-						<FormLabel m="0">List style</FormLabel>
-						<RadioGroup defaultValue={listType} onChange={handleChangeListType}>
-							<VStack>
-								<Radio value="list">list</Radio>
-								<Radio value="panel">panel</Radio>
-							</VStack>
-						</RadioGroup>
-					</Grid>
+				<FormControl as="fieldset">
+					<Box
+						as={'dl'}
+						display={{ base: 'block', md: 'grid' }}
+						gap={{ base: undefined, md: '4' }}
+						gridTemplateColumns={{ base: undefined, md: '200px 1fr' }}
+					>
+						<Box as={'dt'} m="0">
+							List Style
+						</Box>
+						<Grid
+							as="dd"
+							templateColumns={'repeat(3, 1fr)'}
+							gap={{ base: '1', sm: '2' }}
+							mt={{ base: '4', md: 0 }}
+							pr={{ base: 0, md: '4' }}
+						>
+							<BigRadio name="list-style" value="list" checked={listType === 'list'} onChange={handleChangeListType}>
+								<Grid
+									gap="1"
+									w="100%"
+									p="1"
+									bg="white"
+									border={'1px'}
+									borderColor={useColorModeValue('gray.200', 'gray.400')}
+									css={{ aspectRatio: '5/3' }}
+								>
+									{[0, 1, 2, 3].map((el) => (
+										<Box key={el} border={'1px'} borderColor={'gray.500'} rounded="4px" />
+									))}
+								</Grid>
+							</BigRadio>
+							<BigRadio name="list-style" value="panel" checked={listType === 'panel'} onChange={handleChangeListType}>
+								<Grid
+									gap="1"
+									templateRows={'repeat(2, 1fr)'}
+									templateColumns={'repeat(2, 1fr)'}
+									w="100%"
+									p="1"
+									bg="white"
+									border={'1px'}
+									borderColor={useColorModeValue('gray.200', 'gray.400')}
+									css={{ aspectRatio: '5/3' }}
+								>
+									{[0, 1, 2, 3].map((el) => (
+										<Box key={el} border={'1px'} borderColor={'gray.500'} rounded="4px" />
+									))}
+								</Grid>
+							</BigRadio>
+						</Grid>
+					</Box>
 				</FormControl>
 				{switchArray.map((elm) => (
 					<FormControl key={elm.label} display="flex" alignItems="center" justifyContent={'space-between'}>
