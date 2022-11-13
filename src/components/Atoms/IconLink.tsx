@@ -59,7 +59,8 @@ const IconLink: React.FC<Props> = ({ tag, type, icon, isActive, children, to = '
 				bg: 'teal',
 				color: 'white',
 			}}
-			transition={'background 0.15s, color 0.15s'}
+			transitionProperty="var(--chakra-transition-property-common)"
+			transitionDuration="var(--chakra-transition-duration-normal)"
 			{...(isActive && { 'aria-current': 'page' })}
 			to={to}
 			{...rest}
