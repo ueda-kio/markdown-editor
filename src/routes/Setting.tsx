@@ -1,22 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import {
-	Box,
-	ColorMode as DefaultColorMode,
-	FormControl,
-	FormLabel,
-	Grid,
-	StackDivider,
-	Switch,
-	Text,
-	useColorModeValue,
-	VStack,
-} from '@chakra-ui/react';
+import { Box, FormControl, FormLabel, Grid, StackDivider, Switch, Text, useColorModeValue, VStack } from '@chakra-ui/react';
 import { nanoid } from '@reduxjs/toolkit';
 import { ListType, setListType as setListTypeReducer } from '../reducks/slice/fileListSlice';
 import { isListType } from '../libs/isListType';
 import { useAppDispatch, useListTypeSelector } from '../reducks/hooks';
 import { css } from '@emotion/react';
 import useCustomColorMode from '../hooks/useCustomColorMode';
+import IsColorModeType from '../libs/isColorModeType';
 
 const style = {
 	label: css`
@@ -50,7 +40,7 @@ const style = {
 	`,
 };
 
-type ColorMode = DefaultColorMode | 'system';
+// type ColorMode = DefaultColorMode | 'system';
 
 type RadioProps = {
 	name: string;
@@ -107,8 +97,9 @@ const Setting = () => {
 
 	/** カラーモードの切り替え処理 */
 	const handleChangeTheme = (e: string) => {
-		//TODO delete as
-		setColorMode(e as ColorMode);
+		if (IsColorModeType(e)) {
+			setColorMode(e);
+		}
 	};
 
 	/** リストタイプの切り替え処理 */

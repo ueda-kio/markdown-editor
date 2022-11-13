@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { ColorMode as DefaultColorMode, useColorMode } from '@chakra-ui/react';
+import { useColorMode } from '@chakra-ui/react';
 
 const isSystem = () => window.localStorage.getItem('chakra-ui-color-mode-is-system') === 'true';
 
-type ColorMode = DefaultColorMode | 'system';
+export const colorModeType = ['light', 'dark', 'system'] as const;
+export type ColorMode = typeof colorModeType[number];
+
 const useCustomColorMode = () => {
 	const { colorMode: defaultColorMode, setColorMode: defaultSetColorMode } = useColorMode();
 	const [colorMode, setColorModeState] = useState<ColorMode | ''>('');
