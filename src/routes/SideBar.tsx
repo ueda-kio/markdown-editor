@@ -192,6 +192,9 @@ const Sidebar = () => {
 	useEffect(() => onClose(), [pathname]);
 	useEffect(() => {
 		switch (pathname) {
+			case 'files':
+				setHeaderTitle('Files');
+				break;
 			case '/trash':
 				setHeaderTitle('Trash');
 				break;
@@ -202,7 +205,7 @@ const Sidebar = () => {
 				setHeaderTitle('Setting');
 				break;
 			default:
-				setHeaderTitle('Files');
+				setHeaderTitle('');
 		}
 	}, [pathname]);
 

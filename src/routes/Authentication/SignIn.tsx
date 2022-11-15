@@ -25,14 +25,14 @@ const SignIn = () => {
 	};
 
 	//TODO
-	// const googleSignIn = async () => {
-	// 	try {
-	// 		await dispatch(signInWithGoogleAPI());
-	// 		navigate('/');
-	// 	} catch (e) {
-	// 		console.log(e);
-	// 	}
-	// };
+	const googleSignIn = async () => {
+		try {
+			await dispatch(signInWithGoogleAPI());
+			navigate('/');
+		} catch (e) {
+			console.log(e);
+		}
+	};
 
 	useEffect(() => {
 		dispatch(listenAuthState());
@@ -72,7 +72,9 @@ const SignIn = () => {
 	);
 
 	return (
-		<AuthWrapper title="Log in" inputs={inputs} otherLinks={otherLinks} submitButtonLabel={'Log in'} onSubmit={onSubmit}></AuthWrapper>
+		<AuthWrapper title="Log in" inputs={inputs} otherLinks={otherLinks} submitButtonLabel={'Log in'} onSubmit={onSubmit}>
+			<Button onClick={googleSignIn}>GOOGLE</Button>
+		</AuthWrapper>
 	);
 };
 

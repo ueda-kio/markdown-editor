@@ -11,6 +11,7 @@ import Viwer from './Viwer';
 import Reset from './Authentication/Reset';
 import Archive from './Lists/Archive';
 import Setting from './Setting';
+import Privacy from './Privacy';
 
 const Router = () => {
 	return (
@@ -28,6 +29,7 @@ const Router = () => {
 								<Route path="trash" element={<Trash />} />
 								<Route path="archive" element={<Archive />} />
 								<Route path="setting" element={<Setting />} />
+								<Route path="/privacy" element={<Privacy />} />
 							</Route>
 							<Route path="/file/:fileId/editor" element={<Editor />} />
 							<Route path="/file/:fileId" element={<Viwer />} />
