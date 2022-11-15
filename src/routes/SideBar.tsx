@@ -1,12 +1,10 @@
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
-import { Outlet, useLocation, useNavigate, useOutlet, useParams } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
-	chakra,
 	IconButton,
 	Box,
 	CloseButton,
 	Flex,
-	Icon,
 	useColorModeValue,
 	Drawer,
 	DrawerContent,
@@ -14,9 +12,6 @@ import {
 	useDisclosure,
 	BoxProps,
 	FlexProps,
-	InputGroup,
-	InputLeftElement,
-	Input,
 	DrawerOverlay,
 	Stack,
 	Heading,
@@ -28,7 +23,6 @@ import { AiOutlineHome, AiOutlineGithub, AiOutlineSetting } from 'react-icons/ai
 import { BiArchiveIn } from 'react-icons/bi';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import { Link } from '../components/Atoms/Link';
 import Confirm from '../components/Organisms/Modal/Confirm';
 import { useAppDispatch } from '../reducks/selectors';
 import { signOut } from '../reducks/slice/userSlice';
@@ -53,8 +47,8 @@ type NavItemProps = {
 	path: string;
 	onClick?: () => void;
 	children: ReactNode;
-} & FlexProps;
-const NavItem: React.FC<NavItemProps> = ({ name, icon, path, onClick, children, ...rest }) => {
+};
+const NavItem: React.FC<NavItemProps> = ({ name, icon, path, onClick, children }) => {
 	const { pathname } = useLocation();
 	const isCurrentPage = useMemo(() => pathname === path, [pathname]);
 	const isExternalLink = path.startsWith('https');

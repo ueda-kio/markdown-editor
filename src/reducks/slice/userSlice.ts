@@ -19,7 +19,7 @@ export const signUp = createAsyncThunk<void, { email: string; password: string }
 		thunkApi.dispatch(singInAction(uid));
 		setDoc(doc(db, 'users', uid), { uid });
 	} catch (e) {
-		console.log(e);
+		console.error(e);
 	}
 });
 
@@ -29,7 +29,7 @@ export const signIn = createAsyncThunk<void, { email: string; password: string }
 		const { uid } = res.user;
 		thunkApi.dispatch(singInAction(uid));
 	} catch (e) {
-		console.log(e);
+		console.error(e);
 	}
 });
 
@@ -41,7 +41,7 @@ export const signInWithGoogleAPI = createAsyncThunk('user/signInWithGoogleAPI', 
 		const { uid } = res.user;
 		thunkApi.dispatch(singInAction(uid));
 	} catch (e) {
-		console.log(e);
+		console.error(e);
 	}
 });
 

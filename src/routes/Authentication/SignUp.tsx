@@ -1,17 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
-import { auth, db } from '../../firebase';
-import { nanoid } from '@reduxjs/toolkit';
-import { useAppDispatch, useUser } from '../../reducks/selectors';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../reducks/selectors';
 import { signUp } from '../../reducks/slice/userSlice';
-import { Link } from '../../components/Atoms/Link';
 import AuthWrapper from '../Layout/AuthWrapper';
 
 const SignUp = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const { user } = useUser();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
@@ -24,13 +19,6 @@ const SignUp = () => {
 			console.error(e);
 		}
 	};
-
-	useEffect(() => {
-		auth.onAuthStateChanged((user) => {
-			console.log('user', user);
-			console.log('currentUser', auth.currentUser);
-		});
-	}, []);
 
 	const inputs = useMemo(
 		() => [

@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useUser } from '../../reducks/selectors';
+import { useAppDispatch } from '../../reducks/selectors';
 import { listenAuthState, signIn, signInWithGoogleAPI } from '../../reducks/slice/userSlice';
 import AuthWrapper from '../Layout/AuthWrapper';
 
@@ -27,7 +26,7 @@ const SignIn = () => {
 			await dispatch(signInWithGoogleAPI());
 			navigate('/');
 		} catch (e) {
-			console.log(e);
+			console.error(e);
 		}
 	};
 

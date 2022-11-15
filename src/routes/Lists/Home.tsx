@@ -1,8 +1,8 @@
-import React, { memo, useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Stack, Input, InputGroup, InputLeftElement, chakra } from '@chakra-ui/react';
-import { PlusSquareIcon, SearchIcon } from '@chakra-ui/icons';
-import Cassette from '../../components/Cassette/Cassette';
+import { PlusSquareIcon } from '@chakra-ui/icons';
+import { FaEdit, FaCopy, FaTrash, FaArchive } from 'react-icons/fa';
+import { IconType } from 'react-icons';
 import { useAppDispatch, useFileListSelector, useIsLoadingSelector, useUser } from '../../reducks/selectors';
 import {
 	copyFile,
@@ -14,13 +14,8 @@ import {
 	putFileInTrash,
 	sortFiles,
 } from '../../reducks/slice/fileListSlice';
-import { auth } from '../../firebase';
-import { FaEdit, FaCopy, FaTrash, FaTrashRestore, FaArchive } from 'react-icons/fa';
-import Loading from '../../components/Atoms/Loading';
-import NoCassettes from '../../components/Cassette/NoCassettes';
 import ListWrapper from '../Layout/ListWrapper';
 import IconButton from '../../components/Atoms/IconButton';
-import { IconType } from 'react-icons';
 
 const Home = () => {
 	const dispatch = useAppDispatch();

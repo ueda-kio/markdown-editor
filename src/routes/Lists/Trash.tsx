@@ -1,12 +1,7 @@
-import React, { useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box, IconButton, Spinner, Stack, chakra } from '@chakra-ui/react';
-import { PlusSquareIcon } from '@chakra-ui/icons';
-import Cassette from '../../components/Cassette/Cassette';
-import { useAppDispatch, useIsLoadingSelector, useFileListSelector } from '../../reducks/selectors';
-import { deleteFileCompletely, fetchTrashList, FileType, restoreTrashedFile, sortFiles } from '../../reducks/slice/fileListSlice';
+import React, { useEffect } from 'react';
 import { FaTrashRestore, FaTrash } from 'react-icons/fa';
-import NoCassettes from '../../components/Cassette/NoCassettes';
+import { useAppDispatch, useFileListSelector } from '../../reducks/selectors';
+import { deleteFileCompletely, fetchTrashList, FileType, restoreTrashedFile, sortFiles } from '../../reducks/slice/fileListSlice';
 import ListWrapper from '../Layout/ListWrapper';
 
 const Trash = () => {

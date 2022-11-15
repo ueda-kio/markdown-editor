@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useBeforeunload } from 'react-beforeunload';
-import { Box, Button, Flex, Grid, Icon, IconButton, Textarea, useToast, useDisclosure, Portal, Fade, Text, Kbd } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { Box, Button, Flex, Grid, Icon, IconButton, Textarea, useToast, useDisclosure, Portal, Fade, Text, Kbd } from '@chakra-ui/react';
+import { ChevronLeftIcon } from '@chakra-ui/icons';
+import { AiOutlineCloudSync } from 'react-icons/ai';
+import { useBeforeunload } from 'react-beforeunload';
 import MarkdownViewer from '../components/Organisms/MarkdownViwer';
 import { useAppDispatch, useFileListSelector } from '../reducks/selectors';
 import { fetchFileById } from '../reducks/slice/fileListSlice';
 import { updateFile } from '../reducks/slice/fileListSlice';
 import convertMarkdownToHTML from '../libs/sanitizer';
-import { ChevronLeftIcon } from '@chakra-ui/icons';
-import { AiOutlineCloudSync } from 'react-icons/ai';
 
 const getTitleAndLead = (value: string) => {
 	const getTag = (txt: string) => {

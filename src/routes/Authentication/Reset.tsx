@@ -1,17 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
-import { auth, db } from '../../firebase';
-import { nanoid } from '@reduxjs/toolkit';
-import { useAppDispatch, useUser } from '../../reducks/selectors';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { resetPassword, signUp } from '../../reducks/slice/userSlice';
-import { Link } from '../../components/Atoms/Link';
+import { useAppDispatch, useUser } from '../../reducks/selectors';
+import { resetPassword } from '../../reducks/slice/userSlice';
 import AuthWrapper from '../Layout/AuthWrapper';
 
 const Reset = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const { user } = useUser();
 	const [email, setEmail] = useState('');
 
 	const onSubmit: React.FormEventHandler = async (e) => {

@@ -152,16 +152,20 @@ const ListWrapper: React.FC<Props> = ({ page, list, menus, ...rest }) => {
 
 	const gradient = useColorModeValue(style.gradient, style['gradient-dark']);
 
-	const Empty = useMemo(() => <NoCassettes page={page} />, []);
+	const Empty = useMemo(() => <NoCassettes page={page} />, [page]);
 
 	/** リストタイプ変更処理 */
 	const handleChangeListType = useCallback(() => {
 		listType === 'list' ? dispatch(setListType('panel')) : dispatch(setListType('list'));
 	}, [listType]);
 
-	/** 選択されたリストタイプをlocalStorageに格納 */
+	// 選択されたリストタイプをlocalStorageに格納
 	useEffect(() => {
-		window.localStorage.setItem('list-type', listType);
+		try {
+			window.localStorage.setItem('list-type', listType);
+		} catch (e) {
+			console.error(e);
+		}
 	}, [listType]);
 
 	return (
