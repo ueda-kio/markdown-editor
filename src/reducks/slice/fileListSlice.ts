@@ -1,10 +1,25 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import {
+	collection,
+	doc,
+	getDoc,
+	getDocs,
+	setDoc,
+	query,
+	orderBy,
+	updateDoc,
+	addDoc,
+	deleteDoc,
+	CollectionReference,
+	DocumentData,
+} from 'firebase/firestore';
 import { db } from '../../firebase';
 import isFileType from '../../libs/isFileType';
 import { RootState } from '../store/store';
 import { setNotNewRegistrant } from './userSlice';
 
+export const listTypeArray = ['list', 'panel'] as const;
 export type FileType = {
 	id: string;
 	value: string;
@@ -14,20 +29,19 @@ export type FileType = {
 	lead: string;
 };
 export type FileListType = 'files' | 'trashes' | 'archives';
-export const listTypeArray = ['list', 'panel'] as const;
 export type ListType = typeof listTypeArray[number];
 
-const usersRef = db.collection('users');
 /**
- * ドキュメントへの参照を取得する
+ * コレクションへの参照を取得する
  * @param {string} uid ユーザーID
  * @returns `CollectionReference`
  */
-const getRefs = (uid: string) => {
-	const fileRef = usersRef.doc(uid).collection('files');
-	const trashRef = usersRef.doc(uid).collection('trashes');
-	const archiveRef = usersRef.doc(uid).collection('archives');
-	return { fileRef, trashRef, archiveRef };
+const getCollection = (uid: string) => {
+	const userRef = doc(collection(db, 'users'), uid);
+	const files = collection(userRef, 'files');
+	const trashes = collection(userRef, 'trashes');
+	const archives = collection(userRef, 'archives');
+	return { files, trashes, archives };
 };
 
 /** ファイルを新規作成する */
@@ -35,13 +49,11 @@ export const createNewFile = createAsyncThunk<FileType | undefined, void, { stat
 	'fileList/createNewFile',
 	async (_, thunkApi) => {
 		const { uid } = thunkApi.getState().user;
-		const { fileRef } = getRefs(uid);
-
+		const { files } = getCollection(uid);
+		const document = doc(files); // Create a doc with random ID
 		const timestamp = new Date().toISOString();
-		const doc = fileRef.doc();
-		const id = doc.id;
 		const data: FileType = {
-			id,
+			id: document.id,
 			value: '',
 			created_at: timestamp,
 			updated_at: timestamp,
@@ -50,7 +62,7 @@ export const createNewFile = createAsyncThunk<FileType | undefined, void, { stat
 		};
 
 		try {
-			await fileRef.doc(id).set(data);
+			await setDoc(document, data);
 			return data;
 		} catch (e) {
 			console.error(e);
@@ -59,16 +71,16 @@ export const createNewFile = createAsyncThunk<FileType | undefined, void, { stat
 	}
 );
 
-/** ファイルを新規作成する */
+/** サンプルファイルを作成する */
 export const createNewSampleFile = createAsyncThunk<FileType | undefined, void, { state: RootState }>(
 	'fileList/createNewSampleFile',
 	async (_, thunkApi) => {
 		const { uid } = thunkApi.getState().user;
-		const { fileRef } = getRefs(uid);
+		const { files } = getCollection(uid);
+		const docRefToFiles = doc(files);
+		const id = docRefToFiles.id;
 
 		const timestamp = new Date().toISOString();
-		const doc = fileRef.doc();
-		const id = doc.id;
 		const sampleTitle = `This is Sample!`;
 		const sampleLead = `Let's leave a nice note!\nThis memo can be written in markdown.`;
 		const value = `# This is Sample!
@@ -96,7 +108,7 @@ export const createNewSampleFile = createAsyncThunk<FileType | undefined, void, 
 		};
 
 		try {
-			await fileRef.doc(id).set(data);
+			await setDoc(docRefToFiles, data);
 			thunkApi.dispatch(setNotNewRegistrant());
 			return data;
 		} catch (e) {
@@ -106,46 +118,39 @@ export const createNewSampleFile = createAsyncThunk<FileType | undefined, void, 
 	}
 );
 
+/**
+ * コレクションからファイルデータの一覧を格納した配列を作成し返却する
+ * @param {CollectionReference<DocumentData>} collectionRef コレクションへの参照
+ * @returns {Promise<FileType[]>}
+ */
+const getFileTypeArray = async (collectionRef: CollectionReference<DocumentData>) => {
+	const q = query(collectionRef, orderBy('updated_at', 'desc'));
+
+	const snapshots = await getDocs(q);
+	const dataArray: FileType[] = [];
+	snapshots.forEach((snapshot) => {
+		const data = snapshot.data();
+		if (!isFileType(data)) return;
+		dataArray.push(data);
+	});
+	return dataArray;
+};
+
 /** ファイル一覧を取得する */
 export const fetchFileList = createAsyncThunk<FileType[], void, { state: RootState }>('fileList/fetchFileList', async (_, thunkApi) => {
 	const { uid } = thunkApi.getState().user;
-	const { fileRef } = getRefs(uid);
+	const { files } = getCollection(uid);
 
-	try {
-		const snapshots = await fileRef.get();
-		const dataArray: FileType[] = [];
-		snapshots.forEach((snapshot) => {
-			const data = snapshot.data();
-			if (!isFileType(data)) return;
-			dataArray.push(data);
-		});
-		return dataArray;
-	} catch {
-		throw Error();
-	}
+	const dataArray = await getFileTypeArray(files);
+	return dataArray;
 });
 
 /** ゴミ箱一覧を取得する */
 export const fetchTrashList = createAsyncThunk<FileType[], void, { state: RootState }>('fileList/fetchTrashList', async (_, thunkApi) => {
 	const { uid } = thunkApi.getState().user;
-	const { trashRef } = getRefs(uid);
-
-	const data = await trashRef
-		.orderBy('updated_at', 'desc')
-		.get()
-		.then((snapshots) => {
-			const dataArray: FileType[] = [];
-			snapshots.forEach((snapshot) => {
-				const data = snapshot.data();
-				if (!isFileType(data)) return;
-				dataArray.push(data);
-			});
-			return dataArray;
-		})
-		.catch((e) => {
-			throw Error(e);
-		});
-	return data;
+	const { trashes } = getCollection(uid);
+	const dataArray = await getFileTypeArray(trashes);
+	return dataArray;
 });
 
 /** アーカイブ一覧を取得する */
@@ -153,50 +158,41 @@ export const fetchArchiveList = createAsyncThunk<FileType[], void, { state: Root
 	'fileList/fetchArchiveList',
 	async (_, thunkApi) => {
 		const { uid } = thunkApi.getState().user;
-		const { archiveRef } = getRefs(uid);
-
-		const data = await archiveRef
-			.orderBy('updated_at', 'desc')
-			.get()
-			.then((snapshots) => {
-				const dataArray: FileType[] = [];
-				snapshots.forEach((snapshot) => {
-					const data = snapshot.data();
-					if (!isFileType(data)) return;
-					dataArray.push(data);
-				});
-				return dataArray;
-			})
-			.catch((e) => {
-				throw Error(e);
-			});
-		return data;
+		const { archives } = getCollection(uid);
+		const dataArray = await getFileTypeArray(archives);
+		return dataArray;
 	}
 );
 
 /**
- * 指定されたIDのファイルを各ユーザーの前コレクションの中から検索し取得する
+ * 指定されたIDのファイルをユーザーの全コレクションの中から検索し取得する
  * @param {string} uid ユーザーID
  * @param {string} id ファイルID
  */
 const getFile = async (uid: string, id: string) => {
-	const { fileRef, trashRef, archiveRef } = getRefs(uid);
+	const { files, trashes, archives } = getCollection(uid);
+
+	//TODO 全コレクション内から該当idのファイルを検索できないか
+	// const snapshot = await getDocs(query(collection(db, uid), where('id', '==', id)));
+	// snapshot.forEach((snapshot) => console.log(snapshot));
+
 	let fileListType!: FileListType;
 	const data = await (async () => {
-		const fromFiles = (await fileRef.doc(id).get()).data();
-		const fromTrashes = (await trashRef.doc(id).get()).data();
-		const fromArchives = (await archiveRef.doc(id).get()).data();
-		if (typeof fromFiles !== 'undefined') {
+		const fromFiles = await getDoc(doc(files, id));
+		const fromTrashes = await getDoc(doc(trashes, id));
+		const fromArchives = await getDoc(doc(archives, id));
+
+		if (fromFiles.exists()) {
 			fileListType = 'files';
-			return fromFiles;
+			return fromFiles.data();
 		}
-		if (typeof fromTrashes !== 'undefined') {
+		if (fromTrashes.exists()) {
 			fileListType = 'trashes';
-			return fromTrashes;
+			return fromTrashes.data();
 		}
-		if (typeof fromArchives !== 'undefined') {
+		if (fromArchives.exists()) {
 			fileListType = 'archives';
-			return fromArchives;
+			return fromArchives.data();
 		}
 		return false as const;
 	})();
@@ -214,13 +210,9 @@ export const fetchFileById = createAsyncThunk<
 >('fileList/fetchFileById', async ({ id }, thunkApi) => {
 	const { uid } = thunkApi.getState().user;
 
-	try {
-		const { data, fileListType } = await getFile(uid, id);
-		if (data === false || !isFileType(data)) return;
-		return { data, fileListType };
-	} catch {
-		return;
-	}
+	const { data, fileListType } = await getFile(uid, id);
+	if (data === false || !isFileType(data)) return thunkApi.rejectWithValue('Failed get file by ID');
+	return { data, fileListType };
 });
 
 /**
@@ -233,18 +225,16 @@ export const updateFile = createAsyncThunk<Omit<FileType, 'created_at'> | false,
 	'fileList/updateFile',
 	async ({ id, value, updated_at, title, lead }, thunkApi) => {
 		const { uid } = thunkApi.getState().user;
-		const { fileRef } = getRefs(uid);
+		const { files } = getCollection(uid);
 
 		try {
-			await fileRef.doc(id).set(
-				{
-					value,
-					updated_at,
-					title,
-					lead,
-				},
-				{ merge: true }
-			);
+			const targetFile = doc(files, id);
+			await updateDoc(targetFile, {
+				value,
+				updated_at,
+				title,
+				lead,
+			});
 			return { id, value, updated_at, title, lead };
 		} catch {
 			return false;
@@ -256,13 +246,12 @@ export const copyFile = createAsyncThunk<FileType | void, FileType, { state: Roo
 	'fileList/copyFile',
 	async ({ value, title, lead }, thunkApi) => {
 		const { uid } = thunkApi.getState().user;
-		const { fileRef } = getRefs(uid);
+		const { files } = getCollection(uid);
+		const document = doc(files);
 
 		const timestamp = new Date().toISOString();
-		const doc = fileRef.doc();
-		const id = doc.id;
 		const data: FileType = {
-			id,
+			id: document.id,
 			value,
 			created_at: timestamp,
 			updated_at: timestamp,
@@ -271,7 +260,7 @@ export const copyFile = createAsyncThunk<FileType | void, FileType, { state: Roo
 		};
 
 		try {
-			await fileRef.doc(id).set(data);
+			await setDoc(document, data);
 			return data;
 		} catch (e) {
 			console.error(e);
@@ -280,32 +269,42 @@ export const copyFile = createAsyncThunk<FileType | void, FileType, { state: Roo
 	}
 );
 
+/**
+ * 特定のファイルを別のコレクションへ移動させる
+ * @param {string} fileId ファイルID
+ * @param {CollectionReference<DocumentData>} from 移動元コレクション
+ * @param {CollectionReference<DocumentData>} to 移動先コレクション
+ */
+const moveFileToAnotherCollection = async (
+	fileId: string,
+	from: CollectionReference<DocumentData>,
+	to: CollectionReference<DocumentData>
+) => {
+	try {
+		const targetFileSnap = await getDoc(doc(from, fileId));
+		if (!targetFileSnap.exists) throw Error('doc is not exists');
+
+		const data = targetFileSnap.data();
+		if (typeof data === 'undefined') throw Error(`Failed to read data. file: ${from.path}/${fileId}`);
+
+		await addDoc(to, data);
+		await deleteDoc(doc(from, fileId));
+	} catch (e) {
+		console.error(e);
+	}
+};
+
 /** 指定されたファイルをtrashesへ移動する */
 export const putFileInTrash = createAsyncThunk<
 	{ id: string; isArchive: boolean },
 	{ id: string; isArchive?: boolean },
 	{ state: RootState }
->('fileList/trashFile', async ({ id, isArchive = false }, thunkApi) => {
+>('fileList/putFileInTrash', async ({ id, isArchive = false }, thunkApi) => {
 	const { uid } = thunkApi.getState().user;
-	const ref = (() => {
-		if (isArchive === true) {
-			const { archiveRef } = getRefs(uid);
-			return archiveRef;
-		}
-		const { fileRef } = getRefs(uid);
-		return fileRef;
-	})();
-	const { trashRef } = getRefs(uid);
+	const { files, trashes, archives } = getCollection(uid);
+	const collectionRef = isArchive ? archives : files;
 
-	await ref
-		.doc(id)
-		.get()
-		.then((doc) => {
-			const data = doc.data();
-			if (!data) return;
-			trashRef.doc(data.id).set(data);
-			ref.doc(data.id).delete();
-		});
+	await moveFileToAnotherCollection(id, collectionRef, trashes);
 	return { id, isArchive };
 });
 
@@ -314,17 +313,8 @@ export const putFileInArchive = createAsyncThunk<string, { id: string }, { state
 	'fileList/putFileInArchive',
 	async ({ id }, thunkApi) => {
 		const { uid } = thunkApi.getState().user;
-		const { fileRef, archiveRef } = getRefs(uid);
-
-		await fileRef
-			.doc(id)
-			.get()
-			.then((doc) => {
-				const data = doc.data();
-				if (!data) return;
-				archiveRef.doc(data.id).set(data);
-				fileRef.doc(data.id).delete();
-			});
+		const { files, archives } = getCollection(uid);
+		await moveFileToAnotherCollection(id, files, archives);
 		return id;
 	}
 );
@@ -334,17 +324,8 @@ export const restoreTrashedFile = createAsyncThunk<string, { id: string }, { sta
 	'fileList/restoreFile',
 	async ({ id }, thunkApi) => {
 		const { uid } = thunkApi.getState().user;
-		const { fileRef, trashRef } = getRefs(uid);
-
-		await trashRef
-			.doc(id)
-			.get()
-			.then((doc) => {
-				const data = doc.data();
-				if (!data) return;
-				fileRef.doc(data.id).set(data);
-				trashRef.doc(data.id).delete();
-			});
+		const { files, trashes } = getCollection(uid);
+		await moveFileToAnotherCollection(id, trashes, files);
 		return id;
 	}
 );
@@ -354,17 +335,8 @@ export const restoreArchivedFile = createAsyncThunk<string, { id: string }, { st
 	'fileList/restoreArchivedFile',
 	async ({ id }, thunkApi) => {
 		const { uid } = thunkApi.getState().user;
-		const { fileRef, archiveRef } = getRefs(uid);
-
-		await archiveRef
-			.doc(id)
-			.get()
-			.then((doc) => {
-				const data = doc.data();
-				if (!data) return;
-				fileRef.doc(data.id).set(data);
-				archiveRef.doc(data.id).delete();
-			});
+		const { files, archives } = getCollection(uid);
+		await moveFileToAnotherCollection(id, archives, files);
 		return id;
 	}
 );
@@ -374,9 +346,8 @@ export const deleteFileCompletely = createAsyncThunk<string, { id: string }, { s
 	'fileList/deleteFile',
 	async ({ id }, thunkApi) => {
 		const { uid } = thunkApi.getState().user;
-		const { trashRef } = getRefs(uid);
-
-		await trashRef.doc(id).delete();
+		const { trashes } = getCollection(uid);
+		await deleteDoc(doc(trashes, id));
 		return id;
 	}
 );
@@ -560,6 +531,9 @@ export const fileListSlice = createSlice({
 		// ファイルをゴミ箱へ移動
 		builder.addCase(putFileInTrash.pending, (state) => {
 			state.isLoading = true;
+		});
+		builder.addCase(putFileInTrash.rejected, (state) => {
+			state.isLoading = false;
 		});
 		builder.addCase(putFileInTrash.fulfilled, (state, action) => {
 			state.isLoading = false;

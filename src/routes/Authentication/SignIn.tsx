@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
-import { auth, googleProvider } from '../../firebase';
+import { auth } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useUser } from '../../reducks/selectors';
 import { listenAuthState, signIn, signInWithGoogleAPI } from '../../reducks/slice/userSlice';
@@ -25,17 +25,16 @@ const SignIn = () => {
 	};
 
 	//TODO
-	const googleSignIn = async () => {
-		try {
-			await dispatch(signInWithGoogleAPI());
-			navigate('/');
-		} catch (e) {
-			console.log(e);
-		}
-	};
+	// const googleSignIn = async () => {
+	// 	try {
+	// 		await dispatch(signInWithGoogleAPI());
+	// 		navigate('/');
+	// 	} catch (e) {
+	// 		console.log(e);
+	// 	}
+	// };
 
 	useEffect(() => {
-		console.log('signin', user.isSignedIn);
 		dispatch(listenAuthState());
 		// auth.onAuthStateChanged((user) => {
 		// 	if (user) navigate('/');

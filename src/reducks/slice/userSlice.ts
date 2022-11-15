@@ -1,18 +1,23 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { auth, db, googleProvider } from '../../firebase';
+import { setDoc, doc } from 'firebase/firestore';
+import {
+	onAuthStateChanged,
+	createUserWithEmailAndPassword,
+	signInWithEmailAndPassword,
+	signInWithPopup,
+	sendPasswordResetEmail,
+	GoogleAuthProvider,
+} from 'firebase/auth';
+import { auth, db } from '../../firebase';
 import { resetFileList } from './fileListSlice';
-
-const usersRef = db.collection('users');
 
 export const signUp = createAsyncThunk<void, { email: string; password: string }>('user/signUp', async ({ email, password }, thunkApi) => {
 	try {
-		const res = await auth.createUserWithEmailAndPassword(email, password);
-		if (!res.user) throw Error();
+		const res = await createUserWithEmailAndPassword(auth, email, password);
 		const { uid } = res.user;
 		thunkApi.dispatch(singInAction(uid));
-
-		await usersRef.doc(uid).set({ uid });
+		setDoc(doc(db, 'users', uid), { uid });
 	} catch (e) {
 		console.log(e);
 	}
@@ -20,8 +25,7 @@ export const signUp = createAsyncThunk<void, { email: string; password: string }
 
 export const signIn = createAsyncThunk<void, { email: string; password: string }>('user/signIn', async ({ email, password }, thunkApi) => {
 	try {
-		const res = await auth.signInWithEmailAndPassword(email, password);
-		if (!res.user) throw Error();
+		const res = await signInWithEmailAndPassword(auth, email, password);
 		const { uid } = res.user;
 		thunkApi.dispatch(singInAction(uid));
 	} catch (e) {
@@ -31,10 +35,10 @@ export const signIn = createAsyncThunk<void, { email: string; password: string }
 
 export const signInWithGoogleAPI = createAsyncThunk('user/signInWithGoogleAPI', async (_, thunkApi) => {
 	try {
-		const provider = googleProvider;
+		const provider = new GoogleAuthProvider();
 		provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-		const res = await auth.signInWithPopup(provider);
-		const uid = res.user?.uid ?? '';
+		const res = await signInWithPopup(auth, provider);
+		const { uid } = res.user;
 		thunkApi.dispatch(singInAction(uid));
 	} catch (e) {
 		console.log(e);
@@ -48,20 +52,15 @@ export const signOut = createAsyncThunk('user/signOut', async (_, thunkApi) => {
 });
 
 export const listenAuthState = createAsyncThunk('user/listenAuthState', async (_, thunkApi) => {
-	auth.onAuthStateChanged((user) => {
+	onAuthStateChanged(auth, async (user) => {
 		if (!user) return;
 		const { uid } = user;
-		db.collection('users')
-			.doc(uid)
-			.get()
-			.then(() => {
-				thunkApi.dispatch(singInAction(uid));
-			});
+		thunkApi.dispatch(singInAction(uid));
 	});
 });
 
 export const resetPassword = createAsyncThunk<void, { email: string }>('user/resetPassword', async ({ email }) => {
-	auth.sendPasswordResetEmail(email);
+	sendPasswordResetEmail(auth, email);
 });
 
 const initialState = {
