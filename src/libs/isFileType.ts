@@ -1,8 +1,8 @@
-import firebase from 'firebase';
+import { DocumentData } from 'firebase/firestore';
 import { FileType } from '../reducks/slice/fileListSlice';
 
 /** FileTypeへ絞り込みを行うユーザー定義型ガード */
-const isFileType = (data: firebase.firestore.DocumentData): data is FileType => {
+const isFileType = (data: DocumentData): data is FileType => {
 	const { id, created_at, updated_at, value } = data;
 	if (
 		typeof id !== 'undefined' &&

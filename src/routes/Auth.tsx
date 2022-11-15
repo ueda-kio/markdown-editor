@@ -1,3 +1,4 @@
+import { onAuthStateChanged } from 'firebase/auth';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../components/Atoms/Loading';
@@ -25,7 +26,7 @@ const Auth: React.FC<Props> = ({ children }) => {
 
 		if (!user.isSignedIn) {
 			dispatch(listenAuthState());
-			auth.onAuthStateChanged((user) => {
+			onAuthStateChanged(auth, (user) => {
 				if (user === null) {
 					navigate('/signin');
 				}
