@@ -1,16 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
-import { auth } from '../../firebase';
+import { Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useUser } from '../../reducks/selectors';
 import { listenAuthState, signIn, signInWithGoogleAPI } from '../../reducks/slice/userSlice';
-import { Link } from '../../components/Atoms/Link';
 import AuthWrapper from '../Layout/AuthWrapper';
 
 const SignIn = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const { user } = useUser();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
@@ -36,9 +33,6 @@ const SignIn = () => {
 
 	useEffect(() => {
 		dispatch(listenAuthState());
-		// auth.onAuthStateChanged((user) => {
-		// 	if (user) navigate('/');
-		// });
 	}, []);
 
 	const inputs = useMemo(
@@ -73,7 +67,7 @@ const SignIn = () => {
 
 	return (
 		<AuthWrapper title="Log in" inputs={inputs} otherLinks={otherLinks} submitButtonLabel={'Log in'} onSubmit={onSubmit}>
-			<Button onClick={googleSignIn}>GOOGLE</Button>
+			{/* <Button onClick={googleSignIn}>GOOGLE</Button> */}
 		</AuthWrapper>
 	);
 };
