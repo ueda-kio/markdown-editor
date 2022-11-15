@@ -11,7 +11,9 @@ jobs:
         uses: actions/checkout@main
       - name: Install Dependencies
         run: yarn
+      - name: Install Firebase
+        run: yarn add firebase
       - name: Build
         run: yarn build
       - name: Deploy to Firebase
-        run: yarn deploy --token "1//0e8l0crpLk0ouCgYIARAAGA4SNwF-L9IrSL5zyhXYYm6SpOHEb7G4uAdOqJWRVph8ItBUGpo206nF21YYqQOBB_TmjbIVRQwL2qg"
+        run: firebase deploy --token "1//0e8l0crpLk0ouCgYIARAAGA4SNwF-L9IrSL5zyhXYYm6SpOHEb7G4uAdOqJWRVph8ItBUGpo206nF21YYqQOBB_TmjbIVRQwL2qg"
