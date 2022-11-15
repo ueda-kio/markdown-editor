@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { auth, db } from '../../firebase';
-import { resetFileList } from './fileListSlice';
+import { setDoc, doc } from 'firebase/firestore';
 import {
 	onAuthStateChanged,
 	createUserWithEmailAndPassword,
@@ -10,7 +9,8 @@ import {
 	sendPasswordResetEmail,
 	GoogleAuthProvider,
 } from 'firebase/auth';
-import { collection, addDoc, getDoc, getDocs, setDoc, doc } from 'firebase/firestore';
+import { auth, db } from '../../firebase';
+import { resetFileList } from './fileListSlice';
 
 export const signUp = createAsyncThunk<void, { email: string; password: string }>('user/signUp', async ({ email, password }, thunkApi) => {
 	try {
@@ -56,18 +56,6 @@ export const listenAuthState = createAsyncThunk('user/listenAuthState', async (_
 		if (!user) return;
 		const { uid } = user;
 		thunkApi.dispatch(singInAction(uid));
-
-		// const querySnapshot = await getDocs(collection(db, 'users'));
-		// querySnapshot.forEach((doc) => {
-		// 	thunkApi.dispatch(singInAction(doc.id));
-		// });
-
-		// .collection('users')
-		// .doc(uid)
-		// .get()
-		// .then(() => {
-		// 	thunkApi.dispatch(singInAction(uid));
-		// });
 	});
 });
 
