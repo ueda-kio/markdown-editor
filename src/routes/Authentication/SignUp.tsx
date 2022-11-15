@@ -8,8 +8,6 @@ import { signUp } from '../../reducks/slice/userSlice';
 import { Link } from '../../components/Atoms/Link';
 import AuthWrapper from '../Layout/AuthWrapper';
 
-const usersRef = db.collection('users');
-
 const SignUp = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();

@@ -1,8 +1,11 @@
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
-import 'firebase/storage';
-import 'firebase/functions';
+// import firebase from 'firebase/compat/app';
+import { initializeApp } from 'firebase/app';
+// import 'firebase/auth';
+// import 'firebase/firestore';
+// import 'firebase/storage';
+// import 'firebase/functions';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 import { firebaseConfig } from './config';
 
 /**
@@ -13,12 +16,12 @@ import { firebaseConfig } from './config';
  * import { initializeApp } from 'firebase/app';
  * ```
  */
-firebase.initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(firebaseConfig);
 
 // 以下便利機能宣言
-export const googleProvider = new firebase.auth.GoogleAuthProvider();
-export const auth = firebase.auth();
-export const db = firebase.firestore();
-export const storage = firebase.storage();
-export const functions = firebase.functions();
-export const FirebaseTimestamp = firebase.firestore.Timestamp;
+const provider = new GoogleAuthProvider();
+export const auth = getAuth(firebaseApp);
+export const db = getFirestore(firebaseApp);
+// export const storage = firebase.storage();
+// export const functions = firebase.functions();
+// export const FirebaseTimestamp = firebase.firestore.Timestamp;

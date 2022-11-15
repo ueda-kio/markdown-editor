@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { IconType } from 'react-icons';
-import { Box, Flex, Spinner, useColorModeValue } from '@chakra-ui/react';
+import { Box, Button, Flex, Spinner, useColorModeValue } from '@chakra-ui/react';
 import MarkdownViewer from '../components/Organisms/MarkdownViwer';
 import {
 	copyFile,
@@ -14,13 +14,15 @@ import {
 	restoreArchivedFile,
 	restoreTrashedFile,
 } from '../reducks/slice/fileListSlice';
-import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from '../reducks/selectors';
+import { useAppDispatch, useFileListSelector, useIsLoadingSelector, useUser } from '../reducks/selectors';
 import ViwerWrapper from './Layout/ViwerWrapper';
 import { FaCopy, FaEdit, FaTrash, FaTrashRestore, FaArchive } from 'react-icons/fa';
 import { BiArchiveOut } from 'react-icons/bi';
 import Popover from '../components/Organisms/Popover';
 import IconButton from '../components/Atoms/IconButton';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
+import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../firebase';
 
 const getFile = (fileObj: { list: FileType[]; isFetched: boolean }, id: string) => {
 	return fileObj.list.find((file) => file.id === id);
