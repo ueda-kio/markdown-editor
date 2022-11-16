@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Flex, Spinner, useColorModeValue } from '@chakra-ui/react';
+import { Box, Flex, useColorModeValue } from '@chakra-ui/react';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
 import { IconType } from 'react-icons';
 import { FaCopy, FaEdit, FaTrash, FaTrashRestore, FaArchive } from 'react-icons/fa';
@@ -20,6 +20,7 @@ import {
 import { useAppDispatch, useFileListSelector, useIsLoadingSelector } from '../reducks/selectors';
 import Popover from '../components/Organisms/Popover';
 import IconButton from '../components/Atoms/IconButton';
+import Loading from '../components/Atoms/Loading';
 
 const getFile = (fileObj: { list: FileType[]; isFetched: boolean }, id: string) => {
 	return fileObj.list.find((file) => file.id === id);
@@ -155,7 +156,7 @@ const Viwer = () => {
 	return (
 		<>
 			{isLoading || typeof file === 'undefined' ? (
-				<Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
+				<Loading />
 			) : (
 				<Flex direction={'column'} maxWidth="max" h="100vh" mx="auto" pt={{ base: '5', lg: '8' }} px="5">
 					<Flex
